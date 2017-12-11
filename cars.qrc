@@ -1,2 +1,7 @@
-<!DOCTYPE RCC>
-<RCC version="1.0"/>
+<RCC>
+    <qresource prefix="/cars">
+        <file alias="pink">pinkcar.png</file>
+        <file alias="red">redcar.png</file>
+        <file alias="yellow">yellowcar.png</file>
+    </qresource>
+</RCC>
