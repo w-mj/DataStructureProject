@@ -26,8 +26,6 @@ ParkingLot::ParkingLot(const QString &fname, QWidget* parent)
                           QObject::tr("Parse error at line %1, column %2: %3")
                           .arg(errorLine).arg(errorColumn).arg(errorStr));
     }
-    // map->resize(1000, 1000);
-    // painter = new QPainter(map);
 }
 
 QPixmap ParkingLot::creatMap2()
@@ -37,11 +35,10 @@ QPixmap ParkingLot::creatMap2()
         QMessageBox::critical(parent, QObject::tr("Error"),
                               QObject::tr("Not a parkinglot file"));
     }
-    qDebug() << "!!!!";
     return parseLayout(root.firstChild().toElement());
 }
 
-QPixmap *ParkingLot::getPixmap()
+QPixmap *ParkingLot::getPixmap() const
 {
     return map;
 }
@@ -59,6 +56,7 @@ QPixmap drawRoad(const QDomElement& roadXML) {
         qDebug() << "XML is not a road";
         return result.copy(0, 0, 0, 0);
     }
+	result.fill(QColor(200, 200, 200));
     int x = 0, y = 0;
     QPainter painter(&result);
     painter.setBrush(Qt::white);
@@ -94,6 +92,7 @@ QPixmap drawRoom(const QDomElement& roomXML) {
         return result.copy(0, 0, 0, 0);
     }
     QPixmap temp(60, 40);
+	result.fill(QColor(200, 200, 200));
     QPainter painter(&result), tPainter(&temp);
     painter.setPen(Qt::white);
     painter.setBrush(Qt::white);
@@ -143,9 +142,10 @@ QPixmap drawRoom(const QDomElement& roomXML) {
         return result.copy(0, 0, temp.height(), x);
 }
 
-QPixmap ParkingLot::parseLayout(const QDomElement& layout)
+QPixmap ParkingLot::parseLayout(const QDomElement& layout) const
 {
     QPixmap result(2000, 2000), temp;
+	result.fill(QColor(200, 200, 200));
     QPainter painter(&result);
     painter.setPen(Qt::black);
     int x = 0, y = 0, maxX = 0, maxY = 0;

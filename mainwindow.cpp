@@ -1,11 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "monitor.h"
 #include "cars.h"
 #include <QDialog>
 #include <QLabel>
-#include <QImage>
-#include <QPainter>
 #include <QScrollArea>
 #include "parkinglot.h"
 
