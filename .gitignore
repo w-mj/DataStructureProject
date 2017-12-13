@@ -42,3 +42,4 @@ debug/
 release/
 *.vcxproj
 *.vcxproj.*
+*.sln
