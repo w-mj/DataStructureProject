@@ -1,30 +1,38 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "monitor.h"
+#include "cars.h"
 #include <QDialog>
 #include <QLabel>
 #include <QImage>
 #include <QPainter>
+#include <QScrollArea>
+#include "parkinglot.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     resize(1800, 800);
-    //ui->setupUi(this);
-
-    montior = new Monitor(this);
-    QPixmap pix(":/cars/yellow");
-    QPainter painter(this);
-    painter.drawPixmap(0,0,pix);
-    QPixmap pix2=pix.scaled(QSize(50,50));
-    painter.drawPixmap(0,0,pix2);
+    // ui->setupUi(this);
+    QScrollArea* scrollArea = new QScrollArea(this);
+    scrollArea->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+    scrollArea->setWidgetResizable(true);
+    scrollArea->resize(1800, 800);
+    // monitor = new Monitor(this);
+    // Cars *car = new Cars(this);
+    ParkingLot *pk = new ParkingLot("D:\\wming\\Documents\\DataStructureProject\\parkinglot_f1.xml", this);
+    // pk->creatMap();
+    QLabel *label = new QLabel(this);
+    label->resize(1000, 1000);
+    label->setPixmap(pk->creatMap2());
+    scrollArea->setWidget(label);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete montior;
+    delete monitor;
 }
 
 void MainWindow::open(void) {

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QAction>
+#include "monitor.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,7 +21,7 @@ public:
 private:
     Ui::MainWindow *ui;
     QAction *action;
-    Monitor *montor;
+    Monitor *monitor;
 };
 
 #endif // MAINWINDOW_H

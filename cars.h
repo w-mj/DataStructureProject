@@ -8,14 +8,15 @@
 class Cars : public QWidget
 {
     Q_OBJECT
+public:
+    enum Color { Pink, Red, Yellow };
+    explicit Cars(QWidget *parent = nullptr);
+    explicit Cars(Color color, QWidget *parenet = nullptr) {}
+    void paintEvent(QPaintEvent *event);
 private:
-    enum Color m_color;
+    Color m_color;
     QPixmap m_pixmap;
     QString m_number;
-public:
-    enum Color { Pink, Red, Yellow }
-    explicit Cars(QWidget *parent = nullptr);
-    explicit Cars(Color color, QWidget *parenet = nullptr);
 signals:
 
 public slots:

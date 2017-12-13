@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT += xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -27,15 +28,17 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     monitor.cpp \
-    cars.cpp
+    cars.cpp \
+    parkinglot.cpp
 
 HEADERS += \
         mainwindow.h \
     monitor.h \
-    cars.h
+    cars.h \
+    parkinglot.h
 
 FORMS += \
         mainwindow.ui
 
 RESOURCES += \
-    cars.qrc
+    cars.qrc \

@@ -1,0 +1,13 @@
+<parkinglot roadWidth="50px">
+	<vLayout>
+		<road length="800" direction="horizontal" />
+		<hLayout>
+			<room number="12" direction="E" expendDirection="down"/>
+			<road length="900" direction="vertical" />
+			<room number="12" direction="W" expendDirection="down"/>
+			<room number="12" direction="E" expendDirection="down"/>
+			<road length="900" direction="vertical" />
+		</hLayout>
+		<road length="800" direction="horizontal" />
+	</vLayout>
+</parkinglot>
