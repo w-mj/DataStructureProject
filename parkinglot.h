@@ -1,20 +1,18 @@
 #ifndef PARKINGLOT_H
 #define PARKINGLOT_H
 #include <QWidget>
-#include <QString>
 #include <QPainter>
-#include <QBitmap>
 #include <QDomDocument>
 class ParkingLot
 {
 public:
     explicit ParkingLot(const QString& fname, QWidget *parent = nullptr);
     void creatMap();
-    QPixmap creatMap2();
+    QPixmap creatMap2() const;
     QPixmap* getPixmap() const;
     ~ParkingLot();
 private:
-    bool vertical;
+    // bool vertical;
     QPixmap* map;
     QDomDocument* doc;
     QWidget* parent;

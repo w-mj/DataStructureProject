@@ -17,11 +17,14 @@ Road::Road(QWidget* parent, const int length, const direction dir)
 		setMaximumSize(50, length);
 		break;
 	}
+	// setContentsMargins(0, 0, 0, 0);
 }
 
 void Road::paintEvent(QPaintEvent * event)
 {
 	QPainter painter(this);
+	/*painter.setPen(Qt::blue);
+	painter.drawRect(0, 0, width() - 1, height() - 1);*/
 	painter.setBrush(Qt::white);
 	painter.setPen(Qt::white);
 	auto x = 0, y = 0;

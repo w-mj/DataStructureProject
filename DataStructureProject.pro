@@ -29,13 +29,28 @@ SOURCES += \
         mainwindow.cpp \
     monitor.cpp \
     cars.cpp \
-    parkinglot.cpp
+    parkinglot.cpp \
+    cars.cpp \
+    main.cpp \
+    mainwindow.cpp \
+    monitor.cpp \
+    parkinglot.cpp \
+    ParkingLotWidget.cpp \
+    ParkingSpaceInfo.cpp \
+    Road.cpp
 
 HEADERS += \
         mainwindow.h \
     monitor.h \
     cars.h \
-    parkinglot.h
+    parkinglot.h \
+    cars.h \
+    mainwindow.h \
+    monitor.h \
+    parkinglot.h \
+    ParkingLotWidget.h \
+    ParkingSpaceInfo.h \
+    Road.h
 
 FORMS += \
         mainwindow.ui

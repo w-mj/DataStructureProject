@@ -28,7 +28,7 @@ ParkingLot::ParkingLot(const QString &fname, QWidget* parent)
     }
 }
 
-QPixmap ParkingLot::creatMap2()
+QPixmap ParkingLot::creatMap2() const
 {
     QDomElement root =doc -> documentElement();
     if (root.tagName() != "parkinglot") {
@@ -93,24 +93,24 @@ QPixmap drawRoom(const QDomElement& roomXML) {
     }
     QPixmap temp(60, 40);
 	result.fill(QColor(200, 200, 200));
-    QPainter painter(&result), tPainter(&temp);
+    QPainter painter(&result), t_painter(&temp);
     painter.setPen(Qt::white);
     painter.setBrush(Qt::white);
-    tPainter.setPen(Qt::white);
-    tPainter.setBrush(Qt::white);
+    t_painter.setPen(Qt::white);
+    t_painter.setBrush(Qt::white);
 
-    ushort direction = roomXML.attribute("direction").at(0).unicode();
-    int n = roomXML.attribute("number").toInt();
-    int x = 0, y = 0;
+	const auto direction = roomXML.attribute("direction").at(0).unicode();
+	const auto n = roomXML.attribute("number").toInt();
+	auto x = 0, y = 0;
     enum {down, right} expendDirection;
     if (roomXML.attribute("expendDirection") == "down")
         expendDirection = down;
     else
         expendDirection = right;
-    tPainter.drawRect(0, 0, 60, 5);
-    tPainter.drawRect(0, 5, 10, 35);
-    tPainter.drawRect(10, 35, 50, 5);
-    tPainter.end();
+    t_painter.drawRect(0, 0, 60, 5);
+    t_painter.drawRect(0, 5, 10, 35);
+    t_painter.drawRect(10, 35, 50, 5);
+    t_painter.end();
     switch(direction) {
     case 'E':
         // temp = temp;
@@ -129,7 +129,7 @@ QPixmap drawRoom(const QDomElement& roomXML) {
         break;
     }
     // tPainter.begin(&temp);
-    for (int i = 0; i < n; i++) {
+    for (auto i = 0; i < n; i++) {
         painter.drawPixmap(x, y, temp.width(), temp.height(), temp);
         if (expendDirection == down)
             y += temp.height();
@@ -148,7 +148,7 @@ QPixmap ParkingLot::parseLayout(const QDomElement& layout) const
 	result.fill(QColor(200, 200, 200));
     QPainter painter(&result);
     painter.setPen(Qt::black);
-    int x = 0, y = 0, maxX = 0, maxY = 0;
+	auto x = 0, y = 0, max_x = 0, max_y = 0;
     enum {vertical, horizontal} direction;
     if (layout.tagName() == "vLayout")
         direction = vertical;
@@ -161,7 +161,7 @@ QPixmap ParkingLot::parseLayout(const QDomElement& layout) const
 
     QDomElement child = layout.firstChild().toElement();
     while(!child.isNull()) {
-        QString name = child.tagName();
+	    const QString name = child.tagName();
         if (name == "road") {
             temp = drawRoad(child);
         } else if (name == "room") {
@@ -171,16 +171,16 @@ QPixmap ParkingLot::parseLayout(const QDomElement& layout) const
         painter.drawPixmap(x, y, temp.width(), temp.height(), temp);
         if (direction == horizontal) {
             x += temp.width();
-            maxY = std::max(maxY, temp.height());
+            max_y = std::max(max_y, temp.height());
         } else {
             y += temp.height();
-            maxX = std::max(maxX, temp.width());
+            max_x = std::max(max_x, temp.width());
         }
         child = child.nextSibling().toElement();
     }
     if (direction == horizontal) {
-        return result.copy(0, 0, x, maxY);
+        return result.copy(0, 0, x, max_y);
     } else {
-        return result.copy(0, 0, maxX, y);
+        return result.copy(0, 0, max_x, y);
     }
 }

@@ -2,16 +2,16 @@
 	<vLayout>
 		<road length="700" direction="horizontal" />
 		<hLayout>
-			<road length="900" direction="vertical" />
+			<road length="600" direction="vertical" />
 			<room number="15" direction="W" expendDirection="down"/>
 			<room number="15" direction="E" expendDirection="down"/>
-			<road length="900" direction="vertical" />
+			<road length="600" direction="vertical" />
 			<room number="15" direction="W" expendDirection="down"/>
 			<room number="15" direction="E" expendDirection="down"/>
-			<road length="900" direction="vertical" />
+			<road length="600" direction="vertical" />
 			<room number="15" direction="W" expendDirection="down"/>
 			<room number="15" direction="E" expendDirection="down"/>
-			<road length="900" direction="vertical" />
+			<road length="600" direction="vertical" />
 			<room number="15" direction="W" expendDirection="down"/>
 			<room number="15" direction="E" expendDirection="down"/>
 		</hLayout>

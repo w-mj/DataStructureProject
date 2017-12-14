@@ -12,11 +12,7 @@ ParkingLotWidget::ParkingLotWidget(QWidget *parent, const QString& xml) : QWidge
 {
 	resize(1000, 1000);
 	parse_xml(xml);
-	if (rootLayoutDirection == horizontal)
-		setLayout(hBoxLayout);
-	else
-		setLayout(vBoxLayout);
-
+	setLayout(layout);
 }
 
 
@@ -48,28 +44,13 @@ void ParkingLotWidget::parse_xml(const QString & xml)
 	}
 	QDomElement element = doc.documentElement().firstChild().toElement();
 	QString name = element.tagName();
-	if (element.tagName() == "vLayout")
+	if (element.tagName().contains("Layout"))
 	{
-		rootLayoutDirection = vertical;
-		vBoxLayout = parseVbox(element);
-	} else if (element.tagName() == "hLayout")
-	{
-		rootLayoutDirection = horizontal;
-		hBoxLayout = parseHbox(element);
+		layout = parseLayout(element);
 	} else
 	{
 		qDebug() << this -> objectName() << "布局文件错误";
 	}
-}
-
-inline QHBoxLayout * ParkingLotWidget::parseHbox(const QDomElement & element)
-{
-	return static_cast<QHBoxLayout*>(parseLayout(element));
-}
-
-inline QVBoxLayout * ParkingLotWidget::parseVbox(const QDomElement & element)
-{
-	return static_cast<QVBoxLayout*>(parseLayout(element));;
 }
 
 QBoxLayout * ParkingLotWidget::parseLayout(const QDomElement & element)
@@ -99,13 +80,13 @@ QBoxLayout * ParkingLotWidget::parseLayout(const QDomElement & element)
 				this, child.attribute("direction"), n, child.attribute("expendDirection")));
 		}
 		else if ((name.at(0) == 'v' ||  name.at(0) == 'h' )&& name.contains("Layout"))
-			layout->addLayout(parseHbox(child));
+			layout->addLayout(parseLayout(child));
 		else
 			qDebug() << this->objectName() << "错误的xml标签";
 		child = child.nextSiblingElement();
 	}
+	layout->addStretch(); // 添加伸缩，实现居上或居左对齐
 	layout->setMargin(0);
 	layout->setSpacing(0);
-	layout->setContentsMargins(0, 0, 0, 0);
 	return layout;
 }

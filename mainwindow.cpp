@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QScrollArea>
 #include "parkinglot.h"
+#include "ParkingLotWidget.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -15,21 +16,23 @@ MainWindow::MainWindow(QWidget *parent) :
     QScrollArea* scrollArea = new QScrollArea(this);
     scrollArea->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
     scrollArea->setWidgetResizable(true);
-    scrollArea->resize(1800, 800);
+    // scrollArea->resize(1800, 800);
     // monitor = new Monitor(this);
     // Cars *car = new Cars(this);
-    ParkingLot *pk = new ParkingLot("D:\\wming\\Documents\\DataStructureProject\\parkinglot_f1.xml", this);
+    ParkingLotWidget *pk = new ParkingLotWidget(this, "D:\\wming\\Documents\\DataStructureProject\\parkinglot_f1.xml");
+	// pk->show();
     // pk->creatMap();
-    QLabel *label = new QLabel(this);
+    /*QLabel *label = new QLabel(this);
     label->resize(1000, 1000);
-    label->setPixmap(pk->creatMap2());
-    scrollArea->setWidget(label);
+    label->setPixmap(pk->creatMap2());*/
+	scrollArea->resize(pk->width(), this->height());
+    scrollArea->setWidget(pk);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete monitor;
+    // delete monitor;
 }
 
 void MainWindow::open(void) {

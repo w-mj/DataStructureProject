@@ -2,10 +2,20 @@
 #include <QPainter>
 #include <QDebug>
 
-ParkingSpaceInfo::ParkingSpaceInfo(QWidget* parent, const direction dir) : QWidget(parent) 
+ParkingSpaceInfo::ParkingSpaceInfo(QWidget* parent, const QString &dir)
 {
-	this->dir = dir;
-	switch (dir)
+	direction d = {};
+	const char c = dir.at(0).unicode();
+	switch (c)
+	{
+	case 'N':d = N; break;
+	case 'E':d = E; break;
+	case 'W':d = W; break;
+	case 'S':d = S; break;
+	default: qDebug() << this->objectName() << "错误的方向";
+	}
+	this->dir = d;
+	switch (this->dir)
 	{
 	case N:
 	case S:
@@ -21,20 +31,6 @@ ParkingSpaceInfo::ParkingSpaceInfo(QWidget* parent, const direction dir) : QWidg
 		break;
 	}
 }
-ParkingSpaceInfo::ParkingSpaceInfo(QWidget* parent, const QString &dir)
-{
-	direction d = {};
-	const char c = dir.at(0).unicode();
-	switch (c)
-	{
-	case 'N':d = N; break;
-	case 'E':d = E; break;
-	case 'W':d = W; break;
-	case 'S':d = S; break;
-	default: qDebug() << this->objectName() << "错误的方向";
-	}
-	this->ParkingSpaceInfo::ParkingSpaceInfo(parent, d);
-}
 
 QBoxLayout *ParkingSpaceInfo::makeParkingSapceGroup(QWidget* parent, const QString& dir, int n, const QString & expend)
 {
@@ -48,18 +44,16 @@ QBoxLayout *ParkingSpaceInfo::makeParkingSapceGroup(QWidget* parent, const QStri
 		ParkingSpaceInfo *pk = new ParkingSpaceInfo(parent, dir);
 		layout->addWidget(pk);
 	}
+	layout->addStretch();  // 居上或居左对齐
 	layout->setMargin(0);
 	layout->setSpacing(0);
-	layout->setContentsMargins(0, 0, 0, 0);
 	return layout;
 }
 
 void ParkingSpaceInfo::paintEvent(QPaintEvent * event)
 {
 	QPainter painter(this);
-	painter.setPen(Qt::blue);
-	// painter.drawRect(0, 0, this->width(), this->height());
-	painter.setPen(Qt::red);
+	painter.setPen(Qt::white);
 	painter.setBrush(Qt::white);
 	painter.translate(30, 20);
 	switch (dir) {
@@ -79,6 +73,9 @@ void ParkingSpaceInfo::paintEvent(QPaintEvent * event)
 	painter.drawRect(0, 0, 60, 5);
 	painter.drawRect(0, 5, 10, 35);
 	painter.drawRect(10, 35, 50, 5);
+	/*painter.setPen(Qt::blue);
+	painter.setBrush(Qt::NoBrush);
+	painter.drawRect(0, 0, this->width() - 1, this->height() - 1);*/
 	painter.end();
 }
 
