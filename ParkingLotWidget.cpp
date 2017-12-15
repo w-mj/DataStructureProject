@@ -5,7 +5,7 @@
 #include <QDomDocument>
 #include <QDebug>
 #include "Road.h"
-#include "ParkingSpaceInfo.h"
+#include "ParkingSpaceWidget.h"
 #include <QPainter>
 
 ParkingLotWidget::ParkingLotWidget(QWidget *parent, const QString& xml) : QWidget(parent)
@@ -76,7 +76,7 @@ QBoxLayout * ParkingLotWidget::parseLayout(const QDomElement & element)
 		else if (name == "room")
 		{
 			const auto n = child.attribute("number", "1").toInt();
-			layout->addLayout(ParkingSpaceInfo::makeParkingSapceGroup(
+			layout->addLayout(ParkingSpaceWidget::makeParkingSapceGroup(
 				this, child.attribute("direction"), n, child.attribute("expendDirection")));
 		}
 		else if ((name.at(0) == 'v' ||  name.at(0) == 'h' )&& name.contains("Layout"))

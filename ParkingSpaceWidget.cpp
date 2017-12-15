@@ -1,8 +1,8 @@
-#include "ParkingSpaceInfo.h"
+#include "ParkingSpaceWidget.h"
 #include <QPainter>
 #include <QDebug>
 
-ParkingSpaceInfo::ParkingSpaceInfo(QWidget* parent, const QString &dir)
+ParkingSpaceWidget::ParkingSpaceWidget(QWidget* parent, const QString &dir)
 {
 	direction d = {};
 	const char c = dir.at(0).unicode();
@@ -32,7 +32,7 @@ ParkingSpaceInfo::ParkingSpaceInfo(QWidget* parent, const QString &dir)
 	}
 }
 
-QBoxLayout *ParkingSpaceInfo::makeParkingSapceGroup(QWidget* parent, const QString& dir, int n, const QString & expend)
+QBoxLayout *ParkingSpaceWidget::makeParkingSapceGroup(QWidget* parent, const QString& dir, int n, const QString & expend)
 {
 	QBoxLayout *layout;
 	if (expend == "down")
@@ -41,7 +41,7 @@ QBoxLayout *ParkingSpaceInfo::makeParkingSapceGroup(QWidget* parent, const QStri
 		layout = new QHBoxLayout();
 	for (int i = 0; i < n; i++)
 	{
-		ParkingSpaceInfo *pk = new ParkingSpaceInfo(parent, dir);
+		ParkingSpaceWidget *pk = new ParkingSpaceWidget(parent, dir);
 		layout->addWidget(pk);
 	}
 	layout->addStretch();  // ¾ÓÉÏ»ò¾Ó×ó¶ÔÆë
@@ -50,7 +50,7 @@ QBoxLayout *ParkingSpaceInfo::makeParkingSapceGroup(QWidget* parent, const QStri
 	return layout;
 }
 
-void ParkingSpaceInfo::paintEvent(QPaintEvent * event)
+void ParkingSpaceWidget::paintEvent(QPaintEvent * event)
 {
 	QPainter painter(this);
 	painter.setPen(Qt::white);
@@ -80,6 +80,6 @@ void ParkingSpaceInfo::paintEvent(QPaintEvent * event)
 }
 
 
-ParkingSpaceInfo::~ParkingSpaceInfo()
+ParkingSpaceWidget::~ParkingSpaceWidget()
 {
 }
