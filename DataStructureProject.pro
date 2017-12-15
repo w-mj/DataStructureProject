@@ -31,7 +31,8 @@ SOURCES += \
         cars.cpp \
         parkinglot.cpp \
         ParkingLotWidget.cpp \
-        Road.cpp
+        Road.cpp \
+    ParkingSpaceWidget.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,7 +40,8 @@ HEADERS += \
         cars.h \
         parkinglot.h \
         ParkingLotWidget.h \
-        Road.h
+        Road.h \
+    ParkingSpaceWidget.h
 
 FORMS += \
         mainwindow.ui
