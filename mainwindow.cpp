@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // scrollArea->resize(1800, 800);
     // monitor = new Monitor(this);
     // Cars *car = new Cars(this);
-    ParkingLotWidget *pk = new ParkingLotWidget(this, "D:\\wming\\Documents\\DataStructureProject\\parkinglot_f1.xml");
+    ParkingLotWidget *pk = new ParkingLotWidget(this, "parkinglot_f1.xml");
 	// pk->show();
     // pk->creatMap();
     /*QLabel *label = new QLabel(this);

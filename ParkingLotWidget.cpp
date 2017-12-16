@@ -1,4 +1,4 @@
-#include "ParkingLotWidget.h"
+ï»¿#include "ParkingLotWidget.h"
 #include "ParkingSpaceWidget.h"
 #include <QFile>
 #include <QMessageBox>
@@ -55,7 +55,7 @@ void ParkingLotWidget::parse_xml(const QString & xml)
 		layout = parseLayout(element);
 	} else
 	{
-		qDebug() << this -> objectName() << "²¼¾ÖÎÄ¼þ´íÎó";
+		qDebug() << this -> objectName() << "å¸ƒå±€æ–‡ä»¶é”™è¯¯";
 	}
 }
 
@@ -88,10 +88,10 @@ QBoxLayout * ParkingLotWidget::parseLayout(const QDomElement & element)
 		else if ((name.at(0) == 'v' ||  name.at(0) == 'h' )&& name.contains("Layout"))
 			layout->addLayout(parseLayout(child));
 		else
-			qDebug() << this->objectName() << "´íÎóµÄxml±êÇ©";
+			qDebug() << this->objectName() << "é”™è¯¯çš„xmlæ ‡ç­¾";
 		child = child.nextSiblingElement();
 	}
-	layout->addStretch(); // Ìí¼ÓÉìËõ£¬ÊµÏÖ¾ÓÉÏ»ò¾Ó×ó¶ÔÆë
+	layout->addStretch(); // æ·»åŠ ä¼¸ç¼©ï¼Œå®žçŽ°å±…ä¸Šæˆ–å±…å·¦å¯¹é½
 	layout->setMargin(0);
 	layout->setSpacing(0);
 	return layout;

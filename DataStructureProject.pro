@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT += core gui
 QT += xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -27,30 +27,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    monitor.cpp \
-    cars.cpp \
-    parkinglot.cpp \
-    cars.cpp \
-    main.cpp \
-    mainwindow.cpp \
-    monitor.cpp \
-    parkinglot.cpp \
-    ParkingLotWidget.cpp \
-    ParkingSpaceWidget.cpp \
-    Road.cpp
+        monitor.cpp \
+        cars.cpp \
+        parkinglot.cpp \
+        ParkingLotWidget.cpp \
+        Road.cpp \
+        ParkingSpaceWidget.cpp
 
 HEADERS += \
         mainwindow.h \
-    monitor.h \
-    cars.h \
-    parkinglot.h \
-    cars.h \
-    mainwindow.h \
-    monitor.h \
-    parkinglot.h \
-    ParkingLotWidget.h \
-    ParkingSpaceWidget.h \
-    Road.h
+        monitor.h \
+        cars.h \
+        parkinglot.h \
+        ParkingLotWidget.h \
+        Road.h \
+        ParkingSpaceWidget.h
 
 FORMS += \
         mainwindow.ui

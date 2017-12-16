@@ -1,4 +1,4 @@
-#include "ParkingSpaceWidget.h"
+ï»¿#include "ParkingSpaceWidget.h"
 #include <QPainter>
 #include <QDebug>
 #include "ParkingLotWidget.h"
@@ -13,7 +13,7 @@ ParkingSpaceWidget::ParkingSpaceWidget(ParkingLotWidget* parent, const QString &
 	case 'E':d = E; break;
 	case 'W':d = W; break;
 	case 'S':d = S; break;
-	default: qDebug() << this->objectName() << "´íÎóµÄ·½Ïò";
+	default: qDebug() << this->objectName() << "é”™è¯¯çš„æ–¹å‘";
 	}
 	this->dir = d;
 	switch (this->dir)
@@ -46,7 +46,7 @@ QBoxLayout *ParkingSpaceWidget::makeParkingSapceGroup(ParkingLotWidget* parent, 
 		ParkingSpaceWidget *pk = new ParkingSpaceWidget(parent, dir);
 		layout->addWidget(pk);
 	}
-	layout->addStretch();  // ¾ÓÉÏ»ò¾Ó×ó¶ÔÆë
+	layout->addStretch();  // å±…ä¸Šæˆ–å±…å·¦å¯¹é½
 	layout->setMargin(0);
 	layout->setSpacing(0);
 	return layout;
