@@ -1,8 +1,9 @@
 #include "ParkingSpaceWidget.h"
 #include <QPainter>
 #include <QDebug>
+#include "ParkingLotWidget.h"
 
-ParkingSpaceWidget::ParkingSpaceWidget(QWidget* parent, const QString &dir)
+ParkingSpaceWidget::ParkingSpaceWidget(ParkingLotWidget* parent, const QString &dir): QWidget(parent)
 {
 	direction d = {};
 	const char c = dir.at(0).unicode();
@@ -30,9 +31,10 @@ ParkingSpaceWidget::ParkingSpaceWidget(QWidget* parent, const QString &dir)
 		setMaximumSize(60, 40);
 		break;
 	}
+    number = parent->addSpace(this);
 }
 
-QBoxLayout *ParkingSpaceWidget::makeParkingSapceGroup(QWidget* parent, const QString& dir, int n, const QString & expend)
+QBoxLayout *ParkingSpaceWidget::makeParkingSapceGroup(ParkingLotWidget* parent, const QString& dir, int n, const QString & expend)
 {
 	QBoxLayout *layout;
 	if (expend == "down")
@@ -53,6 +55,8 @@ QBoxLayout *ParkingSpaceWidget::makeParkingSapceGroup(QWidget* parent, const QSt
 void ParkingSpaceWidget::paintEvent(QPaintEvent * event)
 {
 	QPainter painter(this);
+    painter.setPen(Qt::black);
+    painter.drawText(20, 25, QString::number(number));
 	painter.setPen(Qt::white);
 	painter.setBrush(Qt::white);
 	painter.translate(30, 20);

@@ -36,7 +36,7 @@ SOURCES += \
     monitor.cpp \
     parkinglot.cpp \
     ParkingLotWidget.cpp \
-    ParkingSpaceInfo.cpp \
+    ParkingSpaceWidget.cpp \
     Road.cpp
 
 HEADERS += \
@@ -49,7 +49,7 @@ HEADERS += \
     monitor.h \
     parkinglot.h \
     ParkingLotWidget.h \
-    ParkingSpaceInfo.h \
+    ParkingSpaceWidget.h \
     Road.h
 
 FORMS += \

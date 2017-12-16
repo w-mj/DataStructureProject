@@ -1,12 +1,12 @@
 #include "ParkingLotWidget.h"
-
+#include "ParkingSpaceWidget.h"
 #include <QFile>
 #include <QMessageBox>
 #include <QDomDocument>
 #include <QDebug>
 #include "Road.h"
-#include "ParkingSpaceWidget.h"
 #include <QPainter>
+#include <QPaintEvent>
 
 ParkingLotWidget::ParkingLotWidget(QWidget *parent, const QString& xml) : QWidget(parent)
 {
@@ -18,7 +18,13 @@ ParkingLotWidget::ParkingLotWidget(QWidget *parent, const QString& xml) : QWidge
 
 void ParkingLotWidget::paintEvent(QPaintEvent * event)
 {
-	
+    event->ignore();
+}
+
+int ParkingLotWidget::addSpace(ParkingSpaceWidget *sp)
+{
+    m_spaceList.push_back(sp);
+    return m_spaceList.size();
 }
 
 ParkingLotWidget::~ParkingLotWidget()
