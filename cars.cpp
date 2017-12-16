@@ -1,10 +1,10 @@
-#include "cars.h"
+ï»¿#include "cars.h"
 #include <QPainter>
 
 Cars::Cars(QWidget *parent, int dir, Cars::Color color) : QWidget(parent)
 {
     if(color==RANDOM)
-        color = Cars::Color(rand()%3);  //³µÉíÑÕÉ«Ò»¶¨ÊÇÈ·¶¨µÄ
+        color = Cars::Color(rand()%3);  //è½¦èº«é¢œè‰²ä¸€å®šæ˜¯ç¡®å®šçš„
     m_color = color;
     m_dir = dir;
     m_pos = this->pos();
@@ -28,10 +28,10 @@ Cars::Cars(QWidget *parent, int dir, Cars::Color color) : QWidget(parent)
 void Cars::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     m_pos = this->pos();
-    painter.translate(M_WID/2, M_LEN/2);    //×ªÒÆÔ¶µã£¬ÉèÖÃÐý×ªÖÐÐÄ
-    painter.rotate(m_dir);                  //Ðý×ª
-    painter.translate(-M_WID/2, -M_LEN/2);  //ÒÆ»ØÔ¶µã
-    painter.drawPixmap(0, 0, M_WID, M_LEN, m_pixmap);   //»æÖÆÐ¡³µ
+    painter.translate(M_WID/2, M_LEN/2);    //è½¬ç§»è¿œç‚¹ï¼Œè®¾ç½®æ—‹è½¬ä¸­å¿ƒ
+    painter.rotate(m_dir);                  //æ—‹è½¬
+    painter.translate(-M_WID/2, -M_LEN/2);  //ç§»å›žè¿œç‚¹
+    painter.drawPixmap(0, 0, M_WID, M_LEN, m_pixmap);   //ç»˜åˆ¶å°è½¦
     painter.setPen(QPen(Qt::red, 5));
     painter.drawRect(0, 0, M_WID, M_LEN);
     event->ignore();

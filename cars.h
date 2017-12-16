@@ -1,4 +1,4 @@
-#ifndef CARS_H
+ï»¿#ifndef CARS_H
 #define CARS_H
 
 #include <QWidget>
@@ -7,7 +7,7 @@
 #include <QPaintEvent>
 #include <QPoint>
 
-//³µÉí³¤¿í
+//è½¦èº«é•¿å®½
 #define M_LEN   (200)
 #define M_WID   (130)
 #define PI      (3.1415926f)
@@ -22,8 +22,8 @@ public:
     void Forward(int vel);
     void Backward(int vel);
 private:
-    Color m_color;      //³µÉíÑÕÉ«
-    int m_dir;          //³µÍ·³¯Ïò ·½Ïò½Ç NÎª0£¬ Ë³Ê±ÕëµİÔö
+    Color m_color;      //è½¦èº«é¢œè‰²
+    int m_dir;          //è½¦å¤´æœå‘ æ–¹å‘è§’ Nä¸º0ï¼Œ é¡ºæ—¶é’ˆé€’å¢
     QPixmap m_pixmap;
     QString m_number;
     QPoint  m_pos;

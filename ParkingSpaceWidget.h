@@ -18,7 +18,7 @@ public:
 private:
     int number;
 	direction dir;
-    QLabel *m_float_window = nullptr;
+    // QLabel *m_float_window = nullptr;
 };
 
 #endif
