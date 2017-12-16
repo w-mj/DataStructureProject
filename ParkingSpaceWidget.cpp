@@ -1,6 +1,10 @@
 ﻿#include "ParkingSpaceWidget.h"
 #include <QPainter>
 #include <QDebug>
+#include <QEvent>
+#include <QLabel>
+#include <QEvent>
+#include <QHoverEvent>
 #include "ParkingLotWidget.h"
 
 ParkingSpaceWidget::ParkingSpaceWidget(ParkingLotWidget* parent, const QString &dir): QWidget(parent)
@@ -32,6 +36,7 @@ ParkingSpaceWidget::ParkingSpaceWidget(ParkingLotWidget* parent, const QString &
 		break;
 	}
     number = parent->addSpace(this);
+    setToolTip(QString::number(number));
 }
 
 QBoxLayout *ParkingSpaceWidget::makeParkingSapceGroup(ParkingLotWidget* parent, const QString& dir, int n, const QString & expend)
@@ -80,9 +85,8 @@ void ParkingSpaceWidget::paintEvent(QPaintEvent * event)
 	/*painter.setPen(Qt::blue);
 	painter.setBrush(Qt::NoBrush);
 	painter.drawRect(0, 0, this->width() - 1, this->height() - 1);*/
-	painter.end();
+    painter.end();
 }
-
 
 ParkingSpaceWidget::~ParkingSpaceWidget()
 {

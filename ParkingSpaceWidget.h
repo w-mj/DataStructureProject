@@ -2,6 +2,7 @@
 #define PARKING_SPACE_WIDGET
 #include <QWidget>
 #include <QLayout>
+#include <QLabel>
 #include "ParkingLotWidget.h"
 class ParkingLotWidget;
 
@@ -17,6 +18,7 @@ public:
 private:
     int number;
 	direction dir;
+    QLabel *m_float_window = nullptr;
 };
 
 #endif
