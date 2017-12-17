@@ -1,5 +1,6 @@
 #include "Road.h"
 #include <QPainter>
+#include <QPaintEvent>
 
 Road::Road(QWidget* parent, const int length, const direction dir)
 		:QWidget(parent), length(length), dir(dir)
@@ -22,6 +23,7 @@ Road::Road(QWidget* parent, const int length, const direction dir)
 
 void Road::paintEvent(QPaintEvent * event)
 {
+    event->ignore();
 	QPainter painter(this);
 	/*painter.setPen(Qt::blue);
 	painter.drawRect(0, 0, width() - 1, height() - 1);*/

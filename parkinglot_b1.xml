@@ -1,13 +1,7 @@
-<parkinglot roadWidth="50px" name="一层">
+<parkinglot roadWidth="50px" name="地下一层">
 	<vLayout>
 		<road length="700" direction="horizontal" />
 		<hLayout>
-			<road length="600" direction="vertical" />
-			<room number="15" direction="W" expendDirection="down"/>
-			<room number="15" direction="E" expendDirection="down"/>
-			<road length="600" direction="vertical" />
-			<room number="15" direction="W" expendDirection="down"/>
-			<room number="15" direction="E" expendDirection="down"/>
 			<road length="600" direction="vertical" />
 			<room number="15" direction="W" expendDirection="down"/>
 			<room number="15" direction="E" expendDirection="down"/>

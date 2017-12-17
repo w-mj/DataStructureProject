@@ -13,8 +13,9 @@ public:
 	enum direction{N, S, E, W};
     ParkingSpaceWidget(ParkingLotWidget* parent, const QString &dir);
     static QBoxLayout*  makeParkingSapceGroup(ParkingLotWidget* parent, const QString& dir, int n, const QString &expend);
-    void paintEvent(QPaintEvent* event) override;
 	~ParkingSpaceWidget();
+protected:
+    void paintEvent(QPaintEvent* event) override;
 private:
     int number;
 	direction dir;

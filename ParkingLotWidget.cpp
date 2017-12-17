@@ -10,7 +10,6 @@
 
 ParkingLotWidget::ParkingLotWidget(QWidget *parent, const QString& xml) : QWidget(parent)
 {
-	resize(1000, 1000);
 	parse_xml(xml);
 	setLayout(layout);
 }
@@ -37,6 +36,7 @@ void ParkingLotWidget::parse_xml(const QString & xml)
 	if (!file.open(QFile::ReadOnly | QFile::Text)) {
 		QMessageBox::critical(this, QObject::tr("Error"),
 			QObject::tr("Cannot read file %1").arg(xml));
+        return;
 	}
 
 	QString errorStr;
@@ -47,15 +47,23 @@ void ParkingLotWidget::parse_xml(const QString & xml)
 		QMessageBox::critical(this, QObject::tr("Error"),
 			QObject::tr("Parse error at line %1, column %2: %3")
 			.arg(errorLine).arg(errorColumn).arg(errorStr));
+        return;
 	}
-	QDomElement element = doc.documentElement().firstChild().toElement();
-	QString name = element.tagName();
-	if (element.tagName().contains("Layout"))
+    QDomElement element = doc.documentElement();
+    if (element.tagName() != "parkinglot") {
+        qDebug() << this -> objectName() << "布局文件错误: 根标签不是parkinglot";
+        return;
+    }
+    this->name = element.attribute("name");
+    QDomElement childElement = element.firstChildElement();
+    QString name = childElement.tagName();
+    if (childElement.tagName().contains("Layout"))
 	{
-		layout = parseLayout(element);
+        layout = parseLayout(childElement);
 	} else
 	{
-		qDebug() << this -> objectName() << "布局文件错误";
+        qDebug() << this -> objectName() << "布局文件错误: 没有布局标签";
+        return;
 	}
 }
 
@@ -95,4 +103,9 @@ QBoxLayout * ParkingLotWidget::parseLayout(const QDomElement & element)
 	layout->setMargin(0);
 	layout->setSpacing(0);
 	return layout;
+}
+
+QString ParkingLotWidget::getName() const
+{
+    return name;
 }

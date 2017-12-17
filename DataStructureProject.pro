@@ -27,24 +27,23 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-        monitor.cpp \
         cars.cpp \
-        parkinglot.cpp \
         ParkingLotWidget.cpp \
         Road.cpp \
-        ParkingSpaceWidget.cpp
+        ParkingSpaceWidget.cpp \
+    monitor.cpp
 
 HEADERS += \
         mainwindow.h \
-        monitor.h \
         cars.h \
-        parkinglot.h \
         ParkingLotWidget.h \
         Road.h \
-        ParkingSpaceWidget.h
+        ParkingSpaceWidget.h \
+    monitor.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    monitor.ui
 
 RESOURCES += \
     cars.qrc \
