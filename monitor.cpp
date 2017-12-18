@@ -34,6 +34,19 @@ Monitor::Monitor(QWidget *parent) :
         ui->downStairButton->setEnabled(false);
     else if (m_currentFloor == m_parkinglots.size() - 1)
         ui->upStairButton->setEnabled(false);
+
+
+    QString filePath = __FILE__;
+    QStringList list = filePath.split("\\");
+    QString result;
+    for (int i = 0; i < list.size() - 1; i++)
+        result.append(list.at(i)).append("\\");
+    QStringList l = {"parkinglot_f1.xml", "parkinglot_b1.xml"};
+    for (int i = 0; i < 2; i++) {
+        QString t(result);
+        m_xmlPath.push_back(t.append(l.at(i)));
+    }
+
     showParkinglot();
 }
 
@@ -44,13 +57,15 @@ Monitor::~Monitor()
 
 void Monitor::showParkinglot()
 {
-    if (m_parkinglots.at(m_currentFloor) == nullptr)
-        m_parkinglots[m_currentFloor] = new ParkingLotWidget(this, m_xmlPath.at(m_currentFloor));
-    ui->currentFloor->setText("<center>" + m_parkinglots.at(m_currentFloor)->getName() + "</center>");
+    if (m_parkinglots.at(m_currentFloor) == nullptr) {
+        m_parkinglots[m_currentFloor] = new ParkingLotWidget(this, m_xmlPath.at(m_currentFloor));  // lazy
+        // ui->parkinglotView->addWidget(m_parkinglots.at(m_currentFloor));  // 把当前对象添加进layout
+        m_parkinglots[m_currentFloor]->move(10, 10);
+    }
+    ui->currentFloor->setText("<center>" + m_parkinglots.at(m_currentFloor)->getName() + "</center>"); // 文字
+
     for (auto p = m_parkinglots.begin(); p != m_parkinglots.end(); p++)
         if (*p != nullptr)
             (*p)->hide();
     m_parkinglots.at(m_currentFloor)->show();
-    //ui->rootLayout->replaceWidget(ui->parkingLotView, m_parkinglots.at(m_currentFloor));
-    //ui->parkingLotView = m_parkinglots.at(m_currentFloor);
 }

@@ -1,5 +1,6 @@
 ﻿#include "ParkingLotWidget.h"
 #include "ParkingSpaceWidget.h"
+#include "boundary.h"
 #include <QFile>
 #include <QMessageBox>
 #include <QDomDocument>
@@ -11,7 +12,7 @@
 ParkingLotWidget::ParkingLotWidget(QWidget *parent, const QString& xml) : QWidget(parent)
 {
 	parse_xml(xml);
-	setLayout(layout);
+    setLayout(layout);
 }
 
 
@@ -74,6 +75,7 @@ QBoxLayout * ParkingLotWidget::parseLayout(const QDomElement & element)
 		layout = new QHBoxLayout;
 	else
 		layout = new QVBoxLayout;
+    qDebug() << "处理" << element.tagName();
 	
 	QDomElement child = element.firstChild().toElement();
 	while (!child.isNull())
@@ -81,6 +83,7 @@ QBoxLayout * ParkingLotWidget::parseLayout(const QDomElement & element)
 		QString name = child.tagName();
 		if (name == "road")
 		{
+            qDebug() << "处理road";
 			const int l = child.attribute("length").toInt();
 			if (child.attribute("direction") == "vertical")
 				layout->addWidget(new Road(this, l, Road::vertical));
@@ -89,13 +92,28 @@ QBoxLayout * ParkingLotWidget::parseLayout(const QDomElement & element)
 		}
 		else if (name == "room")
 		{
+            qDebug() << "处理room";
 			const auto n = child.attribute("number", "1").toInt();
 			layout->addLayout(ParkingSpaceWidget::makeParkingSapceGroup(
 				this, child.attribute("direction"), n, child.attribute("expendDirection")));
 		}
 		else if ((name.at(0) == 'v' ||  name.at(0) == 'h' )&& name.contains("Layout"))
 			layout->addLayout(parseLayout(child));
-		else
+        else if (name == "space") {
+            qDebug() << "处理space";
+            QSpacerItem* sw = new QSpacerItem(0, 0);
+            if (element.tagName() == "hLayout")
+                sw->changeSize(child.attribute("length").toInt(), 0, QSizePolicy::Fixed, QSizePolicy::Minimum);
+            else
+                sw->changeSize(0, child.attribute("length").toInt(), QSizePolicy::Minimum, QSizePolicy::Fixed);
+            layout->addSpacerItem(sw);
+        } else if (name == "boundary") {
+            qDebug() << "处理boundary";
+            int l = child.attribute("length").toInt();
+            Boundary *b = new Boundary(child.attribute("direction"), l, this);
+            layout->addWidget(b);
+        }
+        else
 			qDebug() << this->objectName() << "错误的xml标签";
 		child = child.nextSiblingElement();
 	}

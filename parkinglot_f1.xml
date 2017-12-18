@@ -1,20 +1,53 @@
 <parkinglot roadWidth="50px" name="一层">
 	<vLayout>
-		<road length="700" direction="horizontal" />
 		<hLayout>
-			<road length="600" direction="vertical" />
-			<room number="15" direction="W" expendDirection="down"/>
-			<room number="15" direction="E" expendDirection="down"/>
-			<road length="600" direction="vertical" />
-			<room number="15" direction="W" expendDirection="down"/>
-			<room number="15" direction="E" expendDirection="down"/>
-			<road length="600" direction="vertical" />
-			<room number="15" direction="W" expendDirection="down"/>
-			<room number="15" direction="E" expendDirection="down"/>
-			<road length="600" direction="vertical" />
-			<room number="15" direction="W" expendDirection="down"/>
-			<room number="15" direction="E" expendDirection="down"/>
+			<space length="100"/>
+			<boundary length="100" direction="vertical" />
+			<road length="100" direction="vertical" />
+			<boundary length="100" direction="vertical" />
 		</hLayout>
-		<road length="700" direction="horizontal" />
+		<hLayout>
+			<boundary length="105" direction="horizontal" />
+			<space length="50" />
+			<boundary length="585" direction="horizontal" />
+		</hLayout>
+		<hLayout>
+			<road length="700" direction="horizontal" />
+			<space length="35" />
+			<boundary length="55" direction="vertical" />
+		</hLayout>
+		<hLayout>
+			<boundary length="530" direction="vertical" />
+			<road length="500" direction="vertical" />
+			<room number="13" direction="W" expendDirection="down"/>
+			<room number="13" direction="E" expendDirection="down"/>
+			<road length="500" direction="vertical" />
+			<room number="13" direction="W" expendDirection="down"/>
+			<room number="13" direction="E" expendDirection="down"/>
+			<road length="500" direction="vertical" />
+			<room number="13" direction="W" expendDirection="down"/>
+			<room number="13" direction="E" expendDirection="down"/>
+			<road length="500" direction="vertical" />
+			<room number="13" direction="W" expendDirection="down"/>
+			<room number="13" direction="E" expendDirection="down"/>
+			<road length="500" direction="vertical" />
+			<boundary length="530" direction="vertical" />
+		</hLayout>
+		<hLayout>
+			<boundary length="55" direction="vertical" />
+			<road length="700" direction="horizontal" />
+			<space length="35" />
+		</hLayout>
+		<hLayout>
+			<boundary length="585" direction="horizontal" />
+			<space length="50" />
+			<boundary length="105" direction="horizontal" />
+		</hLayout>
+		<hLayout>
+			<space length="580"/>
+			<boundary length="100" direction="vertical" />
+			<road length="100" direction="vertical" />
+			<boundary length="100" direction="vertical" />
+		</hLayout>
 	</vLayout>
 </parkinglot>

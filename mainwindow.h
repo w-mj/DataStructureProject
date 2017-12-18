@@ -19,7 +19,7 @@ public:
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow *ui = nullptr;
     QAction *action;
     Monitor *monitor;
 };
