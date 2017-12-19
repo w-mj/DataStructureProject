@@ -1,36 +1,38 @@
 ﻿#ifndef CARS_H
 #define CARS_H
 
-#include <QWidget>
+#include <QGraphicsPixmapItem>
 #include <QPixmap>
 #include <QString>
-#include <QPaintEvent>
 #include <QPoint>
+#include <QtMath>
 
 //车身长宽
 #define M_LEN   (200)
 #define M_WID   (130)
-#define PI      (3.1415926f)
 
-class Cars : public QWidget
+class Cars : public QGraphicsPixmapItem
 {
-    Q_OBJECT
 public:
     enum Color { Pink, Red, Yellow, RANDOM };
-    explicit Cars(QWidget *parent = nullptr, int dir = 0, Cars::Color color = RANDOM);
-    void paintEvent(QPaintEvent *event);
-    void Forward(int vel);
-    void Backward(int vel);
+    explicit Cars(QGraphicsItem *parent = Q_NULLPTR, int dir = 0, Cars::Color color = RANDOM);
+    void Forward(int vel = 3);
+    void Backward(int vel = 3);
+    void moveLeft(int vel = 3);
+    void moveRight(int vel = 3);
+    void Rotate(int ang = 30);
+    void turnLeft(int r, int ang);
+    void turnRight(int r, int ang);
+
+    Color getColor();
+    qreal getDir();
+
 private:
-    Color m_color;      //车身颜色
-    int m_dir;          //车头朝向 方向角 N为0， 顺时针递增
-    QPixmap m_pixmap;
+    Color m_color;      //车身颜色 N为0， 顺时针递增
+    QPixmap m_pic;
     QString m_number;
-    QPoint  m_pos;
+    QPointF  m_pos;
 
-signals:
-
-public slots:
 };
 
 #endif // CARS_H

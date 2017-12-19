@@ -1,50 +1,81 @@
 ﻿#include "cars.h"
-#include <QPainter>
 
-Cars::Cars(QWidget *parent, int dir, Cars::Color color) : QWidget(parent)
+
+Cars::Cars(QGraphicsItem *parent, int dir, Cars::Color color) : QGraphicsPixmapItem(parent)
 {
+    m_pos = this->pos();
+    this->setRotation(dir);
     if(color==RANDOM)
         color = Cars::Color(rand()%3);  //车身颜色一定是确定的
     m_color = color;
-    m_dir = dir;
-    m_pos = this->pos();
-    resize(M_WID, M_LEN);
     switch (m_color) {
     case Pink:
-        m_pixmap = QPixmap(":/cars/pink");
+        m_pic = QPixmap(":/cars/pink");
         break;
     case Red:
-        m_pixmap = QPixmap(":/cars/red");
+        m_pic = QPixmap(":/cars/red");
         break;
     case Yellow:
-        m_pixmap = QPixmap(":/cars/yellow");
+        m_pic = QPixmap(":/cars/yellow");
         break;
     default:
-        m_pixmap = QPixmap(":/cars/red");
+        m_pic = QPixmap(":/cars/red");
         break;
     }
-}
-
-void Cars::paintEvent(QPaintEvent *event) {
-    QPainter painter(this);
-    m_pos = this->pos();
-    painter.translate(M_WID/2, M_LEN/2);    //转移远点，设置旋转中心
-    painter.rotate(m_dir);                  //旋转
-    painter.translate(-M_WID/2, -M_LEN/2);  //移回远点
-    painter.drawPixmap(0, 0, M_WID, M_LEN, m_pixmap);   //绘制小车
-    painter.setPen(QPen(Qt::red, 5));
-    painter.drawRect(0, 0, M_WID, M_LEN);
-    event->ignore();
+    m_pic = m_pic.scaled(M_WID, M_LEN);
+    this->setPixmap(m_pic);
 }
 
 void Cars::Forward(int vel)
 {
-    float ang = m_dir*PI/180;
-    this->move(m_pos.x()+vel*sin(ang), m_pos.y()-vel*cos(ang));
+    double ang = qDegreesToRadians(rotation());
+    this->moveBy(+vel*qSin(ang), -vel*qCos(ang));
 }
 
 void Cars::Backward(int vel)
 {
-    float ang = m_dir*PI/180;
-    this->move(m_pos.x()-vel*sin(ang), m_pos.y()+vel*cos(ang));
+    double ang = qDegreesToRadians(rotation());
+    this->moveBy(-vel*qSin(ang), +vel*qCos(ang));
+}
+
+void Cars::moveLeft(int vel)
+{
+    double ang = qDegreesToRadians(rotation());
+    moveBy(-vel*qCos(ang), -vel*qSin(ang));
+}
+
+void Cars::moveRight(int vel)
+{
+    double ang = qDegreesToRadians(rotation());
+    moveBy(vel*qCos(ang), vel*qSin(ang));
+}
+
+//ang为旋转角度（弧度），正数为顺时针，负数逆时针
+void Cars::Rotate(int ang)
+{
+    setRotation(rotation() + ang);
+}
+
+void Cars::turnLeft(int r, int ang)
+{
+    Forward(r*qSin(ang));
+    Rotate(-ang);
+    moveLeft(r*(1-qCos(ang)));
+}
+
+void Cars::turnRight(int r, int ang)
+{
+    Forward(r*qSin(ang));
+    Rotate(ang);
+    moveRight(r*(1-qCos(ang)));
+}
+
+Cars::Color Cars::getColor()
+{
+    return this->m_color;
+}
+
+qreal Cars::getDir()
+{
+    return this->rotation();
 }
