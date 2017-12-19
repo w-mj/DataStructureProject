@@ -24,6 +24,7 @@ Cars::Cars(QGraphicsItem *parent, int dir, Cars::Color color) : QGraphicsPixmapI
     }
     m_pic = m_pic.scaled(M_WID, M_LEN);
     this->setPixmap(m_pic);
+    setTransformOriginPoint(M_WID/2, M_LEN/2);  //设置旋转中心
 }
 
 void Cars::Forward(int vel)
