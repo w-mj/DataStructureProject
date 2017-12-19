@@ -14,6 +14,7 @@ class ParkingLotWidget: public QWidget
 public:
 	explicit ParkingLotWidget(QWidget* parent, const QString& xml);
     int addSpace(ParkingSpaceWidget* sp);
+    int getCapacity() {return m_spaceList.size(); }
 	~ParkingLotWidget();
     QString getName() const;
 

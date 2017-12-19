@@ -2,14 +2,14 @@
 #include "ui_monitor.h"
 #include <QObject>
 #include <QDebug>
+#include "parkingLotItem.h"
 
 Monitor::Monitor(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Monitor)
 {
     ui->setupUi(this);
-    QObject::connect(ui->downStairButton, QPushButton::clicked, [&]() {
-        qDebug() << "下一层按钮";
+    QObject::connect(ui->downStairButton, &QPushButton::clicked, [&]() {
         if (m_currentFloor > 0) {
             m_currentFloor -= 1;
             showParkinglot();
@@ -19,8 +19,7 @@ Monitor::Monitor(QWidget *parent) :
         if (m_currentFloor == m_parkinglots.size() - 2)
             ui->upStairButton->setEnabled(true);
     });
-    QObject::connect(ui->upStairButton, QPushButton::clicked, [&]() {
-        qDebug() << "上一层按钮";
+    QObject::connect(ui->upStairButton, &QPushButton::clicked, [&]() {
         if (m_currentFloor < m_parkinglots.size() - 1) {
             m_currentFloor += 1;
             showParkinglot();
@@ -35,19 +34,10 @@ Monitor::Monitor(QWidget *parent) :
     else if (m_currentFloor == m_parkinglots.size() - 1)
         ui->upStairButton->setEnabled(false);
 
-
-    QString filePath = __FILE__;
-    QStringList list = filePath.split("\\");
-    QString result;
-    for (int i = 0; i < list.size() - 1; i++)
-        result.append(list.at(i)).append("\\");
-    QStringList l = {"parkinglot_f1.xml", "parkinglot_b1.xml"};
-    for (int i = 0; i < 2; i++) {
-        QString t(result);
-        m_xmlPath.push_back(t.append(l.at(i)));
-    }
-
-    showParkinglot();
+    QGraphicsScene *scene = new QGraphicsScene(this);  // 创建场景
+    ui->view->setScene(scene);
+    ParkingLotItem *pk = new ParkingLotItem(Q_NULLPTR);
+    scene->addItem(pk);
 }
 
 Monitor::~Monitor()

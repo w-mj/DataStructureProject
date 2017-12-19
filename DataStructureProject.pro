@@ -32,7 +32,9 @@ SOURCES += \
         Road.cpp \
         ParkingSpaceWidget.cpp \
     monitor.cpp \
-    boundary.cpp
+    boundary.cpp \
+    carmananger.cpp \
+    parkingLotItem.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -41,7 +43,9 @@ HEADERS += \
         Road.h \
         ParkingSpaceWidget.h \
     monitor.h \
-    boundary.h
+    boundary.h \
+    carmananger.h \
+    parkingLotItem.h
 
 FORMS += \
         mainwindow.ui \

@@ -12,7 +12,10 @@
 ParkingLotWidget::ParkingLotWidget(QWidget *parent, const QString& xml) : QWidget(parent)
 {
 	parse_xml(xml);
+    // resize(783, 879);
+    // resize(640, 480);
     setLayout(layout);
+    adjustSize();  // 调整大小至刚刚可以装下所有元素
 }
 
 
@@ -75,6 +78,7 @@ QBoxLayout * ParkingLotWidget::parseLayout(const QDomElement & element)
 		layout = new QHBoxLayout;
 	else
 		layout = new QVBoxLayout;
+    layout->setSizeConstraint(QLayout::SetFixedSize);
     qDebug() << "处理" << element.tagName();
 	
 	QDomElement child = element.firstChild().toElement();
