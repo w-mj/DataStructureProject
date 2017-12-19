@@ -1,12 +1,12 @@
-﻿#include "cars.h"
+﻿#include "car.h"
 
 
-Cars::Cars(QGraphicsItem *parent, int dir, Cars::Color color) : QGraphicsPixmapItem(parent)
+Car::Car(QGraphicsItem *parent, int dir, Car::Color color) : QGraphicsPixmapItem(parent)
 {
     m_pos = this->pos();
     this->setRotation(dir);
     if(color==RANDOM)
-        color = Cars::Color(rand()%3);  //车身颜色一定是确定的
+        color = Car::Color(rand()%3);  //车身颜色一定是确定的
     m_color = color;
     switch (m_color) {
     case Pink:
@@ -27,56 +27,56 @@ Cars::Cars(QGraphicsItem *parent, int dir, Cars::Color color) : QGraphicsPixmapI
     setTransformOriginPoint(M_WID/2, M_LEN/2);  //设置旋转中心
 }
 
-void Cars::Forward(qreal vel)
+void Car::Forward(qreal vel)
 {
     qreal ang = qDegreesToRadians(rotation());
     this->moveBy(+vel*qSin(ang), -vel*qCos(ang));
 }
 
-void Cars::Backward(qreal vel)
+void Car::Backward(qreal vel)
 {
     qreal ang = qDegreesToRadians(rotation());
     this->moveBy(-vel*qSin(ang), +vel*qCos(ang));
 }
 
-void Cars::moveLeft(qreal vel)
+void Car::moveLeft(qreal vel)
 {
     qreal ang = qDegreesToRadians(rotation());
     moveBy(-vel*qCos(ang), -vel*qSin(ang));
 }
 
-void Cars::moveRight(qreal vel)
+void Car::moveRight(qreal vel)
 {
     qreal ang = qDegreesToRadians(rotation());
     moveBy(vel*qCos(ang), vel*qSin(ang));
 }
 
 //ang为旋转角度（弧度），正数为顺时针，负数逆时针
-void Cars::Rotate(qreal ang)
+void Car::Rotate(qreal ang)
 {
     setRotation(rotation() + ang);
 }
 
-void Cars::turnLeft(int r, int ang)
+void Car::turnLeft(int r, int ang)
 {
     Forward(r*qSin(ang));
     Rotate(-ang);
     moveLeft(r*(1-qCos(ang)));
 }
 
-void Cars::turnRight(int r, int ang)
+void Car::turnRight(int r, int ang)
 {
     Forward(r*qSin(ang));
     Rotate(ang);
     moveRight(r*(1-qCos(ang)));
 }
 
-Cars::Color Cars::getColor()
+Car::Color Car::getColor()
 {
     return this->m_color;
 }
 
-qreal Cars::getDir()
+qreal Car::getDir()
 {
     return this->rotation();
 }

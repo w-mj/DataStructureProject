@@ -1,5 +1,5 @@
-﻿#ifndef CARS_H
-#define CARS_H
+﻿#ifndef CAR_H
+#define CAR_H
 
 #include <QGraphicsPixmapItem>
 #include <QPixmap>
@@ -11,11 +11,11 @@
 #define M_LEN   (200)
 #define M_WID   (130)
 
-class Cars : public QGraphicsPixmapItem
+class Car : public QGraphicsPixmapItem
 {
 public:
     enum Color { Pink, Red, Yellow, RANDOM };
-    explicit Cars(QGraphicsItem *parent = Q_NULLPTR, int dir = 0, Cars::Color color = RANDOM);
+    explicit Car(QGraphicsItem *parent = Q_NULLPTR, int dir = 0, Car::Color color = RANDOM);
     void Forward(qreal vel = 3);
     void Backward(qreal vel = 3);
     void moveLeft(qreal vel = 3);
@@ -35,4 +35,4 @@ private:
 
 };
 
-#endif // CARS_H
+#endif // CAR_H
