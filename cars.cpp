@@ -27,32 +27,32 @@ Cars::Cars(QGraphicsItem *parent, int dir, Cars::Color color) : QGraphicsPixmapI
     setTransformOriginPoint(M_WID/2, M_LEN/2);  //设置旋转中心
 }
 
-void Cars::Forward(int vel)
+void Cars::Forward(qreal vel)
 {
-    double ang = qDegreesToRadians(rotation());
+    qreal ang = qDegreesToRadians(rotation());
     this->moveBy(+vel*qSin(ang), -vel*qCos(ang));
 }
 
-void Cars::Backward(int vel)
+void Cars::Backward(qreal vel)
 {
-    double ang = qDegreesToRadians(rotation());
+    qreal ang = qDegreesToRadians(rotation());
     this->moveBy(-vel*qSin(ang), +vel*qCos(ang));
 }
 
-void Cars::moveLeft(int vel)
+void Cars::moveLeft(qreal vel)
 {
-    double ang = qDegreesToRadians(rotation());
+    qreal ang = qDegreesToRadians(rotation());
     moveBy(-vel*qCos(ang), -vel*qSin(ang));
 }
 
-void Cars::moveRight(int vel)
+void Cars::moveRight(qreal vel)
 {
-    double ang = qDegreesToRadians(rotation());
+    qreal ang = qDegreesToRadians(rotation());
     moveBy(vel*qCos(ang), vel*qSin(ang));
 }
 
 //ang为旋转角度（弧度），正数为顺时针，负数逆时针
-void Cars::Rotate(int ang)
+void Cars::Rotate(qreal ang)
 {
     setRotation(rotation() + ang);
 }

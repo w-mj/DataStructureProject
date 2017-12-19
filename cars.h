@@ -16,11 +16,11 @@ class Cars : public QGraphicsPixmapItem
 public:
     enum Color { Pink, Red, Yellow, RANDOM };
     explicit Cars(QGraphicsItem *parent = Q_NULLPTR, int dir = 0, Cars::Color color = RANDOM);
-    void Forward(int vel = 3);
-    void Backward(int vel = 3);
-    void moveLeft(int vel = 3);
-    void moveRight(int vel = 3);
-    void Rotate(int ang = 30);
+    void Forward(qreal vel = 3);
+    void Backward(qreal vel = 3);
+    void moveLeft(qreal vel = 3);
+    void moveRight(qreal vel = 3);
+    void Rotate(qreal ang = 30);
     void turnLeft(int r, int ang);
     void turnRight(int r, int ang);
 
