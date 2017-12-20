@@ -67,7 +67,7 @@
      </widget>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0,0">
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0,0,0">
       <property name="sizeConstraint">
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
@@ -242,6 +242,34 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <widget class="QLineEdit" name="placeNum1">
+          <property name="text">
+           <string>1</string>
+          </property>
+          <property name="placeholderText">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="placeNum2">
+          <property name="text">
+           <string>104</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="drawPath">
+          <property name="text">
+           <string>画线</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>

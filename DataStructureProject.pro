@@ -33,9 +33,10 @@ SOURCES += \
     monitor.cpp \
     boundary.cpp \
     carmananger.cpp \
-    parkingLotItem.cpp \
     car.cpp \
-    path.cpp
+    path.cpp \
+    parkingLotManager.cpp \
+    parkinglotgraph.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -45,9 +46,10 @@ HEADERS += \
     monitor.h \
     boundary.h \
     carmananger.h \
-    parkingLotItem.h \
     car.h \
-    path.h
+    path.h \
+    parkingLotManager.h \
+    parkinglotgraph.h
 
 FORMS += \
         mainwindow.ui \

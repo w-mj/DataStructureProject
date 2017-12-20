@@ -2,7 +2,8 @@
 #include <QPainter>
 #include <QPaintEvent>
 
-Road::Road(QWidget* parent, const int length, const direction dir)
+
+Road::Road(ParkingLotWidget* parent, const int length, const direction dir)
 		:QWidget(parent), length(length), dir(dir)
 {
 	switch(dir)
@@ -19,6 +20,7 @@ Road::Road(QWidget* parent, const int length, const direction dir)
 		break;
 	}
 	// setContentsMargins(0, 0, 0, 0);
+    number = parent->addRoad(this);
 }
 
 void Road::paintEvent(QPaintEvent * event)
@@ -42,8 +44,26 @@ void Road::paintEvent(QPaintEvent * event)
 			y += 50;
 		}
 	}
+    painter.setPen(Qt::red);
+    painter.setBrush(Qt::NoBrush);
+    painter.drawRect(0, 0, width() - 1, height() - 1);
 }
 
 Road::~Road()
 {
+}
+
+uint Road::getNumber() const
+{
+    return number;
+}
+
+int Road::getLength() const
+{
+    return length;
+}
+
+Road::direction Road::getDir() const
+{
+    return dir;
 }

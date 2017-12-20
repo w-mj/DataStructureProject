@@ -12,31 +12,30 @@
 			<boundary length="585" direction="horizontal" />
 		</hLayout>
 		<hLayout>
-			<road length="700" direction="horizontal" />
-			<space length="35" />
+			<road length="730" direction="horizontal" />
+			<space length="5" />
 			<boundary length="55" direction="vertical" />
 		</hLayout>
 		<hLayout>
-			<boundary length="530" direction="vertical" />
-			<road length="500" direction="vertical" />
+			<boundary length="520" direction="vertical" />
+			<road length="520" direction="vertical" />
 			<room number="13" direction="W" expendDirection="down"/>
 			<room number="13" direction="E" expendDirection="down"/>
-			<road length="500" direction="vertical" />
+			<road length="520" direction="vertical" />
 			<room number="13" direction="W" expendDirection="down"/>
 			<room number="13" direction="E" expendDirection="down"/>
-			<road length="500" direction="vertical" />
+			<road length="520" direction="vertical" />
 			<room number="13" direction="W" expendDirection="down"/>
 			<room number="13" direction="E" expendDirection="down"/>
-			<road length="500" direction="vertical" />
+			<road length="520" direction="vertical" />
 			<room number="13" direction="W" expendDirection="down"/>
 			<room number="13" direction="E" expendDirection="down"/>
-			<road length="500" direction="vertical" />
-			<boundary length="530" direction="vertical" />
+			<road length="520" direction="vertical" />
+			<boundary length="520" direction="vertical" />
 		</hLayout>
 		<hLayout>
 			<boundary length="55" direction="vertical" />
-			<road length="700" direction="horizontal" />
-			<space length="35" />
+			<road length="730" direction="horizontal" />
 		</hLayout>
 		<hLayout>
 			<boundary length="585" direction="horizontal" />

@@ -1,27 +1,33 @@
 #ifndef PARKINGLOTITEM_H
 #define PARKINGLOTITEM_H
 
-#include <QGraphicsItem>
 #include <QPixmap>
 #include <QVector>
 #include <QQueue>
+#include <QGraphicsScene>
 #include "car.h"
+#include "ParkingLotWidget.h"
+#include "parkinglotgraph.h"
 
-class ParkingLotItem: public QObject, public QGraphicsPixmapItem
+class ParkingLotManager: public QObject
 {
     Q_OBJECT
 public:
-    explicit ParkingLotItem(QGraphicsPixmapItem* itemParent, QObject* objectParent);
+    explicit ParkingLotManager(QObject* objectParent, QGraphicsScene* scene);
     void showParkingLot(uint pos);
     void showParkingLot(void);
     void showDownStairFloor(void);
     void showUpStairFloor(void);
+    void drawPath(uint n1, uint n2);
+
 private:
-    QVector<QPixmap*> m_pixmap;  // 每一层的pixmap
+    QGraphicsScene* m_scene;
+    QVector<ParkingLotWidget*> m_widgets;  // 每一层的widget
     QVector<int> m_capacity;  // 每一层的容量
     QVector<int> m_num_of_cars;  // 每一层当前停的车数量
     QVector<QVector<Car*> > m_cars;  // 停在每一层的车
     QVector<QQueue<Car*> >m_waitting; // 在每个入口等待的车
+    QVector<ParkingLotGraph*> m_graph;
     QStringList m_xml_path;  // 每一层xml文件地址
     QStringList m_name;  // 每一层的名字
     const uint m_num_of_layer = 2;  // 总层数

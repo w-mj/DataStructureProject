@@ -57,13 +57,19 @@ QBoxLayout *ParkingSpaceWidget::makeParkingSapceGroup(ParkingLotWidget* parent, 
 	return layout;
 }
 
-void ParkingSpaceWidget::paintEvent(QPaintEvent * )
+void ParkingSpaceWidget::paintEvent(QPaintEvent *)
 {
 	QPainter painter(this);
     painter.setPen(Qt::black);
-    painter.drawText(20, 25, QString::number(number));
+    // painter.drawText(20, 25, QString::number(number));
+    QString p;
+    p.append(QString::number(pos().x()));
+    p.append(",");
+    p.append(QString::number(pos().y()));
+
 	painter.setPen(Qt::white);
 	painter.setBrush(Qt::white);
+    painter.save();
 	painter.translate(30, 20);
 	switch (dir) {
 	case E:
@@ -85,7 +91,21 @@ void ParkingSpaceWidget::paintEvent(QPaintEvent * )
 	/*painter.setPen(Qt::blue);
 	painter.setBrush(Qt::NoBrush);
 	painter.drawRect(0, 0, this->width() - 1, this->height() - 1);*/
+
+    painter.restore();
+    painter.setPen(Qt::black);
+    painter.drawText(0, 25, p);
     painter.end();
+}
+
+int ParkingSpaceWidget::getNumber() const
+{
+    return number;
+}
+
+ParkingSpaceWidget::direction ParkingSpaceWidget::getDir() const
+{
+    return dir;
 }
 
 ParkingSpaceWidget::~ParkingSpaceWidget()

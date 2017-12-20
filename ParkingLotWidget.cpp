@@ -25,6 +25,12 @@ int ParkingLotWidget::addSpace(ParkingSpaceWidget *sp)
     return m_spaceList.size();
 }
 
+int ParkingLotWidget::addRoad(Road *r)
+{
+    m_roadList.push_back(r);
+    return m_roadList.size();
+}
+
 ParkingLotWidget::~ParkingLotWidget()
 {
 }
@@ -125,4 +131,14 @@ QBoxLayout * ParkingLotWidget::parseLayout(const QDomElement & element)
 QString ParkingLotWidget::getName() const
 {
     return name;
+}
+
+const QVector<ParkingSpaceWidget *>& ParkingLotWidget::getSpaceList() const
+{
+    return m_spaceList;
+}
+
+const QVector<Road *>& ParkingLotWidget::getRoadList() const
+{
+    return m_roadList;
 }
