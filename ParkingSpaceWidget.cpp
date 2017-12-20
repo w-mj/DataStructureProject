@@ -57,7 +57,7 @@ QBoxLayout *ParkingSpaceWidget::makeParkingSapceGroup(ParkingLotWidget* parent, 
 	return layout;
 }
 
-void ParkingSpaceWidget::paintEvent(QPaintEvent * event)
+void ParkingSpaceWidget::paintEvent(QPaintEvent * )
 {
 	QPainter painter(this);
     painter.setPen(Qt::black);

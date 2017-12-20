@@ -19,11 +19,6 @@ ParkingLotWidget::ParkingLotWidget(QWidget *parent, const QString& xml) : QWidge
 }
 
 
-void ParkingLotWidget::paintEvent(QPaintEvent * event)
-{
-    event->ignore();
-}
-
 int ParkingLotWidget::addSpace(ParkingSpaceWidget *sp)
 {
     m_spaceList.push_back(sp);

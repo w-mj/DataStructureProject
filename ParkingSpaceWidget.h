@@ -15,7 +15,7 @@ public:
     static QBoxLayout*  makeParkingSapceGroup(ParkingLotWidget* parent, const QString& dir, int n, const QString &expend);
 	~ParkingSpaceWidget();
 protected:
-    void paintEvent(QPaintEvent* event) override;
+    void paintEvent(QPaintEvent* ) override;
 private:
     int number;
 	direction dir;

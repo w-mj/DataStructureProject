@@ -18,8 +18,6 @@ public:
 	~ParkingLotWidget();
     QString getName() const;
 
-protected:
-    void paintEvent(QPaintEvent* event) override;
 private:
     std::vector<ParkingSpaceWidget*> m_spaceList;
     void parse_xml(const QString& xml);
