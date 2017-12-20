@@ -16,6 +16,7 @@ Monitor::Monitor(QWidget *parent) :
     QObject::connect(pk, &ParkingLotItem::enableDownButton, ui->downStairButton, &QPushButton::setEnabled);
     QObject::connect(pk, &ParkingLotItem::setCapacity, ui->capacity, &QLabel::setText);
     QObject::connect(pk, &ParkingLotItem::setLoad, ui->load, &QLabel::setText);
+    QObject::connect(pk, &ParkingLotItem::setLayerName, ui->layerName, &QLabel::setText);
 
     pk->showParkingLot();
     QGraphicsScene *scene = new QGraphicsScene(this);  // 创建场景

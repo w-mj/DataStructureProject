@@ -32,6 +32,7 @@ signals:
     void enableDownButton(bool);
     void setCapacity(const QString&);
     void setLoad(const QString&);
+    void setLayerName(const QString&);
 };
 
 #endif // PARKINGLOTITEM_H

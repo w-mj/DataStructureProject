@@ -45,6 +45,7 @@ void ParkingLotItem::showParkingLot(uint pos)
     setPixmap(*m_pixmap.at(pos));
     emit setCapacity(QString::number(m_capacity.at(pos)));
     emit setLoad(QString::number(m_capacity.at(pos) - m_num_of_cars.at(pos)));
+    emit setLayerName(m_name.at(pos));
 }
 
 void ParkingLotItem::showParkingLot()
