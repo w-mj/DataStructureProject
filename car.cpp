@@ -58,7 +58,7 @@ void Car::Rotate(qreal ang)
 }
 
 //r为弯道半径，ang为转过的角度
-void Car::turnLeft(int r, int ang)
+void Car::turnLeft(int r, double ang)
 {
     qreal rad = qDegreesToRadians(ang);
     Forward(r*qSin(rad));
@@ -67,7 +67,7 @@ void Car::turnLeft(int r, int ang)
 }
 
 //r为弯道半径，ang为转过的角度
-void Car::turnRight(int r, int ang)
+void Car::turnRight(int r, double ang)
 {
     qreal rad = qDegreesToRadians(ang);
     Forward(r*qSin(rad));

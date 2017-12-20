@@ -21,8 +21,8 @@ public:
     void moveLeft(qreal vel = 3);   //向左平移
     void moveRight(qreal vel = 3);  //向右平移
     void Rotate(qreal ang = 30);    //原地旋转
-    void turnLeft(int r, int ang);  //左转
-    void turnRight(int r, int ang); //右转
+    void turnLeft(int r, double ang);  //左转
+    void turnRight(int r, double ang); //右转
 
     Color getColor();
     qreal getDir();
