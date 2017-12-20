@@ -57,18 +57,22 @@ void Car::Rotate(qreal ang)
     setRotation(rotation() + ang);
 }
 
+//r为弯道半径，ang为转过的角度
 void Car::turnLeft(int r, int ang)
 {
-    Forward(r*qSin(ang));
+    qreal rad = qDegreesToRadians(ang);
+    Forward(r*qSin(rad));
+    moveLeft(r*(1-qCos(rad)));
     Rotate(-ang);
-    moveLeft(r*(1-qCos(ang)));
 }
 
+//r为弯道半径，ang为转过的角度
 void Car::turnRight(int r, int ang)
 {
-    Forward(r*qSin(ang));
+    qreal rad = qDegreesToRadians(ang);
+    Forward(r*qSin(rad));
+    moveRight(r*(1-qCos(rad)));
     Rotate(ang);
-    moveRight(r*(1-qCos(ang)));
 }
 
 Car::Color Car::getColor()
