@@ -20,12 +20,6 @@ public:
 
 private:
     Ui::Monitor *ui;
-    // TODO: 动态修改
-    std::vector<ParkingLotWidget*> m_parkinglots = {nullptr, nullptr};  // lazy
-    std::vector<QString> m_xmlPath;// = {"parkinglot_b1.xml", "parkinglot_f1.xml"};
-    uint m_currentFloor = 1;  // 默认为地上一层
-
-    void showParkinglot(void);
 };
 
 #endif // MONITOR_H

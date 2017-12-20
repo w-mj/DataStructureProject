@@ -3,7 +3,8 @@
 #include <QDebug>
 #include <QPainter>
 
-ParkingLotItem::ParkingLotItem(QGraphicsPixmapItem *parent): QGraphicsPixmapItem(parent)
+ParkingLotItem::ParkingLotItem(QGraphicsPixmapItem *parent, QObject* objectParent):
+    QObject(objectParent), QGraphicsPixmapItem(parent)
 {
     // 找到xml文件路径
     QString filePath = __FILE__;
@@ -23,8 +24,8 @@ ParkingLotItem::ParkingLotItem(QGraphicsPixmapItem *parent): QGraphicsPixmapItem
         m_pixmap.push_back(new QPixmap(widget->size()));  // 创建一层的pixmap
         qDebug() << "widget size x=" << widget->size().width() << " y=" <<widget->size().height();
         widget->render(m_pixmap[i]);  // 渲染pixmap
-        m_max_capacity.push_back(widget->getCapacity());  // 获得这一层的最大容量
-        m_cars[i].resize(m_max_capacity.at(i));  // 初始化一层的车位
+        m_capacity.push_back(widget->getCapacity());  // 获得这一层的最大容量
+        m_cars[i].resize(m_capacity.at(i));  // 初始化一层的车位
         m_name.push_back(widget->getName());  // 这一层的名字
         m_num_of_cars.push_back(0);  // 初始停车数量为0
         delete widget;  // 删除widget
@@ -33,7 +34,6 @@ ParkingLotItem::ParkingLotItem(QGraphicsPixmapItem *parent): QGraphicsPixmapItem
         painter.setPen(Qt::red);
         painter.drawRect(0, 0, m_pixmap[i]->width() - 1, m_pixmap[i]->height() - 1);
     }
-    showParkingLot(1);
 }
 
 void ParkingLotItem::showParkingLot(uint pos)
@@ -43,4 +43,33 @@ void ParkingLotItem::showParkingLot(uint pos)
         return;
     }
     setPixmap(*m_pixmap.at(pos));
+    emit setCapacity(QString::number(m_capacity.at(pos)));
+    emit setLoad(QString::number(m_capacity.at(pos) - m_num_of_cars.at(pos)));
+}
+
+void ParkingLotItem::showParkingLot()
+{
+    showParkingLot(m_current_floor);
+}
+
+void ParkingLotItem::showDownStairFloor()
+{
+    if (m_current_floor == m_num_of_layer - 1)  // 当前是最顶层
+        emit enableUpButton(true);
+    if (m_current_floor == 1)
+        emit enableDownButton(false);  // 到底
+    if (m_current_floor > 0)
+        --m_current_floor;
+    showParkingLot(m_current_floor);
+}
+
+void ParkingLotItem::showUpStairFloor()
+{
+    if (m_current_floor == 0)
+        emit enableDownButton(true);
+    if (m_current_floor == m_num_of_layer - 2)
+        emit enableUpButton(false);
+    if (m_current_floor < m_num_of_layer - 1)
+        ++ m_current_floor;
+    showParkingLot(m_current_floor);
 }

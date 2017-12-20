@@ -125,7 +125,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="allSpace">
+         <widget class="QLabel" name="capacity">
           <property name="text">
            <string>100</string>
           </property>
@@ -152,7 +152,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="leftSpace">
+         <widget class="QLabel" name="load">
           <property name="text">
            <string>90</string>
           </property>
