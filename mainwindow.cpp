@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "cars.h"
+#include "car.h"
 #include <QDialog>
 #include <QLabel>
 #include <QScrollArea>
