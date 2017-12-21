@@ -24,7 +24,7 @@ public:
         QVector<float> weight;
         uint getId() const;
     };
-    ParkingLotGraph(const ParkingLotWidget*);
+    ParkingLotGraph(const ParkingLotWidget*pkl);
     Node* addNode(QPoint p, Node::Type t, uint n) {
         Node* no = new Node(p, t, n, m_all.size());
         m_all.push_back(no);
@@ -37,6 +37,7 @@ private:
    QVector<Node* > m_all;
    QVector<Node* > m_spaceList;
    QVector<Node* > m_roadNodeList;
+   const ParkingLotWidget* pk;
 };
 
 #endif // PARKINGLOTGRAPH_H

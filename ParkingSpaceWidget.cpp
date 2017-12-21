@@ -61,7 +61,7 @@ void ParkingSpaceWidget::paintEvent(QPaintEvent *)
 {
 	QPainter painter(this);
     painter.setPen(Qt::black);
-    // painter.drawText(20, 25, QString::number(number));
+    painter.drawText(20, 25, QString::number(number));
     QString p;
     p.append(QString::number(pos().x()));
     p.append(",");
@@ -69,7 +69,7 @@ void ParkingSpaceWidget::paintEvent(QPaintEvent *)
 
 	painter.setPen(Qt::white);
 	painter.setBrush(Qt::white);
-    painter.save();
+    //painter.save();
 	painter.translate(30, 20);
 	switch (dir) {
 	case E:
@@ -92,9 +92,9 @@ void ParkingSpaceWidget::paintEvent(QPaintEvent *)
 	painter.setBrush(Qt::NoBrush);
 	painter.drawRect(0, 0, this->width() - 1, this->height() - 1);*/
 
-    painter.restore();
-    painter.setPen(Qt::black);
-    painter.drawText(0, 25, p);
+    //painter.restore();
+    //painter.setPen(Qt::black);
+    //painter.drawText(0, 25, p);
     painter.end();
 }
 

@@ -23,7 +23,7 @@ QPoint toCenter(const QWidget* w) {
     return p;
 }
 
-ParkingLotGraph::ParkingLotGraph(const ParkingLotWidget* pk)
+ParkingLotGraph::ParkingLotGraph(const ParkingLotWidget* pkl): pk(pkl)
 {
     QVector<ParkingSpaceWidget*> spaces = pk->getSpaceList();
     QVector<Road*> roads = pk->getRoadList();
@@ -197,8 +197,38 @@ Path *ParkingLotGraph::finaPath(ParkingLotGraph::Node::Type t1, uint n1, Parking
     uint n = id2;
     while (n != id1) {
         path->addPoint(0, *(new PathPoint(QPointF(m_all[n]->data), 0)));
+        QPoint tp;
+        if (m_all[n]->type == Node::Type::space) {
+            ParkingSpaceWidget* space = pk->getSpaceList().at(m_all[n]->number - 1);
+            switch (space->getDir()) {
+            case ParkingSpaceWidget::direction::E:
+            case ParkingSpaceWidget::direction::W:
+                tp.setX(m_all[prev[n]]->data.x());
+                tp.setY(m_all[n]->data.y());
+                break;
+            case ParkingSpaceWidget::direction::N:
+            case ParkingSpaceWidget::direction::S:
+                tp.setX(m_all[n]->data.x());
+                tp.setY(m_all[prev[n]]->data.y());
+                break;
+            }
+        } else if (m_all[n]->type == Node::Type::road) {
+            Road* road = pk->getRoadList().at(m_all[n]->number - 1);
+            switch(road->getDir()) {
+            case Road::direction::horizontal:
+                tp.setX(m_all[prev[n]]->data.x());
+                tp.setY(m_all[n]->data.y());
+                break;
+            case Road::direction::vertical:
+                tp.setX(m_all[n]->data.x());
+                tp.setY(m_all[prev[n]]->data.y());
+                break;
+            }
+        }
+        path->addPoint(0, PathPoint(QPointF(tp), 0));
         n = prev[n];
     }
+    path->addPoint(0, PathPoint(QPointF(m_all[n]->data), 0));  // 把第一个点也加进去
     return path;
 }
 

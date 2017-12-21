@@ -90,7 +90,7 @@ void ParkingLotManager::drawPath(uint n1, uint n2)
 {
     Path *p = m_graph[1]->finaPath(ParkingLotGraph::Node::Type::space, n1,
                                    ParkingLotGraph::Node::Type::space, n2);
-    for(uint i = 1; i < p->size(); i++) {
+    for(int i = 1; i < p->pointsCount(); i++) {
         QLineF line(p->getPoint(i-1).point, p->getPoint(i).point);
         m_scene->addLine(line);
     }

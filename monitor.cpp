@@ -31,7 +31,3 @@ Monitor::~Monitor()
 {
     delete ui;
 }
-
-
-
-

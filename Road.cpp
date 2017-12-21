@@ -44,9 +44,9 @@ void Road::paintEvent(QPaintEvent * event)
 			y += 50;
 		}
 	}
-    painter.setPen(Qt::red);
-    painter.setBrush(Qt::NoBrush);
-    painter.drawRect(0, 0, width() - 1, height() - 1);
+    //painter.setPen(Qt::red);
+    //painter.setBrush(Qt::NoBrush);
+    //painter.drawRect(0, 0, width() - 1, height() - 1);
 }
 
 Road::~Road()
