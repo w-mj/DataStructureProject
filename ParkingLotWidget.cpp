@@ -89,11 +89,21 @@ QBoxLayout * ParkingLotWidget::parseLayout(const QDomElement & element)
 		if (name == "road")
 		{
             qDebug() << "处理road";
+            Road *r;
 			const int l = child.attribute("length").toInt();
 			if (child.attribute("direction") == "vertical")
-				layout->addWidget(new Road(this, l, Road::vertical));
+                r = new Road(this, l, Road::vertical);
 			else
-				layout->addWidget(new Road(this, l, Road::horizontal));
+                r = new Road(this, l, Road::horizontal);
+            QString action = child.attribute("action", "none");
+            if (action == "entry")
+                r->setAction(Road::Action::entry);
+            else if (action == "stair")
+                r->setAction(Road::Action::stair);
+            else
+                r->setAction(Road::Action::none);
+            r->setActionPos(child.attribute("actionPos", "0").toShort());
+            layout->addWidget(r);
 		}
 		else if (name == "room")
 		{

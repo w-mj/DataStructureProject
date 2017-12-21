@@ -45,6 +45,13 @@ ParkingLotGraph::ParkingLotGraph(const ParkingLotWidget* pkl): pk(pkl)
             p.setY(r->pos().y() + r->height() - 5);
             m_roadNodeList[2*i+1] = addNode(p, Node::Type::road, r->getNumber());
         }
+        if (r->getAction() != Road::Action::none) {
+            m_roadNodeList[2*i + r->getActionPos() - 1]->setAction(r->getAction());  // 添加动作
+             // 把有动作的节点添加到dict里，方便查找
+            m_actionList.insert(m_roadNodeList[2*i + r->getActionPos() - 1]->getId(),
+                    m_roadNodeList[2*i + r->getActionPos() - 1]);
+        }
+        m_roadNodeList[2*i]->addPath(m_roadNodeList[2*i + 1]);  // 一条路的两个端点连接起来
     }
     for (int i = 0; i < roads.size(); i++) {  // 再遍历路，找到路与路的交点
         Road* r = roads.at(i);
@@ -150,8 +157,21 @@ void ParkingLotGraph::paint(QGraphicsScene *scene)
     }
 }
 
+uint ParkingLotGraph::getNodeId(ParkingLotGraph::Node::Type t, int n) {
+    if (t == Node::Type::space) {
+        return  m_spaceList.at(n - 1)->getId();
+    } else if(t == Node::Type::entry) {
+        int k = 0;
+        for (Node* node: m_actionList.values())
+            if (node->action==Road::Action::entry)
+                if (++k == n)
+                    return node->id;
+    }
+    return -1;
+}
+
 // Dijkstra 求最短路径
-Path *ParkingLotGraph::finaPath(ParkingLotGraph::Node::Type t1, uint n1, ParkingLotGraph::Node::Type t2, uint n2)
+Path *ParkingLotGraph::finaPath(ParkingLotGraph::Node::Type t1, int n1, ParkingLotGraph::Node::Type t2, int n2)
 {
     struct HeapNode {
         uint d, u;//d为到该点的总路径，u为这一点
@@ -164,15 +184,13 @@ Path *ParkingLotGraph::finaPath(ParkingLotGraph::Node::Type t1, uint n1, Parking
     for (int i = 0; i < m_all.size(); i++)
         weight[i] = 0x3f3f3f; // inf
 
-    uint id1, id2;
-    if (t1 == Node::Type::space) {
-        id1 = m_spaceList.at(n1 - 1)->getId();
-    }
-    if (t2 == Node::Type::space) {
-        id2 = m_spaceList.at(n2 - 1)->getId();
-    }
+    n1 = qAbs(n1);
+    n2 = qAbs(n2);
 
-    weight[m_spaceList.at(n1 - 1)->id] = 0;
+    uint id1 = getNodeId(t1, n1);  // 通过number和类型获得id
+    uint id2 = getNodeId(t2, n2);
+
+    weight[id1] = 0;
 
     std::priority_queue<HeapNode> queue;
 
@@ -196,7 +214,7 @@ Path *ParkingLotGraph::finaPath(ParkingLotGraph::Node::Type t1, uint n1, Parking
     Path* path = new Path();
     uint n = id2;
     while (n != id1) {
-        path->addPoint(0, *(new PathPoint(QPointF(m_all[n]->data), 0)));
+        path->addPoint(0, PathPoint(QPointF(m_all[n]->data), 0, m_all[n]->action, m_all[n]->getId()));
         QPoint tp;
         if (m_all[n]->type == Node::Type::space) {
             ParkingSpaceWidget* space = pk->getSpaceList().at(m_all[n]->number - 1);
@@ -228,7 +246,7 @@ Path *ParkingLotGraph::finaPath(ParkingLotGraph::Node::Type t1, uint n1, Parking
         path->addPoint(0, PathPoint(QPointF(tp), 0));
         n = prev[n];
     }
-    path->addPoint(0, PathPoint(QPointF(m_all[n]->data), 0));  // 把第一个点也加进去
+    path->addPoint(0, PathPoint(QPointF(m_all[n]->data), 0, m_all[n]->action, m_all[n]->getId())); // 把第一个点也加进去
     return path;
 }
 
@@ -253,6 +271,11 @@ void ParkingLotGraph::Node::addPath(ParkingLotGraph::Node *another)
     float w = qSqrt(dx * dx + dy * dy);
     weight.push_back(w);
     another->weight.push_back(w);
+}
+
+Road::Action ParkingLotGraph::Node::getAction() const
+{
+    return action;
 }
 
 uint ParkingLotGraph::Node::getId() const

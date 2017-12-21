@@ -18,7 +18,7 @@ public:
     void showParkingLot(void);
     void showDownStairFloor(void);
     void showUpStairFloor(void);
-    void drawPath(uint n1, uint n2);
+    void drawPath(int n1, int n2);
 
 private:
     QGraphicsScene* m_scene;

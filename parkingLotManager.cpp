@@ -86,10 +86,16 @@ void ParkingLotManager::showUpStairFloor()
     showParkingLot(m_current_floor);
 }
 
-void ParkingLotManager::drawPath(uint n1, uint n2)
+ParkingLotGraph::Node::Type getType(int n) {
+    if (n > 0)
+        return ParkingLotGraph::Node::Type::space;
+    else
+        return ParkingLotGraph::Node::Type::entry;
+}
+
+void ParkingLotManager::drawPath(int n1, int n2)
 {
-    Path *p = m_graph[1]->finaPath(ParkingLotGraph::Node::Type::space, n1,
-                                   ParkingLotGraph::Node::Type::space, n2);
+    Path *p = m_graph[1]->finaPath(getType(n1), n1, getType(n2), n2);
     for(int i = 1; i < p->pointsCount(); i++) {
         QLineF line(p->getPoint(i-1).point, p->getPoint(i).point);
         m_scene->addLine(line);

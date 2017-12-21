@@ -3,14 +3,18 @@
 
 #include<QList>
 #include<QPoint>
+#include "Road.h"
 
 //路径上的点和车在该点的角度
 struct PathPoint
 {
     QPointF point;
     qreal   dir = 0;
+    Road::Action action;
+    int pointId;  // 为了做直角生成的辅助节点的id为-1
     PathPoint() {}
-    PathPoint(QPointF p, qreal d): point(p), dir(d) {}
+    PathPoint(QPointF p, qreal d, Road::Action a=Road::Action::none, int id=-1):
+        point(p), dir(d), action(a), pointId(id) {}
     PathPoint(const PathPoint& another) {
         point = another.point;
         dir = another.dir;

@@ -53,6 +53,26 @@ Road::~Road()
 {
 }
 
+Road::Action Road::getAction() const
+{
+    return action;
+}
+
+void Road::setAction(const Action &value)
+{
+    action = value;
+}
+
+short Road::getActionPos() const
+{
+    return actionPos;
+}
+
+void Road::setActionPos(short value)
+{
+    actionPos = value;
+}
+
 uint Road::getNumber() const
 {
     return number;

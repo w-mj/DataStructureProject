@@ -20,7 +20,7 @@ Monitor::Monitor(QWidget *parent) :
     QObject::connect(pk, &ParkingLotManager::setLayerName, ui->layerName, &QLabel::setText);
 
     QObject::connect(ui->drawPath, &QPushButton::clicked, [=](){
-        pk->drawPath(ui->placeNum1->text().toUInt(), ui->placeNum2->text().toUInt());
+        pk->drawPath(ui->placeNum1->text().toInt(), ui->placeNum2->text().toInt());
     });
     pk->showParkingLot();
     ui->view->setScene(scene);
