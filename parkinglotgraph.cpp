@@ -26,6 +26,7 @@ ParkingLotGraph::ParkingLotGraph(const ParkingLotWidget* pk)
 {
     QVector<ParkingSpaceWidget*> spaces = pk->getSpaceList();
     QVector<Road*> roads = pk->getRoadList();
+    QVector<Node*> unFinished;
     m_roadNodeList.resize(roads.size() * 2);  // 每一条路有两个节点，分别为2i和2i+1
     for (int i = 0; i < roads.size(); i++) {  // 初始化每条路的节点
         QPoint p;
@@ -50,41 +51,53 @@ ParkingLotGraph::ParkingLotGraph(const ParkingLotWidget* pk)
         if (r->getDir() == Road::horizontal) {
             p.setY(p.y() + r->height() / 2);
             p.setX(p.x() - 30);  // 向外找
-            for (int j = 0; j < roads.size(); j++) {
-                if (i != j && inRect(roads.at(j), p)) {
-                    m_roadNodeList[2*i]->addPath(m_roadNodeList[2*j]);
-                    m_roadNodeList[2*i]->addPath(m_roadNodeList[2*j + 1]);
-                    break;
-                }
-            }
-            p.setX(p.x() + r->width() + 60);  // 补偿x减掉的30
-            for (int j = 0; j < roads.size(); j++) {
-                if (i != j && inRect(roads.at(j), p)) {
-                    m_roadNodeList[2*i+1]->addPath(m_roadNodeList[2*j]);
-                    m_roadNodeList[2*i+1]->addPath(m_roadNodeList[2*j + 1]);
-                    break;
-                }
-            }
         } else {
             p.setX(p.x() + r->width() / 2);
             p.setY(p.y() - 30);  // 向外找
-            for (int j = 0; j < roads.size(); j++) {
-                if (i != j && inRect(roads.at(j), p)) {
-                    m_roadNodeList[2*i]->addPath(m_roadNodeList[2*j]);
-                    m_roadNodeList[2*i]->addPath(m_roadNodeList[2*j + 1]);
-                    break;
-                }
+        }
+        for (int j = 0; j < roads.size(); j++) {
+            Road* r2 = roads.at(j);
+            QPoint crossPoint = p;
+            if (i != j && inRect(r2, p)) {
+                m_roadNodeList[2*i]->addPath(m_roadNodeList[2*j]);
+                m_roadNodeList[2*i]->addPath(m_roadNodeList[2*j + 1]);
+                if (r2->getDir() == Road::horizontal)
+                    crossPoint.setY(r2->pos().y() + r2->height() / 2);
+                else
+                    crossPoint.setX(r2->pos().x() + r2->width() / 2);
+                unFinished.push_back(new Node(crossPoint, Node::Type::road, r2->getNumber()));
+                break;
             }
+        }
+        if (r->getDir() == Road::horizontal) {
+            p.setX(p.x() + r->width() + 60);  // 补偿x减掉的30
+        } else {
             p.setY(p.y() + r->height() + 60);
-            for (int j = 0; j < roads.size(); j++) {
-                if (i != j && inRect(roads.at(j), p)) {
-                    m_roadNodeList[2*i+1]->addPath(m_roadNodeList[2*j]);
-                    m_roadNodeList[2*i+1]->addPath(m_roadNodeList[2*j + 1]);
-                    break;
-                }
+        }
+        for (int j = 0; j < roads.size(); j++) {
+            Road* r2 = roads.at(j);
+            QPoint crossPoint = p;
+            if (i != j && inRect(r2, p)) {
+                m_roadNodeList[2*i+1]->addPath(m_roadNodeList[2*j]);
+                m_roadNodeList[2*i+1]->addPath(m_roadNodeList[2*j + 1]);
+                if (r2->getDir() == Road::horizontal)
+                    crossPoint.setY(r2->pos().y() + r2->height() / 2);
+                else
+                    crossPoint.setX(r2->pos().x() + r2->width() / 2);
+                unFinished.push_back(new Node(crossPoint, Node::Type::road, r2->getNumber()));
+                break;
             }
         }
     }
+
+    // 连接岔路
+    for (Node* cross: unFinished) {
+        Node* endPoint = m_roadNodeList.at(2 * (cross->number - 1));
+        for (Node* adj: endPoint->adjacent) {
+           cross->addPath(adj);
+        }
+    }
+
     for(ParkingSpaceWidget* sp : spaces) {
         QPoint p = toCenter(sp), offset(0, 0);
         Node* spaceNode = new Node(p, Node::Type::space, sp->getNumber());
