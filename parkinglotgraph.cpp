@@ -8,9 +8,6 @@
 #include <QWidget>
 
 bool inRect(const QWidget* r, const QPoint& p) {
-    QPoint ppp = r->pos();
-    int w = r->width();
-    int h = r->height();
     if (p.x() > r->pos().x() && p.x() < r->pos().x() + r->width() &&
         p.y() > r->pos().y() && p.y() < r->pos().y() + r->height())
         return true;
@@ -36,20 +33,19 @@ ParkingLotGraph::ParkingLotGraph(const ParkingLotWidget* pk)
         if (r->getDir() == Road::horizontal) {
             p.setX(r->pos().x() + 5);
             p.setY(r->pos().y() + r->height() / 2);
-            m_roadNodeList[2*i] = new Node(p);
+            m_roadNodeList[2*i] = new Node(p, Node::Type::road, r->getNumber());
             p.setX(r->pos().x() + r->width() - 5);
-            m_roadNodeList[2*i + 1] = new Node(p);
+            m_roadNodeList[2*i + 1] = new Node(p, Node::Type::road, r->getNumber());
         } else {
             p.setY(r->pos().y() + 5);
             p.setX(r->pos().x() + r->width() / 2);
-            m_roadNodeList[2*i] = new Node(p);
+            m_roadNodeList[2*i] = new Node(p, Node::Type::road, r->getNumber());
             p.setY(r->pos().y() + r->height() - 5);
-            m_roadNodeList[2*i+1] = new Node(p);
+            m_roadNodeList[2*i+1] = new Node(p, Node::Type::road, r->getNumber());
         }
     }
     for (int i = 0; i < roads.size(); i++) {  // 再遍历路，找到路与路的交点
         Road* r = roads.at(i);
-        QRect rrr = r->rect();
         QPoint p = r->pos();
         if (r->getDir() == Road::horizontal) {
             p.setY(p.y() + r->height() / 2);
@@ -91,7 +87,7 @@ ParkingLotGraph::ParkingLotGraph(const ParkingLotWidget* pk)
     }
     for(ParkingSpaceWidget* sp : spaces) {
         QPoint p = toCenter(sp), offset(0, 0);
-        Node* spaceNode = new Node(p);
+        Node* spaceNode = new Node(p, Node::Type::space, sp->getNumber());
         m_spaceList.push_back(spaceNode);
         switch(sp->getDir()) {
         case ParkingSpaceWidget::N: offset.setY(-1);break;

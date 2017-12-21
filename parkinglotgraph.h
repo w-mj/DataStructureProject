@@ -11,10 +11,13 @@ class ParkingLotGraph
 {
 public:
     struct Node{
+        enum Type{road, space, entry};
+        uint number;
+        Type type;
         QPoint data;
         QVector<Node*> adjacent;
         QVector<float> weight;
-        Node(QPoint p): data(p) {}
+        Node(QPoint p, Type t, uint n):type(t), data(p), number(n){}
         void addPath(Node* another);
     };
     ParkingLotGraph(const ParkingLotWidget*);
