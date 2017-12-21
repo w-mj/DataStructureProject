@@ -1,19 +1,12 @@
 #include "parkingLotManager.h"
 #include "ParkingLotWidget.h"
 #include "ParkingSpaceWidget.h"
+#include "path.h"
 #include <QDebug>
 #include <QPainter>
 #include <QPoint>
 #include <QRect>
 #include <QGraphicsScene>
-
-//bool inRect(const QRect& r, const QPoint& p) {
-//    if (p.x() > r.x() && p.x() < r.x() + r.width() &&
-//        p.y() > r.y() && p.y() < r.y() + r.height())
-//        return true;
-//    else
-//        return false;
-//}
 
 ParkingLotManager::ParkingLotManager(QObject* objectParent, QGraphicsScene* scene):
     QObject(objectParent), m_scene(scene)
@@ -62,8 +55,8 @@ void ParkingLotManager::showParkingLot(uint pos)
     emit setCapacity(QString::number(m_capacity.at(pos)));
     emit setLoad(QString::number(m_capacity.at(pos) - m_num_of_cars.at(pos)));
     emit setLayerName(m_name.at(pos));
-    if (pos == 1)
-        m_graph[1]->paint(m_scene);
+//    if (pos == 1)
+//        m_graph[1]->paint(m_scene);
 }
 
 void ParkingLotManager::showParkingLot()
@@ -95,63 +88,10 @@ void ParkingLotManager::showUpStairFloor()
 
 void ParkingLotManager::drawPath(uint n1, uint n2)
 {
-//    class Turtle {
-//        QPoint p;
-//        QGraphicsScene* s;
-//    public:
-//        Turtle(QPoint start, QGraphicsScene* scence): p(start), s(scence) {}
-//        void goX(uint n) {
-//            QPoint a = p;
-//            a.setX(p.x() + n);
-//            s->addLine(QLine(p, a));
-//            p = a;
-//        }
-//        void goY(uint n) {
-//            QPoint a = p;
-//            a.setY(p.y() + n);
-//            s->addLine(QLine(p, a));
-//            p = a;
-//        }
-//        QPoint getP() const {return p;}
-//        int x() const {return p.x();}
-//        int y() const {return p.y();}
-//    };
-//    ParkingSpaceWidget* space1 = m_widgets.at(m_current_floor)->getSpaceList().at(n1 - 1);
-//    ParkingSpaceWidget* space2 = m_widgets.at(m_current_floor)->getSpaceList().at(n2 - 1);
-//    QPoint start = space1->pos(), end = space2->pos();
-//    start.setX(start.x() + space1->width() / 2);
-//    start.setY(start.y() + space1->height() / 2);  // 设定为车位的中点
-//    end.setX(end.x() + space2->width() / 2);
-//    end.setY(end.y() + space2->height() / 2);  // 设定为车位的中点
-//    Turtle turtle(start, m_scene);
-//    switch(space1->getDir()) {
-//    case ParkingSpaceWidget::N: turtle.goY(-45); break;
-//    case ParkingSpaceWidget::S: turtle.goY(45); break;
-//    case ParkingSpaceWidget::E: turtle.goX(45); break;
-//    case ParkingSpaceWidget::W: turtle.goX(-45); break;
-//    }  // 从车位里走出来
-//    int n = 0, Point;
-//    while (turtle.x() != end.x() || turtle.y() != end.y()) {
-//        Road* road;
-//        for (Road* r: m_widgets.at(m_current_floor)->m_roadList)
-//            if (inRect(*r, turtle.getP())) {
-//                road = r;
-//                break;
-//            }  // 找到当前点在哪条路上
-
-////        if (turtle.x() != end.x() && turtle.y() != end.y()) {
-////            switch(space1->getDir()) {
-////            case ParkingSpaceWidget::N:
-////            case ParkingSpaceWidget::S: turtle.goX(end.x() - turtle.x()); break;
-////            case ParkingSpaceWidget::E:
-////            case ParkingSpaceWidget::W: turtle.goY(end.y() - turtle.y()); break;
-////            }
-////        } else if (turtle.x() == end.x())
-////            turtle.goY(end.y() - turtle.y());
-////        else
-////            turtle.goX(end.x() - turtle.x());
-////        if (n++ == 100)
-////            break;
-//    }
-//    qDebug() << n;
+    Path *p = m_graph[1]->finaPath(ParkingLotGraph::Node::Type::space, n1,
+                                   ParkingLotGraph::Node::Type::space, n2);
+    for(uint i = 1; i < p->size(); i++) {
+        QLineF line(p->getPoint(i-1).point, p->getPoint(i).point);
+        m_scene->addLine(line);
+    }
 }

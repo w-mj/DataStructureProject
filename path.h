@@ -8,7 +8,13 @@
 struct PathPoint
 {
     QPointF point;
-    qreal   dir;
+    qreal   dir = 0;
+    PathPoint() {}
+    PathPoint(QPointF p, qreal d): point(p), dir(d) {}
+    PathPoint(const PathPoint& another) {
+        point = another.point;
+        dir = another.dir;
+    }
 };
 
 class Path
@@ -22,6 +28,7 @@ public:
     void addPoint(const PathPoint &point);
     bool isEmpty();
     int pointsCount();
+    uint size();
 
 private:
     QList<PathPoint> path;

@@ -6,6 +6,7 @@
 #include <QPen>
 #include <QDebug>
 #include <QWidget>
+#include <queue>
 
 bool inRect(const QWidget* r, const QPoint& p) {
     if (p.x() > r->pos().x() && p.x() < r->pos().x() + r->width() &&
@@ -34,15 +35,15 @@ ParkingLotGraph::ParkingLotGraph(const ParkingLotWidget* pk)
         if (r->getDir() == Road::horizontal) {
             p.setX(r->pos().x() + 5);
             p.setY(r->pos().y() + r->height() / 2);
-            m_roadNodeList[2*i] = new Node(p, Node::Type::road, r->getNumber());
+            m_roadNodeList[2*i] = addNode(p, Node::Type::road, r->getNumber());
             p.setX(r->pos().x() + r->width() - 5);
-            m_roadNodeList[2*i + 1] = new Node(p, Node::Type::road, r->getNumber());
+            m_roadNodeList[2*i + 1] = addNode(p, Node::Type::road, r->getNumber());
         } else {
             p.setY(r->pos().y() + 5);
             p.setX(r->pos().x() + r->width() / 2);
-            m_roadNodeList[2*i] = new Node(p, Node::Type::road, r->getNumber());
+            m_roadNodeList[2*i] = addNode(p, Node::Type::road, r->getNumber());
             p.setY(r->pos().y() + r->height() - 5);
-            m_roadNodeList[2*i+1] = new Node(p, Node::Type::road, r->getNumber());
+            m_roadNodeList[2*i+1] = addNode(p, Node::Type::road, r->getNumber());
         }
     }
     for (int i = 0; i < roads.size(); i++) {  // 再遍历路，找到路与路的交点
@@ -65,7 +66,7 @@ ParkingLotGraph::ParkingLotGraph(const ParkingLotWidget* pk)
                     crossPoint.setY(r2->pos().y() + r2->height() / 2);
                 else
                     crossPoint.setX(r2->pos().x() + r2->width() / 2);
-                unFinished.push_back(new Node(crossPoint, Node::Type::road, r2->getNumber()));
+                unFinished.push_back(addNode(crossPoint, Node::Type::road, r2->getNumber()));
                 break;
             }
         }
@@ -84,7 +85,7 @@ ParkingLotGraph::ParkingLotGraph(const ParkingLotWidget* pk)
                     crossPoint.setY(r2->pos().y() + r2->height() / 2);
                 else
                     crossPoint.setX(r2->pos().x() + r2->width() / 2);
-                unFinished.push_back(new Node(crossPoint, Node::Type::road, r2->getNumber()));
+                unFinished.push_back(addNode(crossPoint, Node::Type::road, r2->getNumber()));
                 break;
             }
         }
@@ -100,8 +101,8 @@ ParkingLotGraph::ParkingLotGraph(const ParkingLotWidget* pk)
 
     for(ParkingSpaceWidget* sp : spaces) {
         QPoint p = toCenter(sp), offset(0, 0);
-        Node* spaceNode = new Node(p, Node::Type::space, sp->getNumber());
-        m_spaceList.push_back(spaceNode);
+        Node* spaceNode = addNode(p, Node::Type::space, sp->getNumber());
+        m_spaceList.push_back(spaceNode);  // 保证按编号顺序
         switch(sp->getDir()) {
         case ParkingSpaceWidget::N: offset.setY(-1);break;
         case ParkingSpaceWidget::S: offset.setY(1);break;
@@ -149,6 +150,58 @@ void ParkingLotGraph::paint(QGraphicsScene *scene)
     }
 }
 
+// Dijkstra 求最短路径
+Path *ParkingLotGraph::finaPath(ParkingLotGraph::Node::Type t1, uint n1, ParkingLotGraph::Node::Type t2, uint n2)
+{
+    struct HeapNode {
+        uint d, u;//d为到该点的总路径，u为这一点
+        HeapNode(uint a, uint b) :d(a), u(b) {}
+        bool operator < (const HeapNode& rhs) const { return d > rhs.d;}//重载优先级队列的小于号
+    };
+    bool vis[m_all.size()] = {0};
+    uint weight[m_all.size()];
+    uint prev[m_all.size()] = {0};
+    for (int i = 0; i < m_all.size(); i++)
+        weight[i] = 0x3f3f3f; // inf
+
+    uint id1, id2;
+    if (t1 == Node::Type::space) {
+        id1 = m_spaceList.at(n1 - 1)->getId();
+    }
+    if (t2 == Node::Type::space) {
+        id2 = m_spaceList.at(n2 - 1)->getId();
+    }
+
+    weight[m_spaceList.at(n1 - 1)->id] = 0;
+
+    std::priority_queue<HeapNode> queue;
+
+    queue.push(HeapNode(0, id1));
+
+    while (!queue.empty()) {
+        HeapNode cur = queue.top();
+        queue.pop();
+        if (vis[cur.u])
+            continue;
+        vis[cur.u] = true;
+        Node* node = m_all[cur.u];
+        for (int i = 0; i < node->adjacent.size(); i++) {
+            if (weight[cur.u] + node->weight[i] < weight[node->adjacent[i]->id]) {
+                weight[node->adjacent[i]->id] = weight[cur.u] + node->weight[i];
+                prev[node->adjacent[i]->id] = cur.u;
+                queue.push(HeapNode(weight[node->adjacent[i]->id], node->adjacent[i]->id));
+            }
+        }
+    }
+    Path* path = new Path();
+    uint n = id2;
+    while (n != id1) {
+        path->addPoint(0, *(new PathPoint(QPointF(m_all[n]->data), 0)));
+        n = prev[n];
+    }
+    return path;
+}
+
 ParkingLotGraph::~ParkingLotGraph()
 {
     for (Node* n: m_spaceList)
@@ -156,6 +209,7 @@ ParkingLotGraph::~ParkingLotGraph()
     for (Node* n: m_roadNodeList)
         delete n;
 }
+
 
 void ParkingLotGraph::Node::addPath(ParkingLotGraph::Node *another)
 {
@@ -169,4 +223,9 @@ void ParkingLotGraph::Node::addPath(ParkingLotGraph::Node *another)
     float w = qSqrt(dx * dx + dy * dy);
     weight.push_back(w);
     another->weight.push_back(w);
+}
+
+uint ParkingLotGraph::Node::getId() const
+{
+    return id;
 }

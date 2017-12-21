@@ -2,13 +2,12 @@
 
 Path::Path()
 {
-    this->path = QList<PathPoint>();
+
 }
 
 //用PathPoint数组初始化Path
 Path::Path(PathPoint points[], int i)
 {
-    path = QList<PathPoint>();
     for(int j=0; j<i; j++)
         addPoint(points[j]);
 }
@@ -36,4 +35,9 @@ bool Path::isEmpty()
 int Path::pointsCount()
 {
     return path.length();
+}
+
+uint Path::size()
+{
+    return path.size();
 }
