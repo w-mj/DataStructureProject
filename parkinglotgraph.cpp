@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QWidget>
 #include <queue>
+#include <QPainter>
 
 bool inRect(const QWidget* r, const QPoint& p) {
     if (p.x() > r->pos().x() && p.x() < r->pos().x() + r->width() &&
@@ -252,10 +253,49 @@ Path *ParkingLotGraph::finaPath(ParkingLotGraph::Node::Type t1, int n1, ParkingL
 
 ParkingLotGraph::~ParkingLotGraph()
 {
-    for (Node* n: m_spaceList)
+    for (Node* n: m_all)
         delete n;
-    for (Node* n: m_roadNodeList)
-        delete n;
+    delete m_pixmap;
+}
+
+QPixmap *ParkingLotGraph::getPixmap()
+{
+    if (m_pixmap == nullptr)
+        generatePixmap();
+    return m_pixmap;
+}
+
+void ParkingLotGraph::generatePixmap()
+{
+    m_pixmap = new QPixmap(pk->size());
+    m_pixmap->fill(Qt::transparent);
+    QPainter painter(m_pixmap);
+    QVector<Node*> vis(m_spaceList.size() + m_roadNodeList.size());
+    QStack<Node*> stack;
+    painter.setPen(Qt::red);
+//    for (int i = 0; i < m_roadNodeList.size(); i++) {
+//        qDebug() << i << "  " << m_roadNodeList.at(i)->adjacent.size();
+//    }
+    stack.push(m_spaceList.first());
+    while (!stack.empty()) {
+        Node* n = stack.pop();
+        if (vis.indexOf(n) != -1)
+            continue;
+        vis.push_back(n);
+        // qDebug() << "关联节点共有" << QString::number(n->adjacent.size());
+        if (n->action != Road::Action::none) {
+            painter.setBrush(Qt::red);
+            painter.drawEllipse(n->data.x(), n->data.y(), 5, 5);
+            painter.setBrush(Qt::NoBrush);
+        } else
+            painter.drawEllipse(n->data.x(), n->data.y(), 5, 5);
+        for(Node* adj: n->adjacent) {
+            if (vis.indexOf(adj) != -1)
+                continue;
+            stack.push(adj);
+            painter.drawLine(n->data.x(), n->data.y(), adj->data.x(), adj->data.y());
+        }
+    }
 }
 
 

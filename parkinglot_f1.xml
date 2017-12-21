@@ -45,7 +45,7 @@
 		<hLayout>
 			<space length="580"/>
 			<boundary length="100" direction="vertical" />
-			<road length="100" direction="vertical" action="entry" actionPos="1"/>
+			<road length="100" direction="vertical" action="entry" actionPos="2"/>
 			<boundary length="100" direction="vertical" />
 		</hLayout>
 	</vLayout>

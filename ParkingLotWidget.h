@@ -22,6 +22,7 @@ public:
     QString getName() const;
     const QVector<ParkingSpaceWidget *>& getSpaceList() const;
     const QVector<Road *>& getRoadList() const;
+    void showMarginSlot(bool b);
 
 private:
     QVector<ParkingSpaceWidget*> m_spaceList;
@@ -30,6 +31,9 @@ private:
 	QBoxLayout *parseLayout(const QDomElement& element);
 	QBoxLayout *layout = nullptr;
     QString name;
+
+signals:
+    void showMargain(bool);
 };
 
 #endif

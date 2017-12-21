@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QEvent>
 #include <QHoverEvent>
+#include <QObject>
 #include "ParkingLotWidget.h"
 
 ParkingSpaceWidget::ParkingSpaceWidget(ParkingLotWidget* parent, const QString &dir): QWidget(parent)
@@ -37,6 +38,10 @@ ParkingSpaceWidget::ParkingSpaceWidget(ParkingLotWidget* parent, const QString &
 	}
     number = parent->addSpace(this);
     setToolTip(QString::number(number));
+    QObject::connect(parent, &ParkingLotWidget::showMargain, [this](bool b){
+        this->m_showMargin = b;
+        update();
+    });
 }
 
 QBoxLayout *ParkingSpaceWidget::makeParkingSapceGroup(ParkingLotWidget* parent, const QString& dir, int n, const QString & expend)
@@ -88,9 +93,11 @@ void ParkingSpaceWidget::paintEvent(QPaintEvent *)
 	painter.drawRect(0, 0, 60, 5);
 	painter.drawRect(0, 5, 10, 35);
 	painter.drawRect(10, 35, 50, 5);
-	/*painter.setPen(Qt::blue);
-	painter.setBrush(Qt::NoBrush);
-	painter.drawRect(0, 0, this->width() - 1, this->height() - 1);*/
+    if (m_showMargin) {
+        painter.setPen(Qt::blue);
+        painter.setBrush(Qt::NoBrush);
+        painter.drawRect(0, 0, width() - 1, height() - 1);
+    }
 
     //painter.restore();
     //painter.setPen(Qt::black);

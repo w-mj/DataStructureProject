@@ -4,6 +4,7 @@
 #include <QLayout>
 #include <QLabel>
 #include "ParkingLotWidget.h"
+#include "MyEvent.h"
 class ParkingLotWidget;
 
 class ParkingSpaceWidget: public QWidget
@@ -20,6 +21,7 @@ public:
 protected:
     void paintEvent(QPaintEvent* ) override;
 private:
+    bool m_showMargin = false;
     int number;
 	direction dir;
     // QLabel *m_float_window = nullptr;

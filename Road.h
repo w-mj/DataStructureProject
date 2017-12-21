@@ -28,5 +28,6 @@ private:
     uint number;
     Action action = none;
     short actionPos = 0;  // 1为左上端，2为右下端
+    bool m_showMargin = false;
 };
 

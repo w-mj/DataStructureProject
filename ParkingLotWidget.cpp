@@ -80,7 +80,7 @@ QBoxLayout * ParkingLotWidget::parseLayout(const QDomElement & element)
 	else
 		layout = new QVBoxLayout;
     layout->setSizeConstraint(QLayout::SetFixedSize);
-    qDebug() << "处理" << element.tagName();
+    // qDebug() << "处理" << element.tagName();
 	
 	QDomElement child = element.firstChild().toElement();
 	while (!child.isNull())
@@ -88,7 +88,7 @@ QBoxLayout * ParkingLotWidget::parseLayout(const QDomElement & element)
 		QString name = child.tagName();
 		if (name == "road")
 		{
-            qDebug() << "处理road";
+            // qDebug() << "处理road";
             Road *r;
 			const int l = child.attribute("length").toInt();
 			if (child.attribute("direction") == "vertical")
@@ -107,7 +107,7 @@ QBoxLayout * ParkingLotWidget::parseLayout(const QDomElement & element)
 		}
 		else if (name == "room")
 		{
-            qDebug() << "处理room";
+            // qDebug() << "处理room";
 			const auto n = child.attribute("number", "1").toInt();
 			layout->addLayout(ParkingSpaceWidget::makeParkingSapceGroup(
 				this, child.attribute("direction"), n, child.attribute("expendDirection")));
@@ -115,7 +115,7 @@ QBoxLayout * ParkingLotWidget::parseLayout(const QDomElement & element)
 		else if ((name.at(0) == 'v' ||  name.at(0) == 'h' )&& name.contains("Layout"))
 			layout->addLayout(parseLayout(child));
         else if (name == "space") {
-            qDebug() << "处理space";
+            // qDebug() << "处理space";
             QSpacerItem* sw = new QSpacerItem(0, 0);
             if (element.tagName() == "hLayout")
                 sw->changeSize(child.attribute("length").toInt(), 0, QSizePolicy::Fixed, QSizePolicy::Minimum);
@@ -123,7 +123,7 @@ QBoxLayout * ParkingLotWidget::parseLayout(const QDomElement & element)
                 sw->changeSize(0, child.attribute("length").toInt(), QSizePolicy::Minimum, QSizePolicy::Fixed);
             layout->addSpacerItem(sw);
         } else if (name == "boundary") {
-            qDebug() << "处理boundary";
+            // qDebug() << "处理boundary";
             int l = child.attribute("length").toInt();
             Boundary *b = new Boundary(child.attribute("direction"), l, this);
             layout->addWidget(b);
@@ -151,4 +151,10 @@ const QVector<ParkingSpaceWidget *>& ParkingLotWidget::getSpaceList() const
 const QVector<Road *>& ParkingLotWidget::getRoadList() const
 {
     return m_roadList;
+}
+
+void ParkingLotWidget::showMarginSlot(bool b)
+{
+    // qDebug() << "Parkinglot Widget: show margin " << b;
+    emit showMargain(b);
 }

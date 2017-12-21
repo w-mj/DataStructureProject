@@ -18,7 +18,8 @@ Monitor::Monitor(QWidget *parent) :
     QObject::connect(pk, &ParkingLotManager::setCapacity, ui->capacity, &QLabel::setText);
     QObject::connect(pk, &ParkingLotManager::setLoad, ui->load, &QLabel::setText);
     QObject::connect(pk, &ParkingLotManager::setLayerName, ui->layerName, &QLabel::setText);
-
+    QObject::connect(ui->showMargin, &QCheckBox::toggled, pk, &ParkingLotManager::showMargin);
+    QObject::connect(ui->showGraph, &QCheckBox::toggled, pk, &ParkingLotManager::showGraph);
     QObject::connect(ui->drawPath, &QPushButton::clicked, [=](){
         pk->drawPath(ui->placeNum1->text().toInt(), ui->placeNum2->text().toInt());
     });

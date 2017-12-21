@@ -21,6 +21,10 @@ Road::Road(ParkingLotWidget* parent, const int length, const direction dir)
 	}
 	// setContentsMargins(0, 0, 0, 0);
     number = parent->addRoad(this);
+    QObject::connect(parent, &ParkingLotWidget::showMargain, [this](bool b){
+        this->m_showMargin = b;
+        update();
+    });
 }
 
 void Road::paintEvent(QPaintEvent * event)
@@ -44,9 +48,11 @@ void Road::paintEvent(QPaintEvent * event)
 			y += 50;
 		}
 	}
-    //painter.setPen(Qt::red);
-    //painter.setBrush(Qt::NoBrush);
-    //painter.drawRect(0, 0, width() - 1, height() - 1);
+    if (m_showMargin) {
+        painter.setPen(Qt::blue);
+        painter.setBrush(Qt::NoBrush);
+        painter.drawRect(0, 0, width() - 1, height() - 1);
+    }
 }
 
 Road::~Road()

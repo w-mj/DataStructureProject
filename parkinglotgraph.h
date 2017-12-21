@@ -8,6 +8,7 @@
 #include <QPoint>
 #include <QGraphicsScene>
 #include <QMap>
+#include <QPixmap>
 #include "Road.h"
 
 class ParkingLotGraph
@@ -38,15 +39,20 @@ public:
         return no;
     }
     void paint(QGraphicsScene* scene);
+
     Path* finaPath(Node::Type t1, int n1, Node::Type t2, int n2);
     uint getNodeId(Node::Type t, int n);
     ~ParkingLotGraph();
+    QPixmap *getPixmap();
+
 private:
-   QVector<Node* > m_all;
-   QVector<Node* > m_spaceList;
-   QVector<Node* > m_roadNodeList;
-   QMap<uint, Node*> m_actionList;
-   const ParkingLotWidget* pk;
+    QVector<Node* > m_all;
+    QVector<Node* > m_spaceList;
+    QVector<Node* > m_roadNodeList;
+    QMap<uint, Node*> m_actionList;
+    QPixmap* m_pixmap = nullptr;
+    void generatePixmap();
+    const ParkingLotWidget* pk;
 };
 
 #endif // PARKINGLOTGRAPH_H
