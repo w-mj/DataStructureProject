@@ -28,7 +28,6 @@ public:
     void addPoint(const PathPoint &point);
     bool isEmpty();
     int pointsCount();
-    uint size();
 
 private:
     QList<PathPoint> path;

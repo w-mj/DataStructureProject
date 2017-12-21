@@ -37,7 +37,3 @@ int Path::pointsCount()
     return path.length();
 }
 
-uint Path::size()
-{
-    return path.size();
-}
