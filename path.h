@@ -18,6 +18,8 @@ struct PathPoint
     PathPoint(const PathPoint& another) {
         point = another.point;
         dir = another.dir;
+        pointId = another.pointId;
+        action = another.action;
     }
 };
 

@@ -171,6 +171,10 @@ uint ParkingLotGraph::getNodeId(ParkingLotGraph::Node::Type t, int n) {
     return -1;
 }
 
+qreal angle(const QPoint& p) {
+    return qRadiansToDegrees(qAtan2(p.y(), p.x()));
+}
+
 // Dijkstra 求最短路径
 Path *ParkingLotGraph::finaPath(ParkingLotGraph::Node::Type t1, int n1, ParkingLotGraph::Node::Type t2, int n2)
 {
@@ -214,40 +218,55 @@ Path *ParkingLotGraph::finaPath(ParkingLotGraph::Node::Type t1, int n1, ParkingL
     }
     Path* path = new Path();
     uint n = id2;
+    QPoint lastP;
     while (n != id1) {
-        path->addPoint(0, PathPoint(QPointF(m_all[n]->data), 0, m_all[n]->action, m_all[n]->getId()));
-        QPoint tp;
-        if (m_all[n]->type == Node::Type::space) {
-            ParkingSpaceWidget* space = pk->getSpaceList().at(m_all[n]->number - 1);
-            switch (space->getDir()) {
-            case ParkingSpaceWidget::direction::E:
-            case ParkingSpaceWidget::direction::W:
-                tp.setX(m_all[prev[n]]->data.x());
-                tp.setY(m_all[n]->data.y());
-                break;
-            case ParkingSpaceWidget::direction::N:
-            case ParkingSpaceWidget::direction::S:
-                tp.setX(m_all[n]->data.x());
-                tp.setY(m_all[prev[n]]->data.y());
-                break;
+        // 相邻两个点的xy都不想等，添加一个辅助顶点构成矩形
+        if (m_all[n]->data.x() != m_all[prev[n]]->data.x() &&
+                m_all[n]->data.y() != m_all[prev[n]]->data.y()) {
+            QPoint tp;
+            if (m_all[n]->type == Node::Type::space) {
+                ParkingSpaceWidget* space = pk->getSpaceList().at(m_all[n]->number - 1);
+                switch (space->getDir()) {
+                case ParkingSpaceWidget::direction::E:
+                case ParkingSpaceWidget::direction::W:
+                    tp.setX(m_all[prev[n]]->data.x());
+                    tp.setY(m_all[n]->data.y());
+                    break;
+                case ParkingSpaceWidget::direction::N:
+                case ParkingSpaceWidget::direction::S:
+                    tp.setX(m_all[n]->data.x());
+                    tp.setY(m_all[prev[n]]->data.y());
+                    break;
+                }
+            } else if (m_all[n]->type == Node::Type::road) {
+                Road* road = pk->getRoadList().at(m_all[n]->number - 1);
+                switch(road->getDir()) {
+                case Road::direction::horizontal:
+                    tp.setX(m_all[prev[n]]->data.x());
+                    tp.setY(m_all[n]->data.y());
+                    break;
+                case Road::direction::vertical:
+                    tp.setX(m_all[n]->data.x());
+                    tp.setY(m_all[prev[n]]->data.y());
+                    break;
+                }
             }
-        } else if (m_all[n]->type == Node::Type::road) {
-            Road* road = pk->getRoadList().at(m_all[n]->number - 1);
-            switch(road->getDir()) {
-            case Road::direction::horizontal:
-                tp.setX(m_all[prev[n]]->data.x());
-                tp.setY(m_all[n]->data.y());
-                break;
-            case Road::direction::vertical:
-                tp.setX(m_all[n]->data.x());
-                tp.setY(m_all[prev[n]]->data.y());
-                break;
-            }
+            if (lastP.isNull())
+                lastP = tp;
+
+            qreal ang1 = angle(lastP - m_all[n]->data);
+            qreal ang2 = angle(m_all[n]->data - tp);
+
+            path->addPoint(0, PathPoint(QPointF(m_all[n]->data), ang1, m_all[n]->action, m_all[n]->getId()));  // 添加后一个点
+            path->addPoint(0, PathPoint(QPointF(tp), ang2));  // 添加辅助点
+            lastP = tp;
+        } else {
+            qreal ang = angle(m_all[n]->data - m_all[prev[n]]->data);
+            path->addPoint(0, PathPoint(QPointF(m_all[n]->data), ang, m_all[n]->action, m_all[n]->getId()));
         }
-        path->addPoint(0, PathPoint(QPointF(tp), 0));
         n = prev[n];
     }
-    path->addPoint(0, PathPoint(QPointF(m_all[n]->data), 0, m_all[n]->action, m_all[n]->getId())); // 把第一个点也加进去
+    path->addPoint(0, PathPoint(QPointF(m_all[n]->data), angle(lastP - m_all[n]->data), m_all[n]->action, m_all[n]->getId())); // 把第一个点也加进去
     return path;
 }
 
@@ -318,7 +337,7 @@ Road::Action ParkingLotGraph::Node::getAction() const
     return action;
 }
 
-uint ParkingLotGraph::Node::getId() const
+int ParkingLotGraph::Node::getId() const
 {
     return id;
 }

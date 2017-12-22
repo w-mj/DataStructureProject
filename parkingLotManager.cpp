@@ -99,10 +99,18 @@ ParkingLotGraph::Node::Type getType(int n) {
 
 void ParkingLotManager::drawPath(int n1, int n2)
 {
+    QPen pen(QColor(242, 23, 242));
+    pen.setWidth(3);
     Path *p = m_graph[m_current_floor]->finaPath(getType(n1), n1, getType(n2), n2);
     for(int i = 1; i < p->pointsCount(); i++) {
         QLineF line(p->getPoint(i-1).point, p->getPoint(i).point);
+        QPointF dir(qCos(qDegreesToRadians(p->getPoint(i-1).dir)) * 10,
+                    qSin(qDegreesToRadians(p->getPoint(i-1).dir)) * 10);
+        QLineF dirLine(p->getPoint(i-1).point, p->getPoint(i-1).point + dir);
         m_scene->addLine(line);
+        m_scene->addLine(dirLine, pen);
+        m_scene->addText(QString::number(p->getPoint(i-1).dir))->moveBy(p->getPoint(i-1).point.x(),
+                                                                        p->getPoint(i-1).point.y());
     }
 }
 
