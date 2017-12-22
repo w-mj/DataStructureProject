@@ -47,10 +47,19 @@ ParkingLotGraph::ParkingLotGraph(const ParkingLotWidget* pkl): pk(pkl)
             m_roadNodeList[2*i+1] = addNode(p, Node::Type::road, r->getNumber());
         }
         if (r->getAction() != Road::Action::none) {
-            m_roadNodeList[2*i + r->getActionPos() - 1]->setAction(r->getAction());  // 添加动作
-             // 把有动作的节点添加到dict里，方便查找
-            m_actionList.insert(m_roadNodeList[2*i + r->getActionPos() - 1]->getId(),
-                    m_roadNodeList[2*i + r->getActionPos() - 1]);
+            if (r->getAction() != Road::entry) {
+                m_roadNodeList[2*i + r->getActionPos() - 1]->setAction(r->getAction());  // 添加动作
+                 // 把有动作的节点添加到dict里，方便查找
+                m_actionList.insert(m_roadNodeList[2*i + r->getActionPos() - 1]->getId(),
+                        m_roadNodeList[2*i + r->getActionPos() - 1]);
+            } else {
+                // 当前点为入口
+                m_roadNodeList[2*i + r->getActionPos() - 1]->setAction(r->getAction());
+                // 另一个点为队首
+                m_roadNodeList[2*i + 2 - r->getActionPos()]->setAction(Road::Action::queueHead);
+                m_actionList.insert(m_roadNodeList[2 * i]->getId(), m_roadNodeList[2 * i]);
+                m_actionList.insert(m_roadNodeList[2 * i + 1]->getId(), m_roadNodeList[2 * i + 1]);
+            }
         }
         m_roadNodeList[2*i]->addPath(m_roadNodeList[2*i + 1]);  // 一条路的两个端点连接起来
     }
