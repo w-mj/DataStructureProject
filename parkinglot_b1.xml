@@ -1,14 +1,32 @@
 <parkinglot roadWidth="50px" name="地下一层">
 	<vLayout>
-		<road length="700" direction="horizontal" />
+		<boundary length="740" direction="horizontal" />
 		<hLayout>
-			<road length="600" direction="vertical" />
-			<room number="15" direction="W" expendDirection="down"/>
-			<room number="15" direction="E" expendDirection="down"/>
-			<road length="600" direction="vertical" />
-			<room number="15" direction="W" expendDirection="down"/>
-			<room number="15" direction="E" expendDirection="down"/>
+			<road length="730" direction="horizontal" action="stair" actionPos="1"/>
+			<space length="5" />
+			<boundary length="55" direction="vertical" />
 		</hLayout>
-		<road length="700" direction="horizontal" />
+		<hLayout>
+			<boundary length="520" direction="vertical" />
+			<road length="520" direction="vertical" />
+			<room number="13" direction="W" expendDirection="down"/>
+			<room number="13" direction="E" expendDirection="down"/>
+			<road length="520" direction="vertical" />
+			<room number="13" direction="W" expendDirection="down"/>
+			<room number="13" direction="E" expendDirection="down"/>
+			<road length="520" direction="vertical" />
+			<room number="13" direction="W" expendDirection="down"/>
+			<room number="13" direction="E" expendDirection="down"/>
+			<road length="520" direction="vertical" />
+			<room number="13" direction="W" expendDirection="down"/>
+			<room number="13" direction="E" expendDirection="down"/>
+			<road length="520" direction="vertical" />
+			<boundary length="520" direction="vertical" />
+		</hLayout>
+		<hLayout>
+			<boundary length="55" direction="vertical" />
+			<road length="730" direction="horizontal" action="stair" actionPos="2"/>
+		</hLayout>
+		<boundary length="740" direction="horizontal" />
 	</vLayout>
 </parkinglot>

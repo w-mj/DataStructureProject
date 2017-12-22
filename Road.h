@@ -9,7 +9,7 @@ class Road: public QWidget
 	Q_OBJECT
 public:
 	enum direction{ horizontal, vertical};
-    enum Action{entry, stair, none};
+    enum Action{entry, stair, exit, none};
     Road(ParkingLotWidget* parent, const int length, direction dir);
 	void paintEvent(QPaintEvent* event) override;
     uint getNumber() const;

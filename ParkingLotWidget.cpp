@@ -100,6 +100,8 @@ QBoxLayout * ParkingLotWidget::parseLayout(const QDomElement & element)
                 r->setAction(Road::Action::entry);
             else if (action == "stair")
                 r->setAction(Road::Action::stair);
+            else if (action == "exit")
+                r->setAction(Road::Action::exit);
             else
                 r->setAction(Road::Action::none);
             r->setActionPos(child.attribute("actionPos", "0").toShort());
