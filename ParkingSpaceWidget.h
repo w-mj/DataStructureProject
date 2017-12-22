@@ -15,6 +15,7 @@ public:
     static QBoxLayout*  makeParkingSapceGroup(ParkingLotWidget* parent, const QString& dir, int n, const QString &expend);
 	~ParkingSpaceWidget();
     direction getDir() const;
+    void mouseDoubleClickEvent(QMouseEvent *event);
     int getNumber() const;
 
 protected:
@@ -23,7 +24,7 @@ private:
     bool m_showMargin = false;
     int number;
 	direction dir;
-    // QLabel *m_float_window = nullptr;
+    bool m_banned = false;
 };
 
 #endif

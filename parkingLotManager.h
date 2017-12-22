@@ -14,11 +14,21 @@ class ParkingLotManager: public QObject
     Q_OBJECT
 public:
     explicit ParkingLotManager(QObject* objectParent, QGraphicsScene* scene);
+    struct RequestSpace {
+        bool success = false;
+        uint layer = 0;
+        uint number = 0;
+        Path* path = Q_NULLPTR;
+        RequestSpace() {}
+        RequestSpace(uint l, uint n, Path* p):success(true), layer(l), number(n), path(p)  {}
+        RequestSpace(const RequestSpace& another) = default;
+    };
     void showParkingLot(uint pos);
     void showParkingLot(void);
     void showDownStairFloor(void);
     void showUpStairFloor(void);
     void drawPath(int n1, int n2);
+    RequestSpace request(uint entry);
 
     void showMargin(bool enable);
     void showGraph(bool enable);
@@ -27,9 +37,9 @@ private:
     QGraphicsScene* m_scene;
     QVector<ParkingLotWidget*> m_widgets;  // 每一层的widget
     QVector<int> m_capacity;  // 每一层的容量
-    QVector<int> m_num_of_cars;  // 每一层当前停的车数量
+    // QVector<int> m_num_of_cars;  // 每一层当前停的车数量
     QVector<QVector<Car*> > m_cars;  // 停在每一层的车
-    QVector<QQueue<Car*> >m_waitting; // 在每个入口等待的车
+    QVector<QList<Car*> >m_waitting; // 在每个入口等待的车
     QVector<ParkingLotGraph*> m_graph;
     QVector<QGraphicsPixmapItem*> m_graph_pixmap;
     QStringList m_xml_path;  // 每一层xml文件地址
@@ -38,7 +48,7 @@ private:
     const uint m_num_of_entry = 2;  // 入口数
     uint m_current_floor = 1; // 当前楼层，默认为1楼（按照从下往上递增，值与实际楼层无关）
     bool m_showGraph = false;  // 是否显示图
-    void clearScene();
+
 signals:
     void enableUpButton(bool);
     void enableDownButton(bool);

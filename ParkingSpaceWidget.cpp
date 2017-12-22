@@ -6,6 +6,8 @@
 #include <QEvent>
 #include <QHoverEvent>
 #include <QObject>
+#include <QMenu>
+#include <QCursor>
 #include "ParkingLotWidget.h"
 
 ParkingSpaceWidget::ParkingSpaceWidget(ParkingLotWidget* parent, const QString &dir): QWidget(parent)
@@ -98,6 +100,17 @@ void ParkingSpaceWidget::paintEvent(QPaintEvent *)
         painter.setBrush(Qt::NoBrush);
         painter.drawRect(0, 0, width() - 1, height() - 1);
     }
+    if (m_banned) {
+        QPen p;
+        p.setBrush(Qt::black);
+        p.setWidth(4);
+        p.setCapStyle(Qt::RoundCap);
+        painter.setPen(p);
+        painter.setBrush(QColor(240, 172, 47));
+        painter.setRenderHint(QPainter::Antialiasing, true);
+        painter.drawEllipse(15, 5, 26, 26);
+        painter.drawRect(17, 17, 24, 2);
+    }
 
     //painter.restore();
     //painter.setPen(Qt::black);
@@ -113,6 +126,16 @@ int ParkingSpaceWidget::getNumber() const
 ParkingSpaceWidget::direction ParkingSpaceWidget::getDir() const
 {
     return dir;
+}
+
+void ParkingSpaceWidget::mouseDoubleClickEvent(QMouseEvent *)
+{
+    if (m_banned)
+        qDebug() << "禁用解除" << number;
+    else
+        qDebug() << "禁用车位" << number;
+    m_banned = !m_banned;
+    update();
 }
 
 ParkingSpaceWidget::~ParkingSpaceWidget()

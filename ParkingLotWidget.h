@@ -5,6 +5,8 @@
 #include <QVBoxLayout>
 #include <QDomDocument>
 #include <QVector>
+#include <QContextMenuEvent>
+#include <QAction>
 #include "Road.h"
 #include "ParkingSpaceWidget.h"
 class ParkingSpaceWidget;  // 先声明类，防止循环include

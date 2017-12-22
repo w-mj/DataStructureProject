@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <QPaintEvent>
 
+
 ParkingLotWidget::ParkingLotWidget(QWidget *parent, const QString& xml) : QWidget(parent)
 {
 	parse_xml(xml);
@@ -16,6 +17,7 @@ ParkingLotWidget::ParkingLotWidget(QWidget *parent, const QString& xml) : QWidge
     // resize(640, 480);
     setLayout(layout);
     adjustSize();  // 调整大小至刚刚可以装下所有元素
+
 }
 
 
@@ -160,3 +162,5 @@ void ParkingLotWidget::showMarginSlot(bool b)
     // qDebug() << "Parkinglot Widget: show margin " << b;
     emit showMargain(b);
 }
+
+
