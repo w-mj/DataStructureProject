@@ -2,7 +2,6 @@
 #include "ParkingLotWidget.h"
 #include "ParkingSpaceWidget.h"
 #include "path.h"
-#include "MyEvent.h"
 #include <QDebug>
 #include <QPainter>
 #include <QPoint>
@@ -100,7 +99,7 @@ ParkingLotGraph::Node::Type getType(int n) {
 
 void ParkingLotManager::drawPath(int n1, int n2)
 {
-    Path *p = m_graph[1]->finaPath(getType(n1), n1, getType(n2), n2);
+    Path *p = m_graph[m_current_floor]->finaPath(getType(n1), n1, getType(n2), n2);
     for(int i = 1; i < p->pointsCount(); i++) {
         QLineF line(p->getPoint(i-1).point, p->getPoint(i).point);
         m_scene->addLine(line);

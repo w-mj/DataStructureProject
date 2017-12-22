@@ -4,7 +4,6 @@
 #include <QLayout>
 #include <QLabel>
 #include "ParkingLotWidget.h"
-#include "MyEvent.h"
 class ParkingLotWidget;
 
 class ParkingSpaceWidget: public QWidget
