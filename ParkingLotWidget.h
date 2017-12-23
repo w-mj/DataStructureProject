@@ -36,6 +36,7 @@ private:
 
 signals:
     void showMargain(bool);
+    void banParkingSpace(bool, uint);
 };
 
 #endif

@@ -4,7 +4,10 @@
 #include <QWidget>
 #include <vector>
 #include <QString>
+#include <mainwindow.h>
 #include "ParkingLotWidget.h"
+
+class MainWindow;
 
 namespace Ui {
     class Monitor;
@@ -15,7 +18,7 @@ class Monitor : public QWidget
     Q_OBJECT
 
 public:
-    explicit Monitor(QWidget *parent = 0);
+    explicit Monitor(MainWindow *parent = 0);
     ~Monitor();
 
 private:

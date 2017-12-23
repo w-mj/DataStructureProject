@@ -8,6 +8,13 @@
 #include <QRect>
 #include <QGraphicsScene>
 #include <QApplication>
+#include "logwindow.h"
+
+#define GET_SITUATION(l, n) (m_widgets[l]->getSpaceList().at(n)->getSituation())
+#define BANNED (ParkingSpaceWidget::Situation::banned)
+#define OCCUPIED (ParkingSpaceWidget::Situation::occupied)
+#define FREE (ParkingSpaceWidget::Situation::free)
+
 
 ParkingLotManager::ParkingLotManager(QObject* objectParent, QGraphicsScene* scene):
     QObject(objectParent), m_scene(scene)
@@ -33,14 +40,16 @@ ParkingLotManager::ParkingLotManager(QObject* objectParent, QGraphicsScene* scen
         m_capacity.push_back(widget->getCapacity());  // 获得这一层的最大容量
         m_cars[i].resize(m_capacity.at(i));  // 初始化一层的车位
         m_name.push_back(widget->getName());  // 这一层的名字
-        // m_num_of_cars.push_back(0);  // 初始停车数量为0
+        m_num_of_cars.push_back(0);  // 初始停车数量为0
         widget->hide();
         m_widgets.push_back(widget);
         m_scene->addWidget(widget);
         m_graph.push_back(new ParkingLotGraph(widget));
         m_graph_pixmap.push_back(new QGraphicsPixmapItem(*m_graph.last()->getPixmap()));
         QObject::connect(this, &ParkingLotManager::showMarginSignal, widget, &ParkingLotWidget::showMarginSlot);
+        QObject::connect(widget, &ParkingLotWidget::banParkingSpace, [i, this](bool b, int n){banSpace(b, i, n);});
     }
+    generatePool(true);
 }
 
 void ParkingLotManager::showParkingLot(uint pos)
@@ -59,7 +68,7 @@ void ParkingLotManager::showParkingLot(uint pos)
         m_scene->addItem(m_graph_pixmap.at(m_current_floor));
     }
     emit setCapacity(QString::number(m_capacity.at(pos)));
-    emit setLoad(QString::number(m_capacity.at(pos) - m_cars.at(pos).size()));
+    emit setLoad(QString::number(m_capacity.at(pos) - m_num_of_cars[pos]));
     emit setLayerName(m_name.at(pos));
 }
 
@@ -116,13 +125,14 @@ void ParkingLotManager::drawPath(int n1, int n2)
 
 ParkingLotManager::RequestSpace ParkingLotManager::request(uint entry)
 {
-    for (int layer = m_num_of_layer - 1; layer >= 0; layer--) {
-        if (m_cars[layer].size() != m_capacity[layer]) {
-            int n = m_cars[layer].size();
-            Path* p = m_graph[layer]->finaPath(ParkingLotGraph::Node::Type::entry, entry,
-                                               ParkingLotGraph::Node::Type::space, n);
-            return RequestSpace(layer, n, p);
-        }
+    if (!m_pool.empty()) {
+        int l = m_pool.first().first;
+        int n = m_pool.first().second;
+        m_pool.removeAt(0);
+        Path* p = m_graph[l]->finaPath(ParkingLotGraph::Node::Type::entry, entry,
+                                                   ParkingLotGraph::Node::Type::space, n);
+        Log::i(QString("分配第") + l + "层" + n + "号车位，剩余" + QString::number(m_pool.size()) + "个空车位");
+        return RequestSpace(l, n, p);
     }
     return RequestSpace();
 }
@@ -138,4 +148,29 @@ void ParkingLotManager::showGraph(bool enable)
     // qDebug() << "show graph" << enable;
     m_showGraph = enable;
     showParkingLot();
+}
+
+void ParkingLotManager::banSpace(bool banned, int layer, int number)
+{
+    if (banned) {
+        m_pool.removeOne(qMakePair(layer, number));
+        Log::i(QString("禁用成功，当前共有") + QString::number(m_pool.size()) + "个空车位");
+    } else {
+        m_pool.append(qMakePair(layer, number));
+        Log::i(QString("解禁成功，当前共有") + QString::number(m_pool.size()) + "个空车位");
+    }
+}
+
+void ParkingLotManager::generatePool(bool sequence)
+{
+    for (int l = m_num_of_layer - 1; l >= 0; l--) {
+        for (int n = 0; n < m_capacity[l]; n++) {
+            if (GET_SITUATION(l, n) == FREE) {
+                m_pool.append(qMakePair(l, n));
+            }
+        }
+    }
+    if (!sequence)
+        std::random_shuffle(m_pool.begin(), m_pool.end());
+    Log::i(QString("生成车位池成功，当前共有") + QString::number(m_pool.size()) + "个空车位");
 }

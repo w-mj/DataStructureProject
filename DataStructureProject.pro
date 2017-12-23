@@ -37,7 +37,8 @@ SOURCES += \
     car.cpp \
     path.cpp \
     parkingLotManager.cpp \
-    parkinglotgraph.cpp
+    parkinglotgraph.cpp \
+    logwindow.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -50,11 +51,13 @@ HEADERS += \
     car.h \
     path.h \
     parkingLotManager.h \
-    parkinglotgraph.h
+    parkinglotgraph.h \
+    logwindow.h
 
 FORMS += \
         mainwindow.ui \
-    monitor.ui
+    monitor.ui \
+    logwindow.ui
 
 RESOURCES += \
     cars.qrc \

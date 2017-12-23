@@ -44,6 +44,7 @@ ParkingSpaceWidget::ParkingSpaceWidget(ParkingLotWidget* parent, const QString &
         this->m_showMargin = b;
         update();
     });
+    QObject::connect(this, &ParkingSpaceWidget::ban, parent, &ParkingLotWidget::banParkingSpace);
 }
 
 QBoxLayout *ParkingSpaceWidget::makeParkingSapceGroup(ParkingLotWidget* parent, const QString& dir, int n, const QString & expend)
@@ -100,7 +101,7 @@ void ParkingSpaceWidget::paintEvent(QPaintEvent *)
         painter.setBrush(Qt::NoBrush);
         painter.drawRect(0, 0, width() - 1, height() - 1);
     }
-    if (m_banned) {
+    if (m_situation == banned) {
         QPen p;
         p.setBrush(Qt::black);
         p.setWidth(4);
@@ -118,6 +119,16 @@ void ParkingSpaceWidget::paintEvent(QPaintEvent *)
     painter.end();
 }
 
+ParkingSpaceWidget::Situation ParkingSpaceWidget::getSituation() const
+{
+    return m_situation;
+}
+
+void ParkingSpaceWidget::setSituation(const Situation &value)
+{
+    m_situation = value;
+}
+
 int ParkingSpaceWidget::getNumber() const
 {
     return number;
@@ -130,11 +141,17 @@ ParkingSpaceWidget::direction ParkingSpaceWidget::getDir() const
 
 void ParkingSpaceWidget::mouseDoubleClickEvent(QMouseEvent *)
 {
-    if (m_banned)
+    if (m_situation == banned) {
         qDebug() << "禁用解除" << number;
-    else
+        emit ban(false, number);
+        m_situation = free;
+    } else if (m_situation == free) {
         qDebug() << "禁用车位" << number;
-    m_banned = !m_banned;
+        emit ban(true, number);
+        m_situation = banned;
+    } else {
+        qDebug() << "车位已被占用";
+    }
     update();
 }
 
