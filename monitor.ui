@@ -242,7 +242,7 @@
         <item>
          <widget class="QCheckBox" name="showList">
           <property name="text">
-           <string>显示总览列表</string>
+           <string>显示列表</string>
           </property>
          </widget>
         </item>

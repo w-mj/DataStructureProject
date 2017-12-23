@@ -23,7 +23,7 @@ LogWindow::~LogWindow()
     delete ui;
 }
 
-LogWindow *LogWindow::getInstance(QWidget *parent)
+LogWindow *LogWindow::newInstance(QWidget *parent)
 {
     if (m_instance == nullptr)
         m_instance = new LogWindow(parent);

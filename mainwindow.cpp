@@ -8,11 +8,14 @@
 #include <QDebug>
 #include "ParkingLotWidget.h"
 #include "monitor.h"
+#include "carlist.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    logWindow = LogWindow::getInstance(this);
+    logWindow = LogWindow::newInstance(this);
+    list = CarList::newInstance(this);
+
     Monitor *monitor = new Monitor(this);
     resize(monitor->size());
 }
@@ -33,10 +36,19 @@ void MainWindow::open(void) {
 void MainWindow::showLogWindow(bool enable)
 {
     if (enable) {
-        qDebug() << x() << "  " << y() << "  " << width();
         logWindow->setGeometry(x()+width() + 15, y() + 35, 400, 450);
         logWindow->show();
         setFocus();
     } else
         logWindow->hide();
+}
+
+void MainWindow::showListWindow(bool enable)
+{
+    if (enable) {
+        list->setGeometry(x()+width() + 15, y() + width() / 2, 400, 450);
+        list->show();
+        setFocus();
+    } else
+        list->hide();
 }

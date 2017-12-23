@@ -17,7 +17,7 @@ class LogWindow : public QWidget
 public:
     ~LogWindow();
     static LogWindow* getInstance();
-    static LogWindow* getInstance(QWidget* parent);
+    static LogWindow* newInstance(QWidget* parent);
     static void i(QString text);
 
 private:

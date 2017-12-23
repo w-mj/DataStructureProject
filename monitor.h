@@ -6,6 +6,7 @@
 #include <QString>
 #include <mainwindow.h>
 #include "ParkingLotWidget.h"
+#include "carlist.h"
 
 class MainWindow;
 
@@ -22,7 +23,10 @@ public:
     ~Monitor();
 
 private:
+    QList<FakeCar> *l = new QList<FakeCar>;
     Ui::Monitor *ui;
+    void addCar();
+    Adapter *adapter;
 };
 
 #endif // MONITOR_H

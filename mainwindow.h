@@ -5,6 +5,7 @@
 #include <QAction>
 #include "monitor.h"
 #include "logwindow.h"
+#include "carlist.h"
 
 class Monitor;
 namespace Ui {
@@ -19,11 +20,13 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     void open(void);
     void showLogWindow(bool enable);
+    void showListWindow(bool enable);
     ~MainWindow();
 
 private:
     Ui::MainWindow *ui = nullptr;
     LogWindow* logWindow;
+    CarList *list;
     QAction *action;
     Monitor *monitor;
 };
