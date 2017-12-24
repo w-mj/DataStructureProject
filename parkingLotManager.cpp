@@ -56,7 +56,7 @@ ParkingLotManager::ParkingLotManager(QObject* objectParent, QGraphicsScene* scen
     generatePool(true);
     Car *car = new Car();
     scene->addItem(car);
-    Path* p = m_graph[1]->finaPath(ParkingLotGraph::Node::entry, 1, ParkingLotGraph::Node::space, 100);
+    Path* p = m_graph[1]->findPath(ParkingLotGraph::Node::entry, 1, ParkingLotGraph::Node::space, 100);
     car->setPath(p);
     car->followPath();
 }
@@ -119,7 +119,7 @@ void ParkingLotManager::drawPath(int n1, int n2)
 {
     QPen pen(QColor(242, 23, 242));
     pen.setWidth(3);
-    Path *p = m_graph[m_current_floor]->finaPath(getType(n1), n1, getType(n2), n2);
+    Path *p = m_graph[m_current_floor]->findPath(getType(n1), n1, getType(n2), n2);
     for(int i = 1; i < p->pointsCount(); i++) {
         QLineF line(p->getPoint(i-1).point, p->getPoint(i).point);
         QPointF dir(qCos(qDegreesToRadians(p->getPoint(i-1).dir)) * 10,
@@ -132,38 +132,38 @@ void ParkingLotManager::drawPath(int n1, int n2)
     }
 }
 
-void ParkingLotManager::requestOut(Car *car, int exit = -1)
+void ParkingLotManager::requestOut(Car *car, int exit)
 {
     if (exit != -1)
         exit = rand() % m_num_of_entry;
     Path *p; // TODO：请求出口
 }
 
-ParkingLotManager::RequestSpace ParkingLotManager::requestIn(Car* car)
+void ParkingLotManager::requestIn(Car* car)
 {
+    int entry = car->getFloor();
     if (!m_pool.empty()) {
         int l = m_pool.first().first;
         int n = m_pool.first().second;
         m_pool.removeAt(0);
         Path* p;
         if (l == m_current_floor)
-            p = m_graph[l]->finaPath(NODE_TYPE::queueHead, entry, NODE_TYPE::space, n);
+            p = m_graph[l]->findPath(NODE_TYPE::queueHead, entry, NODE_TYPE::space, n);
         else {
             p = m_graph[m_current_floor]->findPath(NODE_TYPE::queueHead, entry, NODE_TYPE::stair, entry);
         }
-        m_waitting.at(entry).removeFirst();  // 等候队列中的第一个移除
-        m_cars.at(l).at(n) = car;
+        m_waitting[entry].removeFirst();  // 等候队列中的第一个移除
+        m_cars[l][n] = car;
         Log::i(QString("分配第") + l + "层" + n + "号车位，剩余" + QString::number(m_pool.size()) + "个空车位");
-
-        return RequestSpace(l, n, p);
     } else {
         Log::i("请求失败，车位已满");
     }
-    return RequestSpace();
 }
 
 void ParkingLotManager::leave(Car* car)
 {
+    int l = car->getFloor();
+    int n = car->getNum();
     m_pool.append(qMakePair(l, n));
     Log::i(QString("有车离开，当前共有%1个空车位").arg(m_pool.size()));
     emit carLeave();
@@ -174,8 +174,8 @@ void ParkingLotManager::addCar(int entry)
 {
     if (entry == -1)
         entry = rand() % m_num_of_entry;
-    Car *car = new Car(0, 0);  // TODO: 修改构造函数
-    m_waitting.at(entry).append(car);
+    Car *car = new Car();  // TODO: 修改构造函数
+    m_waitting[entry].append(car);
     // TODO: 添加路径
 }
 

@@ -7,6 +7,7 @@
 #include <QPoint>
 #include <QtMath>
 #include <QPropertyAnimation>
+#include <QObject>
 #include "path.h"
 
 //车身长宽
@@ -31,6 +32,10 @@ public:
     void turnRight(int r, double ang); //右转
     void setPath(Path *path);
 
+    int getNum();
+    int getFloor();
+    int getEntryNum();
+
     //动画
     void moveTo(QPointF target);
     void followPath();
@@ -52,7 +57,10 @@ private:
     qreal   m_dir;
     Path    *m_path;
     PathPoint m_target;
-
+    PathPoint m_current;
+    int entryNum;
+    int floor;
+    int num;
 
 signals:
     void entry(Car* car);

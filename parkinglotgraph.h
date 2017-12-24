@@ -40,7 +40,7 @@ public:
     }
     void paint(QGraphicsScene* scene);
 
-    Path* finaPath(Node::Type t1, int n1, Node::Type t2, int n2);
+    Path* findPath(Node::Type t1, int n1, Node::Type t2, int n2);
     uint getNodeId(Node::Type t, int n);
     ~ParkingLotGraph();
     QPixmap *getPixmap();

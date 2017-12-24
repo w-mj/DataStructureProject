@@ -173,9 +173,9 @@ uint ParkingLotGraph::getNodeId(ParkingLotGraph::Node::Type t, int n) {
         return m_actionList.at(n - 1)->getId();
     } else {
         Road::Action act = static_cast<Road::Action>(t);
-        for (auto n: m_actionList) {
-            if (n->action == act && --n == 0)
-                return n->id;
+        for (auto node: m_actionList) {
+            if (node->action == act && --n == 0)
+                return node->id;
         }
     }
     return -1;
@@ -186,7 +186,7 @@ qreal angle(const QPoint& p) {
 }
 
 // Dijkstra 求最短路径
-Path *ParkingLotGraph::finaPath(ParkingLotGraph::Node::Type t1, int n1, ParkingLotGraph::Node::Type t2, int n2)
+Path *ParkingLotGraph::findPath(ParkingLotGraph::Node::Type t1, int n1, ParkingLotGraph::Node::Type t2, int n2)
 {
     struct HeapNode {
         uint d, u;//d为到该点的总路径，u为这一点

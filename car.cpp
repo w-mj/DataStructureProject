@@ -2,9 +2,11 @@
 
 
 Car::Car(QGraphicsItem *parent, int dir, Car::Color color) :
+    QObject(0),
     QGraphicsPixmapItem(parent),
     posAni(new QPropertyAnimation(this,"m_pos")),
-    m_target(PathPoint(this->pos(),this->rotation()))
+    m_target(PathPoint(this->pos(),this->rotation())),
+    m_current(PathPoint(this->pos(),this->rotation()))
 {
     m_pos = this->pos();
     this->setRotation(dir);
@@ -81,12 +83,31 @@ void Car::turnRight(int r, double ang)
 
 void Car::setPath(Path *path)
 {
-   m_path = path;
+    m_path = path;
+}
+
+int Car::getNum()
+{
+    return num;
+}
+
+int Car::getFloor()
+{
+    return floor;
+}
+
+int Car::getEntryNum()
+{
+    return entryNum;
 }
 
 void Car::moveTo(QPointF target)
 {
-    posAni->setDuration(1000);
+    qreal dx = m_current.point.x()-m_target.point.x();
+    qreal dy = m_current.point.y()-m_target.point.y();
+    qreal dis = qSqrt(qPow(dx,2)+qPow(dy,2));
+    qreal dur = dis/0.3;
+    posAni->setDuration(dur);
     posAni->setEndValue(target);
     posAni->start();
 }
@@ -113,6 +134,7 @@ void Car::followPath()
     }
     if(!m_path->isEmpty())
     {
+        m_current = m_target;
         m_target = m_path->getNext();
         moveTo(m_target.point);
     }
