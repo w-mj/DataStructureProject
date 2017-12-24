@@ -61,7 +61,6 @@ private:
     int entryNum;
     int floor;
     int num;
-
 signals:
     void entry(Car* car);
     void stair(Car* car);
