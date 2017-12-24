@@ -16,7 +16,7 @@ class ParkingLotGraph
 public:
     struct Node{
     public:
-        enum Type{road, space, entry};
+        enum Type{entry = 1, stair, exit, queueHead, space, road, act};
         Node(const QPoint& p, Type t, uint n, int idd) : number(n), id(idd), type(t), data(p) {}
         void addPath(Node* another);
         uint number;
@@ -49,7 +49,7 @@ private:
     QVector<Node* > m_all;
     QVector<Node* > m_spaceList;
     QVector<Node* > m_roadNodeList;
-    QMap<uint, Node*> m_actionList;
+    QVector<Node* > m_actionList;
     QPixmap* m_pixmap = nullptr;
     void generatePixmap();
     const ParkingLotWidget* pk;

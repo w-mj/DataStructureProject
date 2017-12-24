@@ -28,7 +28,12 @@ public:
     void showDownStairFloor(void);
     void showUpStairFloor(void);
     void drawPath(int n1, int n2);
-    RequestSpace request(uint entry);
+
+public slots:
+    void requestIn(Car* car);
+    void requestOut(Car* car, int exit = -1);
+    void leave(Car* car);
+    void addCar(int entry = -1);
 
     void showMargin(bool enable);
     void showGraph(bool enable);
@@ -60,6 +65,8 @@ signals:
     void setLoad(const QString&);
     void setLayerName(const QString&);
     void showMarginSignal(bool);
+
+    void carLeave(void);
 };
 
 #endif // PARKINGLOTITEM_H
