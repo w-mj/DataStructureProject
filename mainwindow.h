@@ -21,6 +21,7 @@ public:
     void open(void);
     void showLogWindow(bool enable);
     void showListWindow(bool enable);
+    bool eventFilter(QObject *obj, QEvent *event);
     ~MainWindow();
 
 private:

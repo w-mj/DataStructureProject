@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     Monitor *monitor = new Monitor(this);
     resize(monitor->size());
+    installEventFilter(this);
 }
 
 MainWindow::~MainWindow()
@@ -52,3 +53,11 @@ void MainWindow::showListWindow(bool enable)
     } else
         list->hide();
 }
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
+       if (event->type() == QEvent::Move) {
+           logWindow->setGeometry(x()+width() + 15, y() + 35, 400, 450);
+           list->setGeometry(x()+width() + 15, y() + width() / 2, 400, 450);
+       }
+       return QWidget::eventFilter(obj, event);
+   }
