@@ -10,6 +10,7 @@ CarList::CarList(QWidget *parent) :
     ui(new Ui::CarList)
 {
     ui->setupUi(this);
+    setWindowFlags(Qt::Dialog | Qt::WindowCloseButtonHint);
     setWindowTitle("车辆列表");
     setGeometry(parent->x() + parent->width(), y() + parent->height() / 2, 400, 450);
     hide();
@@ -36,6 +37,12 @@ CarList *CarList::newInstance(QWidget *parent)
 CarList *CarList::getInstance()
 {
     return m_instance;
+}
+
+void CarList::closeEvent(QCloseEvent *e)
+{
+    emit onCloseButtonClicked();
+    e->accept();
 }
 
 

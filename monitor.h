@@ -21,6 +21,8 @@ class Monitor : public QWidget
 public:
     explicit Monitor(MainWindow *parent = 0);
     void showEvent(QShowEvent *event);
+    void closeLogWindow();
+    void closeListWindow();
     ~Monitor();
 
 private:
@@ -28,6 +30,7 @@ private:
     Ui::Monitor *ui;
     void addCar();
     Adapter *adapter;
+    bool initialized = false;
 };
 
 #endif // MONITOR_H

@@ -19,8 +19,12 @@ MainWindow::MainWindow(QWidget *parent) :
     LoginDialog::getInstance(this);
 
     Monitor *monitor = new Monitor(this);
+    setWindowFlags(Qt::Window | Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint);
     resize(monitor->size());
     installEventFilter(this);
+
+    connect(logWindow, &LogWindow::onCloseButtonClicked, monitor, &Monitor::closeLogWindow);
+    connect(list, &CarList::onCloseButtonClicked, monitor, &Monitor::closeListWindow);
 }
 
 MainWindow::~MainWindow()

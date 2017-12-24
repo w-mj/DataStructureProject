@@ -19,7 +19,9 @@ public:
     static LogWindow* getInstance();
     static LogWindow* newInstance(QWidget* parent);
     static void i(QString text);
-    // static void i(char* text);
+    void closeEvent(QCloseEvent *e);
+signals:
+    void onCloseButtonClicked(void);
 
 private:
     static LogWindow* m_instance;

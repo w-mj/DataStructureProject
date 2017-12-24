@@ -48,13 +48,26 @@ Monitor::Monitor(MainWindow *parent) :
 void Monitor::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
-    QTimer *timer = new QTimer(this);
-    timer->setSingleShot(true);
-    connect(timer, &QTimer::timeout, [this]() {
-        emit this->ui->showList->toggle();
-        emit this->ui->showLog->toggle();
-    });
-    timer->start(100);  // 延时100ms，等待窗口创建完毕后执行，哈哈哈哈哈
+    if (!initialized) {
+        QTimer *timer = new QTimer(this);
+        timer->setSingleShot(true);
+        connect(timer, &QTimer::timeout, [this]() {
+            emit this->ui->showList->toggle();
+            emit this->ui->showLog->toggle();
+        });
+        timer->start(100);  // 延时100ms，等待窗口创建完毕后执行，哈哈哈哈哈
+        initialized = true;
+    }
+}
+
+void Monitor::closeLogWindow()
+{
+    ui->showLog->setChecked(false);
+}
+
+void Monitor::closeListWindow()
+{
+    ui->showList->setChecked(false);
 }
 
 Monitor::~Monitor()

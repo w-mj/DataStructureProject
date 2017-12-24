@@ -33,6 +33,8 @@ private:
     QStringList header;
     QList<FakeCar>* m_list;
     QTimer *timer;
+
+
 };
 
 class CarList : public QDialog
@@ -44,7 +46,9 @@ public:
     void setAdapter(Adapter* adapter);
     static CarList* newInstance(QWidget* parent);
     static CarList* getInstance();
-
+    void closeEvent(QCloseEvent *e);
+signals:
+    void onCloseButtonClicked(void);
 
 private:
     static CarList* m_instance;
