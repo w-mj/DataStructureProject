@@ -52,6 +52,7 @@ private:
     qreal   m_dir;
     Path    *m_path;
     PathPoint m_target;
+    PathPoint m_current;
 
 
 signals:
