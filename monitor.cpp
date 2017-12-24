@@ -6,6 +6,7 @@
 #include "parkingLotManager.h"
 #include "carlist.h"
 #include "logwindow.h"
+#include "utils.h"
 
 Monitor::Monitor(MainWindow *parent) :
     QWidget(parent),
@@ -13,10 +14,6 @@ Monitor::Monitor(MainWindow *parent) :
 {
 
     l->append(FakeCar());
-//    l->append(FakeCar());
-//    l->append(FakeCar());
-//    l->append(FakeCar());
-//    l->append(FakeCar());
 
     adapter = new Adapter(this, l);
 
@@ -38,6 +35,9 @@ Monitor::Monitor(MainWindow *parent) :
         pk->drawPath(ui->placeNum1->text().toInt(), ui->placeNum2->text().toInt());
     });
 
+    QObject::connect(ui->addCar, &QPushButton::clicked, [this]() {
+        Log::i(checkPlate(this->ui->plateNumBox->text())==true?"true":"false");
+    });
     QObject::connect(ui->random, &QPushButton::clicked, this, &Monitor::addCar);
 
     pk->showParkingLot();

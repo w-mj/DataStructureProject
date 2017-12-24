@@ -9,6 +9,8 @@
 #include <QMenu>
 #include <QCursor>
 #include "ParkingLotWidget.h"
+#include "logindialog.h"
+#include "logwindow.h"
 
 ParkingSpaceWidget::ParkingSpaceWidget(ParkingLotWidget* parent, const QString &dir): QWidget(parent)
 {
@@ -141,18 +143,23 @@ ParkingSpaceWidget::direction ParkingSpaceWidget::getDir() const
 
 void ParkingSpaceWidget::mouseDoubleClickEvent(QMouseEvent *)
 {
-    if (m_situation == banned) {
-        qDebug() << "禁用解除" << number;
-        emit ban(false, number);
-        m_situation = free;
-    } else if (m_situation == free) {
-        qDebug() << "禁用车位" << number;
-        emit ban(true, number);
-        m_situation = banned;
+    if (REQUIRE_PREMISSION) {
+        Log::i("请求权限成功");
+        if (m_situation == banned) {
+            qDebug() << "禁用解除" << number;
+            emit ban(false, number);
+            m_situation = free;
+        } else if (m_situation == free) {
+            qDebug() << "禁用车位" << number;
+            emit ban(true, number);
+            m_situation = banned;
+        } else {
+            qDebug() << "车位已被占用";
+        }
+        update();
     } else {
-        qDebug() << "车位已被占用";
+        Log::i("请求权限失败");
     }
-    update();
 }
 
 ParkingSpaceWidget::~ParkingSpaceWidget()

@@ -35,6 +35,11 @@ void LogWindow::i(QString text)
     getInstance()->text->append(QTime::currentTime().toString("hh:mm:ss")+":"+text);
 }
 
+//void LogWindow::i(char* text)
+//{
+//    getInstance()->text->append(QTime::currentTime().toString("hh:mm:ss")+":"+text);
+//}
+
 LogWindow *LogWindow::getInstance()
 {
     return m_instance;

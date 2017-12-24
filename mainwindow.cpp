@@ -9,12 +9,14 @@
 #include "ParkingLotWidget.h"
 #include "monitor.h"
 #include "carlist.h"
+#include "logindialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     logWindow = LogWindow::newInstance(this);
     list = CarList::newInstance(this);
+    LoginDialog::getInstance(this);
 
     Monitor *monitor = new Monitor(this);
     resize(monitor->size());

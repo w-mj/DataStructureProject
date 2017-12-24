@@ -19,6 +19,7 @@ public:
     static LogWindow* getInstance();
     static LogWindow* newInstance(QWidget* parent);
     static void i(QString text);
+    // static void i(char* text);
 
 private:
     static LogWindow* m_instance;
