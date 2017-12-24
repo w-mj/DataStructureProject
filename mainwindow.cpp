@@ -62,4 +62,4 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
            list->setGeometry(x()+width() + 15, y() + width() / 2, 400, 450);
        }
        return QWidget::eventFilter(obj, event);
-   }
+}

@@ -202,6 +202,9 @@
           <property name="text">
            <string/>
           </property>
+          <property name="maxLength">
+           <number>6</number>
+          </property>
           <property name="placeholderText">
            <string>车牌号</string>
           </property>

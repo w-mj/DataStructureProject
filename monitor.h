@@ -20,6 +20,7 @@ class Monitor : public QWidget
 
 public:
     explicit Monitor(MainWindow *parent = 0);
+    void showEvent(QShowEvent *event);
     ~Monitor();
 
 private:
