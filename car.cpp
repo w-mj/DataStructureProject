@@ -1,7 +1,10 @@
 ﻿#include "car.h"
 
 
-Car::Car(QGraphicsItem *parent, int dir, Car::Color color) : QGraphicsPixmapItem(parent)
+Car::Car(QGraphicsItem *parent, int dir, Car::Color color) :
+    QGraphicsPixmapItem(parent),
+    posAni(new QPropertyAnimation(this,"m_pos")),
+    m_target(PathPoint(this->pos(),this->rotation()))
 {
     m_pos = this->pos();
     this->setRotation(dir);
@@ -25,6 +28,7 @@ Car::Car(QGraphicsItem *parent, int dir, Car::Color color) : QGraphicsPixmapItem
     m_pic = m_pic.scaled(M_WID, M_LEN);
     this->setPixmap(m_pic);
     setTransformOriginPoint(M_WID/2, M_LEN/2);  //设置旋转中心
+    connect(posAni,QPropertyAnimation::finished,this,followPath);
 }
 
 void Car::Forward(qreal vel)
@@ -73,6 +77,39 @@ void Car::turnRight(int r, double ang)
     Forward(r*qSin(rad));
     moveRight(r*(1-qCos(rad)));
     Rotate(ang);
+}
+
+void Car::setPath(Path &path)
+{
+   m_path = path;
+}
+
+void Car::moveTo(QPointF target)
+{
+    posAni->setDuration(1000);
+    posAni->setEndValue(target);
+    posAni->start();
+}
+
+void Car::followPath()
+{
+    setRotation(m_target.dir);
+    if(m_path.isEmpty())
+    {
+        m_target = m_path.getNext();
+        moveTo(m_target.point);
+    }
+}
+
+QPointF Car::getmPos()
+{
+    return this->pos();
+}
+
+void Car::setmPos(QPointF pos)
+{
+    this->setPos(pos);
+    this->m_pos = pos;
 }
 
 Car::Color Car::getColor()

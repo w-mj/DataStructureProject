@@ -37,3 +37,9 @@ int Path::pointsCount()
     return path.length();
 }
 
+PathPoint &Path::getNext()
+{
+    PathPoint &tmp = path.first();
+    path.removeFirst();
+    return tmp;
+}

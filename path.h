@@ -34,10 +34,12 @@ public:
     void addPoint(const PathPoint &point);
     bool isEmpty();
     int pointsCount();
+    PathPoint &getNext();
 
 private:
     QList<PathPoint> path;
     int len;
+    int i;
 };
 
 #endif // PATH_H
