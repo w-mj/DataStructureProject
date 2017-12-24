@@ -38,7 +38,7 @@ void MainWindow::showLogWindow(bool enable)
     if (enable) {
         logWindow->setGeometry(x()+width() + 15, y() + 35, 400, 450);
         logWindow->show();
-        setFocus();
+        activateWindow();
     } else
         logWindow->hide();
 }
@@ -48,7 +48,7 @@ void MainWindow::showListWindow(bool enable)
     if (enable) {
         list->setGeometry(x()+width() + 15, y() + width() / 2, 400, 450);
         list->show();
-        setFocus();
+        activateWindow();
     } else
         list->hide();
 }
