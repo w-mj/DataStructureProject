@@ -9,6 +9,7 @@
 #include <QGraphicsScene>
 #include <QApplication>
 #include "logwindow.h"
+#include "car.h"
 
 #define GET_SITUATION(l, n) (m_widgets[l]->getSpaceList().at(n)->getSituation())
 #define BANNED (ParkingSpaceWidget::Situation::banned)
@@ -19,6 +20,7 @@
 ParkingLotManager::ParkingLotManager(QObject* objectParent, QGraphicsScene* scene):
     QObject(objectParent), m_scene(scene)
 {
+
     // 找到xml文件路径
     QString filePath = __FILE__;
     QStringList list = filePath.split("\\");
@@ -50,6 +52,11 @@ ParkingLotManager::ParkingLotManager(QObject* objectParent, QGraphicsScene* scen
         QObject::connect(widget, &ParkingLotWidget::banParkingSpace, [i, this](bool b, int n){banSpace(b, i, n);});
     }
     generatePool(true);
+    Car *car = new Car();
+    scene->addItem(car);
+    Path* p = m_graph[1]->finaPath(ParkingLotGraph::Node::entry, 1, ParkingLotGraph::Node::space, 100);
+    car->setPath(p);
+    car->followPath();
 }
 
 void ParkingLotManager::showParkingLot(uint pos)

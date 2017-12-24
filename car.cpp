@@ -79,7 +79,7 @@ void Car::turnRight(int r, double ang)
     Rotate(ang);
 }
 
-void Car::setPath(Path &path)
+void Car::setPath(Path *path)
 {
    m_path = path;
 }
@@ -94,9 +94,26 @@ void Car::moveTo(QPointF target)
 void Car::followPath()
 {
     setRotation(m_target.dir);
-    if(m_path.isEmpty())
+    switch (m_target.action)
     {
-        m_target = m_path.getNext();
+    case Road::entry :
+        emit entry(this);
+        break;
+    case Road::stair:
+        emit stair(this);
+        break;
+    case Road::exit:
+        emit exit(this);
+        break;
+    case Road::queueHead:
+        emit queueHead(this);
+        break;
+    case Road::none:
+        break;
+    }
+    if(!m_path->isEmpty())
+    {
+        m_target = m_path->getNext();
         moveTo(m_target.point);
     }
 }

@@ -10,8 +10,8 @@
 #include "path.h"
 
 //车身长宽
-#define M_LEN   (200)
-#define M_WID   (130)
+#define M_LEN   (60)
+#define M_WID   (40)
 
 class Car : public QObject, public QGraphicsPixmapItem
 {
@@ -29,7 +29,7 @@ public:
     void Rotate(qreal ang = 30);    //原地旋转
     void turnLeft(int r, double ang);  //左转
     void turnRight(int r, double ang); //右转
-    void setPath(Path &path);
+    void setPath(Path *path);
 
     //动画
     void moveTo(QPointF target);
@@ -50,8 +50,16 @@ private:
     QString m_number;
     QPointF m_pos;
     qreal   m_dir;
-    Path    m_path;
+    Path    *m_path;
     PathPoint m_target;
+
+
+signals:
+    void entry(Car* car);
+    void stair(Car* car);
+    void exit(Car* car);
+    void queueHead(Car* car);
+
 
 };
 
