@@ -50,15 +50,14 @@ ParkingLotGraph::ParkingLotGraph(const ParkingLotWidget* pkl): pk(pkl)
             if (r->getAction() != Road::entry) {
                 m_roadNodeList[2*i + r->getActionPos() - 1]->setAction(r->getAction());  // 添加动作
                  // 把有动作的节点添加到dict里，方便查找
-                m_actionList.insert(m_roadNodeList[2*i + r->getActionPos() - 1]->getId(),
-                        m_roadNodeList[2*i + r->getActionPos() - 1]);
+                m_actionList.append(m_roadNodeList[2*i + r->getActionPos() - 1]);
             } else {
                 // 当前点为入口
                 m_roadNodeList[2*i + r->getActionPos() - 1]->setAction(r->getAction());
                 // 另一个点为队首
                 m_roadNodeList[2*i + 2 - r->getActionPos()]->setAction(Road::Action::queueHead);
-                m_actionList.insert(m_roadNodeList[2 * i]->getId(), m_roadNodeList[2 * i]);
-                m_actionList.insert(m_roadNodeList[2 * i + 1]->getId(), m_roadNodeList[2 * i + 1]);
+                m_actionList.append(m_roadNodeList[2 * i]);
+                m_actionList.append(m_roadNodeList[2 * i + 1]);
             }
         }
         m_roadNodeList[2*i]->addPath(m_roadNodeList[2*i + 1]);  // 一条路的两个端点连接起来
@@ -170,12 +169,14 @@ void ParkingLotGraph::paint(QGraphicsScene *scene)
 uint ParkingLotGraph::getNodeId(ParkingLotGraph::Node::Type t, int n) {
     if (t == Node::Type::space) {
         return  m_spaceList.at(n - 1)->getId();
-    } else if(t == Node::Type::entry) {
-        int k = 0;
-        for (Node* node: m_actionList.values())
-            if (node->action==Road::Action::entry)
-                if (++k == n)
-                    return node->id;
+    } else if (t == Node::Type::act) {
+        return m_actionList.at(n - 1)->getId();
+    } else {
+        Road::Action act = static_cast<Road::Action>(t);
+        for (auto n: m_actionList) {
+            if (n->action == act && --n == 0)
+                return n->id;
+        }
     }
     return -1;
 }
@@ -229,7 +230,7 @@ Path *ParkingLotGraph::finaPath(ParkingLotGraph::Node::Type t1, int n1, ParkingL
     uint n = id2;
     QPoint lastP;
     while (n != id1) {
-        // 相邻两个点的xy都不想等，添加一个辅助顶点构成矩形
+        // 相邻两个点的xy都不相等，添加一个辅助顶点构成矩形
         if (m_all[n]->data.x() != m_all[prev[n]]->data.x() &&
                 m_all[n]->data.y() != m_all[prev[n]]->data.y()) {
             QPoint tp;

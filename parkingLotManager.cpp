@@ -16,6 +16,8 @@
 #define OCCUPIED (ParkingSpaceWidget::Situation::occupied)
 #define FREE (ParkingSpaceWidget::Situation::free)
 
+#define NODE_TYPE ParkingLotGraph::Node::Type
+
 
 ParkingLotManager::ParkingLotManager(QObject* objectParent, QGraphicsScene* scene):
     QObject(objectParent), m_scene(scene)
@@ -110,7 +112,7 @@ ParkingLotGraph::Node::Type getType(int n) {
     if (n > 0)
         return ParkingLotGraph::Node::Type::space;
     else
-        return ParkingLotGraph::Node::Type::entry;
+        return ParkingLotGraph::Node::Type::act;
 }
 
 void ParkingLotManager::drawPath(int n1, int n2)
@@ -130,18 +132,51 @@ void ParkingLotManager::drawPath(int n1, int n2)
     }
 }
 
-ParkingLotManager::RequestSpace ParkingLotManager::request(uint entry)
+void ParkingLotManager::requestOut(Car *car, int exit = -1)
+{
+    if (exit != -1)
+        exit = rand() % m_num_of_entry;
+    Path *p; // TODO：请求出口
+}
+
+ParkingLotManager::RequestSpace ParkingLotManager::requestIn(Car* car)
 {
     if (!m_pool.empty()) {
         int l = m_pool.first().first;
         int n = m_pool.first().second;
         m_pool.removeAt(0);
-        Path* p = m_graph[l]->finaPath(ParkingLotGraph::Node::Type::entry, entry,
-                                                   ParkingLotGraph::Node::Type::space, n);
+        Path* p;
+        if (l == m_current_floor)
+            p = m_graph[l]->finaPath(NODE_TYPE::queueHead, entry, NODE_TYPE::space, n);
+        else {
+            p = m_graph[m_current_floor]->findPath(NODE_TYPE::queueHead, entry, NODE_TYPE::stair, entry);
+        }
+        m_waitting.at(entry).removeFirst();  // 等候队列中的第一个移除
+        m_cars.at(l).at(n) = car;
         Log::i(QString("分配第") + l + "层" + n + "号车位，剩余" + QString::number(m_pool.size()) + "个空车位");
+
         return RequestSpace(l, n, p);
+    } else {
+        Log::i("请求失败，车位已满");
     }
     return RequestSpace();
+}
+
+void ParkingLotManager::leave(Car* car)
+{
+    m_pool.append(qMakePair(l, n));
+    Log::i(QString("有车离开，当前共有%1个空车位").arg(m_pool.size()));
+    emit carLeave();
+    emit setLoad(QString::number(m_capacity.at(l) - m_num_of_cars[l]));  // 更新剩余车位
+}
+
+void ParkingLotManager::addCar(int entry)
+{
+    if (entry == -1)
+        entry = rand() % m_num_of_entry;
+    Car *car = new Car(0, 0);  // TODO: 修改构造函数
+    m_waitting.at(entry).append(car);
+    // TODO: 添加路径
 }
 
 void ParkingLotManager::showMargin(bool enable)
