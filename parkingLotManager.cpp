@@ -197,14 +197,14 @@ void ParkingLotManager::showGraph(bool enable)
     showParkingLot();
 }
 
-void ParkingLotManager::banSpace(bool banned, int layer, int number)
+void ParkingLotManager::banSpace(bool banned, int l , int n)
 {
     if (banned) {
-        m_pool.removeOne(qMakePair(layer, number));
-        Log::i(QString("禁用成功，当前共有") + QString::number(m_pool.size()) + "个空车位");
+        m_pool.removeOne(qMakePair(l, n - 1));
+        Log::i(QString("禁用第%1层%2号车位，剩余%3个空车位").arg(l).arg(n).arg(m_pool.size()));
     } else {
-        m_pool.append(qMakePair(layer, number));
-        Log::i(QString("解禁成功，当前共有") + QString::number(m_pool.size()) + "个空车位");
+        m_pool.append(qMakePair(l, n - 1));
+        Log::i(QString("启用第%1层%2号车位，剩余%3个空车位").arg(l).arg(n).arg(m_pool.size()));
     }
 }
 
