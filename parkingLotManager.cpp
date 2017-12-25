@@ -134,6 +134,16 @@ void ParkingLotManager::requestOut(Car *car, int exit)
     Path *p; // TODO：请求出口
 }
 
+void ParkingLotManager::requestStair(Car *car)
+{
+    int l = car->getFloor();
+    int n = car->getNum();
+    int e = car->getEntryNum();
+    Path *p = m_graph[l]->findPath(NODE_TYPE::stair, e, NODE_TYPE::space, n);
+    car->setPath(p);
+    car->followPath();
+}
+
 void ParkingLotManager::requestIn(Car* car)
 {
     int entry = car->getEntryNum();

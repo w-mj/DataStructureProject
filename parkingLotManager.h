@@ -34,6 +34,7 @@ public:
 public slots:
     void requestIn(Car* car);
     void requestOut(Car* car, int exit = -1);
+    void requestStair(Car* car);
     void leave(Car* car);
     void addCar(int entry = -1);
 

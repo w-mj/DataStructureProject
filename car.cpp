@@ -34,6 +34,7 @@ Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color
     connect(posAni,QPropertyAnimation::finished,this,followPath);
     connect(this, &Car::queueHead, manager, &ParkingLotManager::requestIn);
     connect(this, &Car::exit, manager, &ParkingLotManager::leave);
+    connect(this, &Car::stair, manager, &ParkingLotManager::requestStair);
 }
 
 void Car::Forward(qreal vel)
