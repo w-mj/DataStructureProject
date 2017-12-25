@@ -25,6 +25,7 @@ class Car : public QObject, public QGraphicsPixmapItem
 public:
     enum Status {waiting, moving, parking};
     enum Color { Pink, Red, Yellow, RANDOM };
+    enum { Type = UserType + 3 };
     explicit Car(ParkingLotManager * manager, QGraphicsItem *parent = Q_NULLPTR,
                  int dir = 0, Car::Color color = RANDOM);
     //基础移动
@@ -67,6 +68,9 @@ public:
 
     QTime getStartTime() const;
     void setStartTime(const QTime &value);
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = Q_NULLPTR);
+
+    int type() const;
 
 private:
     Status m_status;
@@ -84,6 +88,7 @@ private:
     int num;
     QTime startTime;
     ParkingLotManager* m_manager;
+    bool crash;
 signals:
     void entry(Car* car);
     void stair(Car* car);

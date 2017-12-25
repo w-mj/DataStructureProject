@@ -1,6 +1,7 @@
 ﻿#include "car.h"
 #include "logwindow.h"
 #include <QTimer>
+//#include <QDebug>
 
 
 Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color color) :
@@ -41,10 +42,11 @@ Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color
     m_number = "1234";
 
     // 测试:创建10s后离开
-    QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, [this, manager](){emit manager->requestOut(this);});
-    timer->setSingleShot(true);
-    timer->start(10000);
+//    QTimer *timer = new QTimer(this);
+//    connect(timer, &QTimer::timeout, [this, manager](){emit manager->requestOut(this);});
+//    timer->setSingleShot(true);
+//    timer->start(10000);
+    crash = true;
 }
 
 void Car::Forward(qreal vel)
@@ -120,7 +122,7 @@ void Car::moveTo(QPointF target)
     qreal dx = m_current.point.x()-m_target.point.x();
     qreal dy = m_current.point.y()-m_target.point.y();
     qreal dis = qSqrt(qPow(dx,2)+qPow(dy,2));
-    qreal dur = dis/0.3;
+    qreal dur = dis/0.2;
     target.setX(target.x() - 20);
     target.setY(target.y() - 30);
     posAni->setDuration(dur);
@@ -148,6 +150,7 @@ void Car::followPath()
     case Road::queueHead:
         Log::i("发送请求车位信号");
         emit queueHead(this);
+        crash=false;
         break;
     case Road::none:
         break;
@@ -226,6 +229,47 @@ QTime Car::getStartTime() const
 void Car::setStartTime(const QTime &value)
 {
     startTime = value;
+}
+
+void Car::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    if(crash)
+    {
+        QList<QGraphicsItem *> items = collidingItems();
+        if(!items.isEmpty())
+        {
+            for(auto item:items)
+            {
+                if(item->type()==Car::Type)
+                {
+                    Car *car = qgraphicsitem_cast<Car*>(item);
+                    if(qAbs(car->getDir()-270)<20&&qAbs(this->getDir()-270)<20&&car->getmPos().x()<this->getmPos().x())
+                    {
+                        posAni->stop();
+                        break;
+                    }
+                    else if(qAbs(car->getDir()-180)<20&&qAbs(this->getDir()-180)<20&&car->getmPos().y()>this->getmPos().y())
+                    {
+                        posAni->stop();
+                        break;
+                    }
+                }
+                if(this->posAni->currentTime()!=this->posAni->totalDuration())
+                    posAni->start();
+            }
+        }
+        else
+        {
+            if(this->posAni->currentTime()!=this->posAni->totalDuration())
+                this->posAni->start();
+        }
+    }
+    QGraphicsPixmapItem::paint(painter, option, widget);
+}
+
+int Car::type() const
+{
+    return Type;
 }
 
 int Car::getTargetFloor() const
