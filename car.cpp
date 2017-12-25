@@ -22,7 +22,8 @@ Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color
     QGraphicsPixmapItem(parent),
     posAni(new QPropertyAnimation(this,"m_pos")),
     m_target(PathPoint(this->pos(),this->rotation())),
-    m_current(PathPoint(this->pos(),this->rotation()))
+    m_current(PathPoint(this->pos(),this->rotation())),
+    crash(true)
 {
     m_manager = manager;
     m_pos = this->pos();
@@ -290,9 +291,18 @@ void Car::leaveProbability(int p)
         emit out(this, -1);
 }
 
+
 void Car::setPlateNumber(const QString &number) {
     this->m_number = number;
 }
+
+void Car::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    if(event->button()==Qt::LeftButton)
+        emit out(this,-1);
+    event->accept();
+}
+
 int Car::getTargetFloor() const
 {
     return targetFloor;

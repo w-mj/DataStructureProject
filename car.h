@@ -9,6 +9,7 @@
 #include <QPropertyAnimation>
 #include <QObject>
 #include <QTime>
+#include <QGraphicsSceneMouseEvent>
 #include "path.h"
 #include "parkingLotManager.h"
 class ParkingLotManager;
@@ -74,6 +75,8 @@ public:
 
     void leaveProbability(int p);
     void setPlateNumber(const QString &number);
+
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 
 private:
     Status m_status;
