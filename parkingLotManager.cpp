@@ -136,8 +136,17 @@ void ParkingLotManager::drawPath(int n1, int n2)
 void ParkingLotManager::requestOut(Car *car, int exit)
 {
     if (exit != -1)
-        exit = rand() % m_num_of_entry;
-    Path *p; // TODO：请求出口
+        exit = rand() % m_num_of_entry + 1;
+    Path *p;
+    if (car->getCurrentFloor() == 1)
+        p = m_graph[1]->findPath(NODE_TYPE::space, car->getNum(), NODE_TYPE::exit, exit);
+    else
+        p = m_graph[car->getCurrentFloor()]->
+                findPath(NODE_TYPE::space, car->getNum(), NODE_TYPE::stair, exit);
+    car->setNum(-exit);  // 负数代表出口
+    car->setPath(p);
+    car->setTargetFloor(1);
+    car->followPath();
 }
 
 void ParkingLotManager::requestStair(Car *car)
@@ -145,9 +154,17 @@ void ParkingLotManager::requestStair(Car *car)
     int l = car->getTargetFloor();
     int n = car->getNum();
     int e = car->getEntryNum();
-    Path *p = m_graph[l]->findPath(NODE_TYPE::stair, e, NODE_TYPE::space, n);
+    Path *p;
+    if (n > 0)
+        p = m_graph[l]->findPath(NODE_TYPE::stair, e, NODE_TYPE::space, n);
+    else
+        p = m_graph[l]->findPath(NODE_TYPE::stair, e, NODE_TYPE::exit, -n);
     car->setPath(p);
     car->setCurrentFloor(l);
+    if (l == static_cast<int>(m_current_floor))
+        car->show();
+    else
+        car->hide();
     car->followPath();
 }
 
@@ -184,6 +201,8 @@ void ParkingLotManager::leave(Car* car)
     Log::i(QString("有车离开，当前共有%1个空车位").arg(m_pool.size()));
     emit carLeave();
     emit setLoad(QString::number(m_capacity.at(l) - m_num_of_cars[l]));  // 更新剩余车位
+    car->hide();
+    delete car;
 }
 
 void ParkingLotManager::addCar(int entry)

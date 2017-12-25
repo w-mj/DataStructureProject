@@ -1,5 +1,6 @@
 ﻿#include "car.h"
 #include "logwindow.h"
+#include <QTimer>
 
 
 Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color color) :
@@ -35,6 +36,12 @@ Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color
     connect(this, &Car::queueHead, manager, &ParkingLotManager::requestIn);
     connect(this, &Car::exit, manager, &ParkingLotManager::leave);
     connect(this, &Car::stair, manager, &ParkingLotManager::requestStair);
+
+    // 测试:创建10s后离开
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, [this, manager](){emit manager->requestOut(this);});
+    timer->setSingleShot(true);
+    timer->start(10000);
 }
 
 void Car::Forward(qreal vel)
