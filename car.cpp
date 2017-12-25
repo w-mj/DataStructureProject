@@ -100,11 +100,6 @@ int Car::getNum()
     return num;
 }
 
-int Car::getFloor()
-{
-    return floor;
-}
-
 int Car::getEntryNum()
 {
     return entryNum;
@@ -174,14 +169,29 @@ qreal Car::getDir()
     return this->rotation();
 }
 
+int Car::getTargetFloor() const
+{
+    return targetFloor;
+}
+
+void Car::setTargetFloor(int value)
+{
+    targetFloor = value;
+}
+
+int Car::getCurrentFloor() const
+{
+    return currentFloor;
+}
+
+void Car::setCurrentFloor(int value)
+{
+    currentFloor = value;
+}
+
 void Car::setEntryNum(int value)
 {
     entryNum = value;
-}
-
-void Car::setFloor(int value)
-{
-    floor = value;
 }
 
 void Car::setNum(int value)

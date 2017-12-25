@@ -71,6 +71,12 @@ void ParkingLotManager::showParkingLot(uint pos)
     if (m_showGraph) {
         m_scene->addItem(m_graph_pixmap.at(m_current_floor));
     }
+    for (auto c: m_all_cars) {
+        if (c->getCurrentFloor() != static_cast<int>(pos))
+            c->hide();
+        else
+            c->show();
+    }
     emit setCapacity(QString::number(m_capacity.at(pos)));
     emit setLoad(QString::number(m_capacity.at(pos) - m_num_of_cars[pos]));
     emit setLayerName(m_name.at(pos));
@@ -136,11 +142,12 @@ void ParkingLotManager::requestOut(Car *car, int exit)
 
 void ParkingLotManager::requestStair(Car *car)
 {
-    int l = car->getFloor();
+    int l = car->getTargetFloor();
     int n = car->getNum();
     int e = car->getEntryNum();
     Path *p = m_graph[l]->findPath(NODE_TYPE::stair, e, NODE_TYPE::space, n);
     car->setPath(p);
+    car->setCurrentFloor(l);
     car->followPath();
 }
 
@@ -153,15 +160,15 @@ void ParkingLotManager::requestIn(Car* car)
         m_pool.removeAt(0);
         Log::i(QString("分配第%1层%2号车位，剩余%3个空车位").arg(l).arg(n).arg(m_pool.size()));
         Path* p;
-        if (l == m_current_floor)
-            p = m_graph[l]->findPath(NODE_TYPE::queueHead, entry, NODE_TYPE::space, n);
+        if (l == 1)
+            p = m_graph[1]->findPath(NODE_TYPE::queueHead, entry, NODE_TYPE::space, n);
         else {
-            p = m_graph[m_current_floor]->findPath(NODE_TYPE::queueHead, entry, NODE_TYPE::stair, entry);
+            p = m_graph[1]->findPath(NODE_TYPE::queueHead, entry, NODE_TYPE::stair, entry);
         }
         m_waitting[entry - 1].removeOne(car);  // 移除等候
         m_cars[l][n - 1] = car;
         car->setPath(p);
-        car->setFloor(l);
+        car->setTargetFloor(l);
         car->setNum(n);
         car->followPath();
     } else {
@@ -171,7 +178,7 @@ void ParkingLotManager::requestIn(Car* car)
 
 void ParkingLotManager::leave(Car* car)
 {
-    int l = car->getFloor();
+    int l = car->getCurrentFloor();
     int n = car->getNum();
     m_pool.append(qMakePair(l, n));
     Log::i(QString("有车离开，当前共有%1个空车位").arg(m_pool.size()));
@@ -189,9 +196,13 @@ void ParkingLotManager::addCar(int entry)
     m_waitting[entry].append(car);
     Path *p = m_graph[1]->findPath(NODE_TYPE::entry, entry + 1, NODE_TYPE::queueHead, entry + 1);
     car->setPath(p);
+    car->setCurrentFloor(1);  // 刚添加的车一定是在一层
+    car->setTargetFloor(1);
     car->followPath();
     m_all_cars.append(car);
     m_scene->addItem(car);
+    if (m_current_floor != 1)
+        car->hide();
 }
 
 void ParkingLotManager::showMargin(bool enable)

@@ -36,11 +36,13 @@ public:
     void setPath(Path *path);
 
     int getNum();
-    int getFloor();
+    void setNum(int value);
     int getEntryNum();
     void setEntryNum(int value);
-    void setFloor(int value);
-    void setNum(int value);
+    int getTargetFloor() const;
+    void setTargetFloor(int value);
+    int getCurrentFloor() const;
+    void setCurrentFloor(int value);
 
     //动画
     void moveTo(QPointF target);
@@ -55,6 +57,8 @@ public:
 
     QPropertyAnimation *posAni;
 
+
+
 private:
     Color   m_color;      //车身颜色 N为0， 顺时针递增
     QPixmap m_pic;
@@ -65,7 +69,8 @@ private:
     PathPoint m_target;
     PathPoint m_current;
     int entryNum;
-    int floor;
+    int targetFloor;
+    int currentFloor;
     int num;
 signals:
     void entry(Car* car);
