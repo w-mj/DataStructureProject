@@ -49,6 +49,7 @@ ParkingLotManager::ParkingLotManager(QObject* objectParent, QGraphicsScene* scen
         widget->hide();
         m_widgets.push_back(widget);
         m_scene->addWidget(widget);
+        m_scene->setSceneRect(widget->rect());  // 固定位置
         m_graph.push_back(new ParkingLotGraph(widget));
         m_graph_pixmap.push_back(new QGraphicsPixmapItem(*m_graph.last()->getPixmap()));
         QObject::connect(this, &ParkingLotManager::showMarginSignal, widget, &ParkingLotWidget::showMarginSlot);
@@ -183,7 +184,6 @@ void ParkingLotManager::requestIn(Car* car)
     if (!m_pool.empty()) {
         uint l = m_pool.first().first;
         int n = m_pool.first().second + 1;
-        l = 0;
         m_pool.removeAt(0);
         Log::i(QString("分配第%1层%2号车位，剩余%3个空车位").arg(l).arg(n).arg(m_pool.size()));
         Path* p;
