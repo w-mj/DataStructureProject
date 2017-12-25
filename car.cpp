@@ -186,7 +186,7 @@ QString Car::getPosition() const
     } else if (m_status == waiting) {
         return "正在等候";
     } else  {
-        return QString("%1%2号").arg(m_manager->getParkingLotName(currentFloor)).arg(num);
+        return QString("%1%2号").arg(m_manager->getParkingLotName(targetFloor)).arg(num);
     }
 }
 
