@@ -49,7 +49,6 @@ ParkingLotManager::ParkingLotManager(QObject* objectParent, QGraphicsScene* scen
         widget->hide();
         m_widgets.push_back(widget);
         m_scene->addWidget(widget);
-        m_scene->setSceneRect(widget->rect());  // 固定位置
         m_graph.push_back(new ParkingLotGraph(widget));
         m_graph_pixmap.push_back(new QGraphicsPixmapItem(*m_graph.last()->getPixmap()));
         QObject::connect(this, &ParkingLotManager::showMarginSignal, widget, &ParkingLotWidget::showMarginSlot);
@@ -81,6 +80,7 @@ void ParkingLotManager::showParkingLot(uint pos)
         else
             c->show();
     }
+    m_scene->setSceneRect(m_widgets[pos]->rect());  // 固定位置
     emit setCapacity(QString::number(m_capacity.at(pos)));
     emit setLoad(QString::number(m_capacity.at(pos) - m_num_of_cars[pos]));
     emit setLayerName(m_name.at(pos));
@@ -200,6 +200,8 @@ void ParkingLotManager::requestIn(Car* car)
         car->followPath();
         car->setStartTime(QTime::currentTime());
         car->setStatus(Car::parking);
+        m_num_of_cars[l] += 1;
+        emit setLoad(QString::number(m_capacity.at(m_current_floor) - m_num_of_cars[m_current_floor]));
     } else {
         Log::i("请求失败，车位已满");
     }
@@ -212,10 +214,11 @@ void ParkingLotManager::leave(Car* car)
     m_pool.append(qMakePair(l, n));
     Log::i(QString("有车离开，当前共有%1个空车位").arg(m_pool.size()));
     emit carLeave();
-    emit setLoad(QString::number(m_capacity.at(l) - m_num_of_cars[l]));  // 更新剩余车位
     car->hide();
     m_all_cars.removeOne(car);
     delete car;
+    m_num_of_cars[l] -= 1;
+    emit setLoad(QString::number(m_capacity.at(m_current_floor) - m_num_of_cars[m_current_floor]));
 }
 
 void ParkingLotManager::addCar(int entry)
@@ -223,6 +226,9 @@ void ParkingLotManager::addCar(int entry)
     Log::i("生成车");
     if (entry == -1)
         entry = (rand() % m_num_of_entry);
+
+    entry = 0;
+
     Car *car = new Car(this);
     car->setEntryNum(entry + 1);
     m_waitting[entry].append(car);

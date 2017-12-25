@@ -33,7 +33,6 @@ SOURCES += \
         ParkingSpaceWidget.cpp \
     monitor.cpp \
     boundary.cpp \
-    carmananger.cpp \
     car.cpp \
     path.cpp \
     parkingLotManager.cpp \
@@ -50,7 +49,6 @@ HEADERS += \
         ParkingSpaceWidget.h \
     monitor.h \
     boundary.h \
-    carmananger.h \
     car.h \
     path.h \
     parkingLotManager.h \

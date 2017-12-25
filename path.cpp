@@ -2,7 +2,12 @@
 
 Path::Path()
 {
+    // path.append(PathPoint());
+}
 
+Path::Path(int)
+{
+    path.append(PathPoint());
 }
 
 //用PathPoint数组初始化Path

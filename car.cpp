@@ -32,7 +32,7 @@ Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color
     }
     m_pic = m_pic.scaled(M_WID, M_LEN);
     this->setPixmap(m_pic);
-    setTransformOriginPoint(M_WID, M_LEN/2);  //设置旋转中心
+    setTransformOriginPoint(M_WID/2, M_LEN/2);  //设置旋转中心
     connect(posAni,QPropertyAnimation::finished,this,followPath);
     connect(this, &Car::queueHead, manager, &ParkingLotManager::requestIn);
     connect(this, &Car::exit, manager, &ParkingLotManager::leave);
@@ -101,7 +101,7 @@ void Car::setPath(Path *path)
     m_target = path->getNext();
     m_current = m_target;
     m_target.action = Road::none;
-    this->setPos(m_target.point);
+    this->setPos(m_target.point - QPoint(20, 30));
     this->setRotation(m_target.dir+90);
 }
 
@@ -121,6 +121,8 @@ void Car::moveTo(QPointF target)
     qreal dy = m_current.point.y()-m_target.point.y();
     qreal dis = qSqrt(qPow(dx,2)+qPow(dy,2));
     qreal dur = dis/0.3;
+    target.setX(target.x() - 20);
+    target.setY(target.y() - 30);
     posAni->setDuration(dur);
     posAni->setEndValue(target);
     posAni->start();
@@ -155,6 +157,9 @@ void Car::followPath()
         m_current = m_target;
         m_target = m_path->getNext();
         moveTo(m_target.point);
+    } else {
+        delete m_path;
+        m_path = nullptr;
     }
 }
 
