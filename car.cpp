@@ -121,8 +121,6 @@ void Car::moveTo(QPointF target)
     qreal dis = qSqrt(qPow(dx,2)+qPow(dy,2));
 
     qreal dur = dis/0.2;
-    target.setX(target.x() - 20);
-    target.setY(target.y() - 30);
 
     posAni->setDuration(dur);
     posAni->setEndValue(target);
