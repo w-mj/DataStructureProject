@@ -101,7 +101,7 @@ void Car::setPath(Path *path)
     m_target = path->getNext();
     m_current = m_target;
     m_target.action = Road::none;
-    this->setPos(m_target.point - QPoint(20, 30));
+    this->setPos(m_target.point - 0.5*QPoint(M_WID, M_LEN));
     this->setRotation(m_target.dir+90);
 }
 
