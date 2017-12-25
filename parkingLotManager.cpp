@@ -60,7 +60,7 @@ ParkingLotManager::ParkingLotManager(QObject* objectParent, QGraphicsScene* scen
 
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &ParkingLotManager::periodWork);
-   //  timer->start(1000);  // 轮询
+    timer->start(1000);  // 轮询
 }
 
 void ParkingLotManager::showParkingLot(uint pos)
@@ -216,7 +216,7 @@ void ParkingLotManager::requestIn(Car* car)
     if (!m_pool.empty()) {
         uint l = m_pool.first().first;
         int n = m_pool.first().second + 1;
-        l = 0;
+        // l = 0;
         m_pool.removeAt(0);
         Log::i(QString("分配第%1层%2号车位，剩余%3个空车位").arg(l).arg(n).arg(m_pool.size()));
         Path* p;
