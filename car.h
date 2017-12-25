@@ -72,6 +72,8 @@ public:
 
     int type() const;
 
+    void leaveProbability(int p);
+
 private:
     Status m_status;
     Color   m_color;      //车身颜色 N为0， 顺时针递增
@@ -94,6 +96,8 @@ signals:
     void stair(Car* car);
     void exit(Car* car);
     void queueHead(Car* car);
+    void out(Car *car ,int);
+    void back(Car*);
 };
 
 #endif // CAR_H

@@ -30,6 +30,9 @@ struct PathPoint
         action = another.action;
     }
     void operator=(const PathPoint& another);
+    bool operator==(const PathPoint& another) {
+        return (point == another.point && dir == another.dir);
+    }
 };
 
 class Path
@@ -44,6 +47,8 @@ public:
     bool isEmpty();
     int pointsCount();
     PathPoint getNext();
+
+    void regularize();   // 如果三点共线，移除中间那个点
 
 private:
     QList<PathPoint> path;

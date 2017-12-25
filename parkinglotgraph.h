@@ -10,7 +10,9 @@
 #include <QMap>
 #include <QPixmap>
 #include "Road.h"
+#include "car.h"
 
+class Car;
 class ParkingLotGraph
 {
 public:
@@ -41,6 +43,8 @@ public:
     void paint(QGraphicsScene* scene);
 
     Path* findPath(Node::Type t1, int n1, Node::Type t2, int n2);
+
+    Path* findPath(Car* car, int entry);
     uint getNodeId(Node::Type t, int n);
     ~ParkingLotGraph();
     QPixmap *getPixmap();

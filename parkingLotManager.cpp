@@ -57,6 +57,10 @@ ParkingLotManager::ParkingLotManager(QObject* objectParent, QGraphicsScene* scen
     generatePool(true);
     Adapter *adapter = new Adapter(objectParent, &m_all_cars);  // 注册model
     CarList::getInstance()->setAdapter(adapter);
+
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &ParkingLotManager::periodWork);
+    timer->start(1000);  // 轮询
 }
 
 void ParkingLotManager::showParkingLot(uint pos)
@@ -122,9 +126,27 @@ ParkingLotGraph::Node::Type getType(int n) {
 
 void ParkingLotManager::drawPath(int n1, int n2)
 {
+    if (n1 < -8 || n1 > 104 || n2 < -8 || n2 > 104)
+        return ;
     QPen pen(QColor(242, 23, 242));
     pen.setWidth(3);
     Path *p = m_graph[m_current_floor]->findPath(getType(n1), n1, getType(n2), n2);
+    for(int i = 1; i < p->pointsCount(); i++) {
+        QLineF line(p->getPoint(i-1).point, p->getPoint(i).point);
+        QPointF dir(qCos(qDegreesToRadians(p->getPoint(i-1).dir)) * 10,
+                    qSin(qDegreesToRadians(p->getPoint(i-1).dir)) * 10);
+        QLineF dirLine(p->getPoint(i-1).point, p->getPoint(i-1).point + dir);
+        m_scene->addLine(line);
+        m_scene->addLine(dirLine, pen);
+        m_scene->addText(QString::number(p->getPoint(i-1).dir))->moveBy(p->getPoint(i-1).point.x(),
+                                                                        p->getPoint(i-1).point.y());
+    }
+}
+
+void ParkingLotManager::drawPath(Path* p)
+{
+    QPen pen(QColor(242, 23, 242));
+    pen.setWidth(3);
     for(int i = 1; i < p->pointsCount(); i++) {
         QLineF line(p->getPoint(i-1).point, p->getPoint(i).point);
         QPointF dir(qCos(qDegreesToRadians(p->getPoint(i-1).dir)) * 10,
@@ -169,6 +191,7 @@ void ParkingLotManager::requestStair(Car *car)
         p = m_graph[l]->findPath(NODE_TYPE::stair, e, NODE_TYPE::space, n);
     else
         p = m_graph[l]->findPath(NODE_TYPE::stair, e, NODE_TYPE::exit, -n);
+    // drawPath(p);
     car->setPath(p);
     car->setCurrentFloor(l);
     if (l == static_cast<int>(m_current_floor))
@@ -178,12 +201,22 @@ void ParkingLotManager::requestStair(Car *car)
     car->followPath();
 }
 
+void ParkingLotManager::requestBack(Car *car)
+{
+    Path* p = m_graph[1]->findPath(car, car->getEntryNum());
+    car->setPath(p);
+    car->followPath();
+    m_all_cars.removeOne(car);
+    m_waitting[car->getEntryNum() - 1].removeOne(car);
+}
+
 void ParkingLotManager::requestIn(Car* car)
 {
     int entry = car->getEntryNum();
     if (!m_pool.empty()) {
         uint l = m_pool.first().first;
         int n = m_pool.first().second + 1;
+        // l = 0;
         m_pool.removeAt(0);
         Log::i(QString("分配第%1层%2号车位，剩余%3个空车位").arg(l).arg(n).arg(m_pool.size()));
         Path* p;
@@ -192,6 +225,7 @@ void ParkingLotManager::requestIn(Car* car)
         else {
             p = m_graph[1]->findPath(NODE_TYPE::queueHead, entry, NODE_TYPE::stair, entry);
         }
+        // drawPath(p);
         m_waitting[entry - 1].removeOne(car);  // 移除等候
         m_cars[l][n - 1] = car;
         car->setPath(p);
@@ -226,8 +260,6 @@ void ParkingLotManager::addCar(int entry)
     Log::i("生成车");
     if (entry == -1)
         entry = (rand() % m_num_of_entry);
-
-    entry = 0;
 
     Car *car = new Car(this);
     car->setEntryNum(entry + 1);
@@ -280,4 +312,15 @@ void ParkingLotManager::generatePool(bool sequence)
     if (!sequence)
         std::random_shuffle(m_pool.begin(), m_pool.end());
     Log::i(QString("生成车位池成功，当前共有") + QString::number(m_pool.size()) + "个空车位");
+}
+
+void ParkingLotManager::periodWork()
+{
+    int generateProbability = 80;
+    if (rand() % 100 + 1 < generateProbability)
+        addCar();
+    for (auto c: m_all_cars) {
+        if (c->getStatus() == Car::parking)
+            c->leaveProbability(2);
+    }
 }

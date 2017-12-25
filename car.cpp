@@ -34,19 +34,15 @@ Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color
     m_pic = m_pic.scaled(M_WID, M_LEN);
     this->setPixmap(m_pic);
     setTransformOriginPoint(M_WID/2, M_LEN/2);  //设置旋转中心
-    connect(posAni,QPropertyAnimation::finished,this,followPath);
+    connect(posAni,QPropertyAnimation::finished, this, followPath);
     connect(this, &Car::queueHead, manager, &ParkingLotManager::requestIn);
     connect(this, &Car::exit, manager, &ParkingLotManager::leave);
     connect(this, &Car::stair, manager, &ParkingLotManager::requestStair);
-
+    connect(this, &Car::out, manager, &ParkingLotManager::requestOut);
+    connect(this, &Car::back, manager, &ParkingLotManager::requestBack);
+    // connect(this, &Car::entry, manager, &ParkingLotManager::leave);
     m_number = "1234";
 
-    // 测试:创建10s后离开
-//    QTimer *timer = new QTimer(this);
-//    connect(timer, &QTimer::timeout, [this, manager](){emit manager->requestOut(this);});
-//    timer->setSingleShot(true);
-//    timer->start(10000);
-    crash = true;
 }
 
 void Car::Forward(qreal vel)
@@ -101,8 +97,10 @@ void Car::setPath(Path *path)
 {
     m_path = path;
     m_target = path->getNext();
+    m_target.point = m_target.point - QPoint(20, 30);
     m_current = m_target;
     m_target.action = Road::none;
+
     this->setPos(m_target.point - 0.5*QPoint(M_WID, M_LEN));
     this->setRotation(m_target.dir+90);
 }
@@ -122,9 +120,11 @@ void Car::moveTo(QPointF target)
     qreal dx = m_current.point.x()-m_target.point.x();
     qreal dy = m_current.point.y()-m_target.point.y();
     qreal dis = qSqrt(qPow(dx,2)+qPow(dy,2));
+
     qreal dur = dis/0.2;
     target.setX(target.x() - 20);
     target.setY(target.y() - 30);
+
     posAni->setDuration(dur);
     posAni->setEndValue(target);
     posAni->start();
@@ -155,10 +155,11 @@ void Car::followPath()
     case Road::none:
         break;
     }
-    if(!m_path->isEmpty())
+    if(m_path && !m_path->isEmpty())
     {
         m_current = m_target;
         m_target = m_path->getNext();
+        m_target.point = m_target.point - QPoint(20, 30);
         moveTo(m_target.point);
     } else {
         delete m_path;
@@ -231,6 +232,7 @@ void Car::setStartTime(const QTime &value)
     startTime = value;
 }
 
+
 void Car::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     if(crash)
@@ -270,6 +272,11 @@ void Car::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
 int Car::type() const
 {
     return Type;
+}
+void Car::leaveProbability(int p)
+{
+    if (rand() % 100 + 1 < p)
+        emit out(this, -1);
 }
 
 int Car::getTargetFloor() const

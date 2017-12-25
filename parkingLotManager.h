@@ -9,6 +9,7 @@
 #include "ParkingLotWidget.h"
 #include "parkinglotgraph.h"
 
+class ParkingLotGraph;
 class Car;
 
 class ParkingLotManager: public QObject
@@ -30,6 +31,7 @@ public:
     void showDownStairFloor(void);
     void showUpStairFloor(void);
     void drawPath(int n1, int n2);
+    void drawPath(Path* p);
 
     QString getParkingLotName(int pos);
 
@@ -37,6 +39,7 @@ public slots:
     void requestIn(Car* car);
     void requestOut(Car* car, int exit = -1);
     void requestStair(Car* car);
+    void requestBack(Car* car);
     void leave(Car* car);
     void addCar(int entry = -1);
 
@@ -63,6 +66,8 @@ private:
     bool m_showGraph = false;  // 是否显示图
 
     void generatePool(bool sequence);
+
+    void periodWork(void);
 
 signals:
     void enableUpButton(bool);
