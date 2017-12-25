@@ -84,6 +84,10 @@ void Car::turnRight(int r, double ang)
 void Car::setPath(Path *path)
 {
     m_path = path;
+    m_target = path->getNext();
+    m_current = m_target;
+    this->setPos(m_target.point);
+
 }
 
 int Car::getNum()
