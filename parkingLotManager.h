@@ -34,8 +34,9 @@ public:
     void drawPath(Path* p);
 
     bool checkSame(const QString& plate);
-
     QString getParkingLotName(int pos);
+    QPair<QString, int> search(const QString& plate);
+    void showMode(bool enable);
 
 public slots:
     void requestIn(Car* car);
@@ -49,6 +50,8 @@ public slots:
     void showMargin(bool enable);
     void showGraph(bool enable);
     void banSpace(bool banned, int layer, int number);
+    void setMax(int max);
+    void setSequence(bool sequence);
 
 private:
     QGraphicsScene* m_scene;
@@ -68,10 +71,14 @@ private:
     uint m_current_floor = 1; // 当前楼层，默认为1楼（按照从下往上递增，值与实际楼层无关）
     bool m_showGraph = false;  // 是否显示图
 
-    void generatePool(bool sequence);
+    void generatePool(bool sequence, int max = -1);
     void periodWork(void);
+    void callIn(void);
 
     int lastInEntry = 0;
+    int m_max = -1;
+    bool m_sequence = true;
+    QTimer *timer;
 
 
 signals:

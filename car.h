@@ -78,6 +78,7 @@ public:
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 
     void requestSpace(void);
+    void go(void);
 
 private:
     Status m_status;

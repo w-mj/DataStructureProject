@@ -20,13 +20,12 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    QList<Car*>* getCarList();
     void update();
 private:
     QStringList header;
     QList<Car*>* m_list;
     QTimer *timer;
-
-
 };
 
 class CarList : public QDialog
@@ -39,13 +38,14 @@ public:
     static CarList* newInstance(QWidget* parent);
     static CarList* getInstance();
     void closeEvent(QCloseEvent *e);
+    void mouseEvent(const QModelIndex& index);
 signals:
     void onCloseButtonClicked(void);
 
 private:
     static CarList* m_instance;
     explicit CarList(QWidget *parent = 0);
-    QList<Car*>* m_adapter;
+    QList<Car*>* m_carList;
     Ui::CarList *ui;
 };
 

@@ -54,13 +54,12 @@ ParkingLotManager::ParkingLotManager(QObject* objectParent, QGraphicsScene* scen
         QObject::connect(this, &ParkingLotManager::showMarginSignal, widget, &ParkingLotWidget::showMarginSlot);
         QObject::connect(widget, &ParkingLotWidget::banParkingSpace, [i, this](bool b, int n){banSpace(b, i, n);});
     }
-    generatePool(false);
+    generatePool(true);
     Adapter *adapter = new Adapter(objectParent, &m_all_cars);  // 注册model
     CarList::getInstance()->setAdapter(adapter);
 
-    QTimer *timer = new QTimer(this);
+    timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &ParkingLotManager::periodWork);
-    timer->start(1000);  // 轮询
 }
 
 void ParkingLotManager::showParkingLot(uint pos)
@@ -71,11 +70,13 @@ void ParkingLotManager::showParkingLot(uint pos)
     }
     for (uint i = 0; i < m_num_of_layer; i++)
         m_widgets.at(i)->hide();
+    qDebug()<<(QString("LINE:%1").arg(__LINE__));
     m_widgets.at(pos)->show();
     for (QGraphicsPixmapItem* p: m_graph_pixmap)
         if (m_scene->items().contains(p))
             m_scene->removeItem(p);
     if (m_showGraph) {
+        qDebug()<<(QString("LINE:%1").arg(__LINE__));
         m_scene->addItem(m_graph_pixmap.at(m_current_floor));
     }
     for (auto c: m_all_cars) {
@@ -172,6 +173,29 @@ QString ParkingLotManager::getParkingLotName(int pos)
     return m_widgets.at(pos)->getName();
 }
 
+QPair<QString, int> ParkingLotManager::search(const QString& plate)
+{
+    for (auto c: m_all_cars) {
+        if (c->getPlateNumber() == plate) {
+            if (c->getStatus() == Car::Status::parking ||
+                    c->getStatus() == Car::Status::moving)
+                return qMakePair(m_widgets.at(c->getTargetFloor())->getName(),
+                                 c->getNum());
+            else if (c->getStatus() == Car::Status::waiting)
+                return qMakePair(QString("0"), 0);
+        }
+    }
+    return qMakePair(QString("-1"), -1);
+}
+
+void ParkingLotManager::showMode(bool enable)
+{
+    if (enable)
+        timer->start(1000);
+    else
+        timer->stop();
+}
+
 void ParkingLotManager::requestOut(Car *car, int exit)
 {
     if (exit == -1)
@@ -182,7 +206,8 @@ void ParkingLotManager::requestOut(Car *car, int exit)
     else
         p = m_graph[car->getCurrentFloor()]->
                 findPath(NODE_TYPE::space, car->getNum(), NODE_TYPE::stair, exit);
-    m_pool.append(qMakePair(car->getCurrentFloor(), car->getNum() - 1));
+    if (m_pool.size() < m_max)
+        m_pool.append(qMakePair(car->getCurrentFloor(), car->getNum() - 1));
     m_widgets[car->getCurrentFloor()]->
             getSpaceList()[car->getNum() - 1]->setSituation(ParkingSpaceWidget::free);
     car->setNum(-exit);  // 负数代表出口
@@ -227,6 +252,8 @@ void ParkingLotManager::requestIn(Car* car)
     if (!m_pool.empty()) {
         uint l = m_pool.first().first;
         int n = m_pool.first().second + 1;
+        if (m_widgets[l]->getSpaceList().at(n - 1)->getSituation() != FREE)
+            return;
         // l = 0;
         m_pool.removeAt(0);
         Log::i(QString("分配第%1层%2号车位，剩余%3个空车位").arg(l).arg(n).arg(m_pool.size()));
@@ -247,6 +274,7 @@ void ParkingLotManager::requestIn(Car* car)
         car->setStatus(Car::parking);
         m_num_of_cars[l] += 1;
         m_widgets[l]->getSpaceList()[n - 1]->setSituation(ParkingSpaceWidget::occupied);
+        qDebug()<<(QString("LINE:%1  %2").arg(__LINE__).arg(m_current_floor));
         emit setLoad(QString::number(m_capacity.at(m_current_floor) - m_num_of_cars[m_current_floor]));
     } else {
         Log::i("请求失败，车位已满");
@@ -256,23 +284,13 @@ void ParkingLotManager::requestIn(Car* car)
 void ParkingLotManager::leave(Car* car)
 {
     int l = car->getCurrentFloor();
-    int n = car->getNum();
-
     Log::i(QString("有车离开，当前共有%1个空车位").arg(m_pool.size()));
-
-    for (uint i = 0 ; i < m_num_of_entry; i++) {
-        if (m_waitting[lastInEntry].size() == 0)
-            lastInEntry = (lastInEntry + 1) % m_num_of_entry ;
-        else {
-            Car *c = m_waitting[lastInEntry][0];
-            c->requestSpace();
-        }
-    }
-
+    callIn();
     car->hide();
     m_all_cars.removeOne(car);
     delete car;
     m_num_of_cars[l] -= 1;
+    qDebug()<<(QString("LINE:%1").arg(__LINE__));
     emit setLoad(QString::number(m_capacity.at(m_current_floor) - m_num_of_cars[m_current_floor]));
 }
 
@@ -281,6 +299,8 @@ void ParkingLotManager::addCarR()
     Log::i("生成车");
 
     int entry = (rand() % m_num_of_entry);
+    if (m_waitting[entry].size() > 10)
+        return;
 
     Car *car = new Car(this);
     car->setEntryNum(entry + 1);
@@ -302,6 +322,8 @@ void ParkingLotManager::addCar(QString plate, int color, int entry)
     Log::i("生成车");
     if (entry == -1)
         entry = (rand() % m_num_of_entry) + 1;
+    if (m_waitting[entry - 1].size() > 10)
+        return;
     Car *car = new Car(this, nullptr, 0, static_cast<Car::Color>(color));
     car->setPlateNumber(plate);
     car->setEntryNum(entry);
@@ -339,21 +361,19 @@ void ParkingLotManager::banSpace(bool banned, int l , int n)
     } else {
         m_pool.append(qMakePair(l, n - 1));
         Log::i(QString("启用第%1层%2号车位，剩余%3个空车位").arg(l).arg(n).arg(m_pool.size()));
-        for (uint i = 0 ; i < m_num_of_entry; i++) {
-            if (m_waitting[lastInEntry].size() == 0)
-                lastInEntry = (lastInEntry + 1) % m_num_of_entry ;
-            else {
-                Car *c = m_waitting[lastInEntry][0];
-                c->requestSpace();
-            }
-        }
+        callIn();
     }
 }
 
-void ParkingLotManager::generatePool(bool sequence)
+void ParkingLotManager::generatePool(bool sequence, int max)
 {
+    m_pool.clear();
+    if (max == -1)
+        max = 65536;
     for (int l = m_num_of_layer - 1; l >= 0; l--) {
         for (int n = 0; n < m_capacity[l]; n++) {
+            if (max-- == 0)
+                return;
             if (GET_SITUATION(l, n) == FREE) {
                 m_pool.append(qMakePair(l, n));
             }
@@ -370,7 +390,39 @@ void ParkingLotManager::periodWork()
     if (rand() % 100 + 1 < generateProbability)
         addCarR();
     for (auto c: m_all_cars) {
-        if (c->getStatus() == Car::parking)
-            c->leaveProbability(2);
+        c->leaveProbability(2);
     }
+}
+
+void ParkingLotManager::callIn()
+{
+    for (uint i = 0 ; i < m_num_of_entry; i++) {
+        if (m_waitting[lastInEntry].size() == 0)
+            lastInEntry = (lastInEntry + 1) % m_num_of_entry ;
+        else {
+            Log::i(QString("从%1召唤车").arg(lastInEntry));
+            Car *c = m_waitting[lastInEntry][0];
+            c->requestSpace();
+        }
+    }
+}
+
+void ParkingLotManager::setMax(int max)
+{
+    int n = m_max;
+    m_max = max;
+    Log::i(QString("设置最大容量%1").arg(max));
+    generatePool(m_sequence, max);
+    if (max - n == 1)
+        callIn();
+    else if (max - n >= 2) {
+        callIn();
+        callIn();
+    }
+}
+
+void ParkingLotManager::setSequence(bool sequence)
+{
+    m_sequence = sequence;
+    generatePool(m_sequence, m_max);
 }

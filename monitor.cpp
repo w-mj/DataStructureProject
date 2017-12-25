@@ -33,11 +33,12 @@ Monitor::Monitor(MainWindow *parent) :
     QObject::connect(ui->drawPath, &QPushButton::clicked, [=](){
         pk->drawPath(ui->placeNum1->text().toInt(), ui->placeNum2->text().toInt());
     });
-
+    QObject::connect(ui->showMode, &QCheckBox::toggled, pk, &ParkingLotManager::showMode);
+    ui->sequence->hide();
     QObject::connect(ui->addCar, &QPushButton::clicked, [this, pk]() {
         QString p = this->ui->plateNumBox->text();
         if(checkPlate(p) == false) {
-            QMessageBox::warning(this, "警告","车牌不合规则");
+            QMessageBox::warning(this, "警告", "车牌不合规则");
         } else if (pk->checkSame(p)) {
             QMessageBox::warning(this, "警告", "车牌重复");
         } else {
@@ -45,9 +46,27 @@ Monitor::Monitor(MainWindow *parent) :
         }
     });
     QObject::connect(ui->random, &QPushButton::clicked, pk, &ParkingLotManager::addCarR);
-
+    QObject::connect(ui->sequence, &QCheckBox::clicked, pk, &ParkingLotManager::setSequence);
+    QObject::connect(ui->confirm_max, &QPushButton::clicked, [this, pk]() {
+        pk->setMax(ui->max_number->value());
+    });
     pk->showParkingLot();
     ui->view->setScene(scene);
+    ui->max_number->setValue(208);
+
+    QObject::connect(ui->searchButton, &QPushButton::clicked, [this, pk]() {
+        QPair<QString, int> p = pk->search(this->ui->searchBox->text());
+        if (p.first == "-1" && p.second == -1)
+            QMessageBox::information(this, "搜索结果", QString("未找到%1")
+                                     .arg(this->ui->searchBox->text()));
+        else if (p.first == "0" && p.second == 0)
+            QMessageBox::information(this, "搜索结果",
+                                     QString("%1正在等候中").arg(this->ui->searchBox->text()));
+        else
+            QMessageBox::information(this, "搜索结果",
+                                     QString("%1在%2%3号").arg(this->ui->searchBox->text())
+                                     .arg(p.first).arg(p.second));
+    });
 }
 
 void Monitor::showEvent(QShowEvent *event)

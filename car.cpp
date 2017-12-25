@@ -257,6 +257,8 @@ void Car::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
                 if(item->type()==Car::Type)
                 {
                     Car *car = qgraphicsitem_cast<Car*>(item);
+                    if (car->getStatus() == Car::parking)
+                        continue;
                     if(qAbs(car->getDir()-270)<20&&qAbs(this->getDir()-270)<20&&car->getmPos().x()<this->getmPos().x())
                     {
                         posAni->stop();
@@ -287,8 +289,15 @@ int Car::type() const
 }
 void Car::leaveProbability(int p)
 {
-    if (rand() % 100 + 1 < p)
-        emit out(this, -1);
+    if (m_status == parking) {
+        if (rand() % 100 + 1 < p)
+            emit out(this, -1);
+    }
+    else if (m_status == waiting)
+        if (rand() % 100 + 1 < 10) {
+            m_status = parking;
+            emit back(this);
+        }
 }
 
 
@@ -306,6 +315,16 @@ void Car::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 void Car::requestSpace()
 {
     emit queueHead(this);
+}
+
+void Car::go()
+{
+    if (m_status == parking)
+        emit out(this, -1);
+    else if (m_status == waiting) {
+        m_status = parking;
+        emit back(this);
+    }
 }
 
 int Car::getTargetFloor() const

@@ -12,6 +12,7 @@ CarList::CarList(QWidget *parent) :
     setWindowFlags(Qt::Dialog | Qt::WindowCloseButtonHint);
     setWindowTitle("车辆列表");
     setGeometry(parent->x() + parent->width(), y() + parent->height() / 2, 400, 450);
+    connect(ui->tableView, &QTableView::clicked, this, &CarList::mouseEvent);
     hide();
 }
 
@@ -24,6 +25,7 @@ void CarList::setAdapter(Adapter *adapter)
     ui->tableView->setModel(adapter);
     ui->tableView->resizeColumnsToContents();
     ui->tableView->resizeRowsToContents();
+    m_carList = adapter->getCarList();
 }
 
 CarList *CarList::newInstance(QWidget *parent)
@@ -44,9 +46,16 @@ void CarList::closeEvent(QCloseEvent *e)
     e->accept();
 }
 
+void CarList::mouseEvent(const QModelIndex &index)
+{
+    qDebug() << index.row() << " " << index.column();
+    if (index.column() == 5)
+        m_carList->at(index.row())->go();
+}
+
 
 Adapter::Adapter(QObject *parent, QList<Car*> *list): QAbstractTableModel(parent), m_list(list) {
-    header << "车牌" << "车型" << "停放位置" << "驶入时间" << "已产生费用";
+    header << "车牌" << "车型" << "停放位置" << "驶入时间" << "已产生费用" << "操作";
     timer = new QTimer(this);
     QObject::connect(timer, &QTimer::timeout, this, &Adapter::update);
     timer->start(1000);  // 每秒更新
@@ -55,7 +64,7 @@ Adapter::Adapter(QObject *parent, QList<Car*> *list): QAbstractTableModel(parent
 int Adapter::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return 5;
+    return 6;
 }
 
 int Adapter::rowCount(const QModelIndex &parent) const
@@ -77,6 +86,7 @@ QVariant Adapter::data(const QModelIndex &index, int role) const
             else
                 return m_list->at(index.row())->getStartTime().toString("hh:mm");
         case 4: return m_list->at(index.row())->getFee();
+        case 5: return "离开";
         default: return QVariant();
         }
     }
@@ -88,6 +98,11 @@ QVariant Adapter::headerData(int section, Qt::Orientation orientation, int role)
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal)
         return header.at(section);
     return QVariant();
+}
+
+QList<Car *> *Adapter::getCarList()
+{
+    return m_list;
 }
 
 void Adapter::update()
