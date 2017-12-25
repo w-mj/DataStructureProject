@@ -149,8 +149,13 @@ void Car::followPath()
     case Road::queueHead:
         Log::i("发送请求车位信号");
 <<<<<<< HEAD
+<<<<<<< HEAD
         emit queueHead(this);
         crash=false;
+=======
+        // emit queueHead(this);
+        emit back(this);
+>>>>>>> parent of ff06e82... Merge branch 'master' of github.com:w-mj/DataStructureProject
 =======
         // emit queueHead(this);
         emit back(this);
