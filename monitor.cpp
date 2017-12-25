@@ -38,7 +38,7 @@ Monitor::Monitor(MainWindow *parent) :
     QObject::connect(ui->addCar, &QPushButton::clicked, [this]() {
         Log::i(checkPlate(this->ui->plateNumBox->text())==true?"true":"false");
     });
-    QObject::connect(ui->random, &QPushButton::clicked, this, &Monitor::addCar);
+    QObject::connect(ui->random, &QPushButton::clicked, pk, &ParkingLotManager::addCar);
 
     pk->showParkingLot();
     ui->view->setScene(scene);

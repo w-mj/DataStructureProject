@@ -54,11 +54,6 @@ ParkingLotManager::ParkingLotManager(QObject* objectParent, QGraphicsScene* scen
         QObject::connect(widget, &ParkingLotWidget::banParkingSpace, [i, this](bool b, int n){banSpace(b, i, n);});
     }
     generatePool(true);
-    Car *car = new Car();
-    scene->addItem(car);
-    Path* p = m_graph[1]->findPath(ParkingLotGraph::Node::entry, 1, ParkingLotGraph::Node::space, 100);
-    car->setPath(p);
-    car->followPath();
 }
 
 void ParkingLotManager::showParkingLot(uint pos)
@@ -141,10 +136,10 @@ void ParkingLotManager::requestOut(Car *car, int exit)
 
 void ParkingLotManager::requestIn(Car* car)
 {
-    int entry = car->getFloor();
+    int entry = car->getEntryNum();
     if (!m_pool.empty()) {
-        int l = m_pool.first().first;
-        int n = m_pool.first().second;
+        uint l = m_pool.first().first;
+        int n = m_pool.first().second + 1;
         m_pool.removeAt(0);
         Path* p;
         if (l == m_current_floor)
@@ -152,8 +147,12 @@ void ParkingLotManager::requestIn(Car* car)
         else {
             p = m_graph[m_current_floor]->findPath(NODE_TYPE::queueHead, entry, NODE_TYPE::stair, entry);
         }
-        m_waitting[entry].removeFirst();  // 等候队列中的第一个移除
+        m_waitting[entry - 1].removeOne(car);  // 移除等候
         m_cars[l][n] = car;
+        car->setPath(p);
+        car->setFloor(l);
+        car->setNum(n);
+        car->followPath();
         Log::i(QString("分配第") + l + "层" + n + "号车位，剩余" + QString::number(m_pool.size()) + "个空车位");
     } else {
         Log::i("请求失败，车位已满");
@@ -172,11 +171,17 @@ void ParkingLotManager::leave(Car* car)
 
 void ParkingLotManager::addCar(int entry)
 {
+    Log::i("生成车");
     if (entry == -1)
-        entry = rand() % m_num_of_entry;
-    Car *car = new Car();  // TODO: 修改构造函数
+        entry = (rand() % m_num_of_entry);
+    Car *car = new Car(this);
+    car->setEntryNum(entry + 1);
     m_waitting[entry].append(car);
-    // TODO: 添加路径
+    Path *p = m_graph[1]->findPath(NODE_TYPE::entry, entry + 1, NODE_TYPE::queueHead, entry + 1);
+    car->setPath(p);
+    car->followPath();
+    m_all_cars.append(car);
+    m_scene->addItem(car);
 }
 
 void ParkingLotManager::showMargin(bool enable)

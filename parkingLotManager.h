@@ -9,6 +9,8 @@
 #include "ParkingLotWidget.h"
 #include "parkinglotgraph.h"
 
+class Car;
+
 class ParkingLotManager: public QObject
 {
     Q_OBJECT
@@ -46,6 +48,7 @@ private:
     QVector<int> m_num_of_cars;  // 每一层当前停的车数量
     QVector<QVector<Car*> > m_cars;  // 停在每一层的车
     QVector<QList<Car*> >m_waitting; // 在每个入口等待的车
+    QList<Car*> m_all_cars;
     QVector<ParkingLotGraph*> m_graph;
     QVector<QGraphicsPixmapItem*> m_graph_pixmap;
     QStringList m_xml_path;  // 每一层xml文件地址

@@ -1,7 +1,7 @@
 ﻿#include "car.h"
 
 
-Car::Car(QGraphicsItem *parent, int dir, Car::Color color) :
+Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color color) :
     QObject(0),
     QGraphicsPixmapItem(parent),
     posAni(new QPropertyAnimation(this,"m_pos")),
@@ -31,6 +31,8 @@ Car::Car(QGraphicsItem *parent, int dir, Car::Color color) :
     this->setPixmap(m_pic);
     setTransformOriginPoint(M_WID/2, M_LEN/2);  //设置旋转中心
     connect(posAni,QPropertyAnimation::finished,this,followPath);
+    connect(this, &Car::queueHead, manager, &ParkingLotManager::requestIn);
+    connect(this, &Car::exit, manager, &ParkingLotManager::leave);
 }
 
 void Car::Forward(qreal vel)
@@ -159,4 +161,19 @@ Car::Color Car::getColor()
 qreal Car::getDir()
 {
     return this->rotation();
+}
+
+void Car::setEntryNum(int value)
+{
+    entryNum = value;
+}
+
+void Car::setFloor(int value)
+{
+    floor = value;
+}
+
+void Car::setNum(int value)
+{
+    num = value;
 }

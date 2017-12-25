@@ -37,9 +37,17 @@ int Path::pointsCount()
     return path.length();
 }
 
-PathPoint &Path::getNext()
+PathPoint Path::getNext()
 {
-    PathPoint &tmp = path.first();
+    PathPoint tmp = path.first();
     path.removeFirst();
     return tmp;
+}
+
+void PathPoint::operator=(const PathPoint &another)
+{
+    point = another.point;
+    dir = another.dir;
+    pointId = another.pointId;
+    action = another.action;
 }

@@ -9,6 +9,8 @@
 #include <QPropertyAnimation>
 #include <QObject>
 #include "path.h"
+#include "parkingLotManager.h"
+class ParkingLotManager;
 
 //车身长宽
 #define M_LEN   (60)
@@ -21,7 +23,8 @@ class Car : public QObject, public QGraphicsPixmapItem
     Q_PROPERTY(int m_dir READ getDir WRITE setRotation)
 public:
     enum Color { Pink, Red, Yellow, RANDOM };
-    explicit Car(QGraphicsItem *parent = Q_NULLPTR, int dir = 0, Car::Color color = RANDOM);
+    explicit Car(ParkingLotManager * manager, QGraphicsItem *parent = Q_NULLPTR,
+                 int dir = 0, Car::Color color = RANDOM);
     //基础移动
     void Forward(qreal vel = 3);    //前进
     void Backward(qreal vel = 3);   //后退
@@ -35,6 +38,9 @@ public:
     int getNum();
     int getFloor();
     int getEntryNum();
+    void setEntryNum(int value);
+    void setFloor(int value);
+    void setNum(int value);
 
     //动画
     void moveTo(QPointF target);
@@ -66,8 +72,6 @@ signals:
     void stair(Car* car);
     void exit(Car* car);
     void queueHead(Car* car);
-
-
 };
 
 #endif // CAR_H

@@ -14,19 +14,27 @@ struct PathPoint
     int pointId;  // 为了做直角生成的辅助节点的id为-1
     PathPoint() {}
     PathPoint(QPointF p, qreal d, Road::Action a=Road::Action::none, int id=-1):
-        point(p), dir(d), action(a), pointId(id) {}
+        point(p), action(a), pointId(id) {
+        while (d < 0 || d > 360) {
+            if (d < 0)
+                d += 360;
+            else if (d > 360)
+                d -= 360;
+        }
+        dir = d;
+    }
     PathPoint(const PathPoint& another) {
         point = another.point;
         dir = another.dir;
         pointId = another.pointId;
         action = another.action;
     }
+    void operator=(const PathPoint& another);
 };
 
 class Path
 {
 public:
-
     Path();
     Path(PathPoint points[], int i);
     PathPoint getPoint(int i);
@@ -34,7 +42,7 @@ public:
     void addPoint(const PathPoint &point);
     bool isEmpty();
     int pointsCount();
-    PathPoint &getNext();
+    PathPoint getNext();
 
 private:
     QList<PathPoint> path;
