@@ -141,6 +141,7 @@ void ParkingLotManager::requestIn(Car* car)
         uint l = m_pool.first().first;
         int n = m_pool.first().second + 1;
         m_pool.removeAt(0);
+        Log::i(QString("分配第%1层%2号车位，剩余%3个空车位").arg(l).arg(n).arg(m_pool.size()));
         Path* p;
         if (l == m_current_floor)
             p = m_graph[l]->findPath(NODE_TYPE::queueHead, entry, NODE_TYPE::space, n);
@@ -148,12 +149,11 @@ void ParkingLotManager::requestIn(Car* car)
             p = m_graph[m_current_floor]->findPath(NODE_TYPE::queueHead, entry, NODE_TYPE::stair, entry);
         }
         m_waitting[entry - 1].removeOne(car);  // 移除等候
-        m_cars[l][n] = car;
+        m_cars[l][n - 1] = car;
         car->setPath(p);
         car->setFloor(l);
         car->setNum(n);
         car->followPath();
-        Log::i(QString("分配第%1层%2号车位，剩余%3个空车位").arg(l).arg(n).arg(m_pool.size()));
     } else {
         Log::i("请求失败，车位已满");
     }
