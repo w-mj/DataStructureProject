@@ -1,4 +1,5 @@
 ﻿#include "car.h"
+#include "logwindow.h"
 
 
 Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color color) :
@@ -88,6 +89,7 @@ void Car::setPath(Path *path)
     m_path = path;
     m_target = path->getNext();
     m_current = m_target;
+    m_target.action = Road::none;
     this->setPos(m_target.point);
 
 }
@@ -124,15 +126,19 @@ void Car::followPath()
     switch (m_target.action)
     {
     case Road::entry :
+        Log::i("发送entry信号");
         emit entry(this);
         break;
     case Road::stair:
+        Log::i("发送楼梯信号");
         emit stair(this);
         break;
     case Road::exit:
+        Log::i("发送离开信号");
         emit exit(this);
         break;
     case Road::queueHead:
+        Log::i("发送请求车位信号");
         emit queueHead(this);
         break;
     case Road::none:

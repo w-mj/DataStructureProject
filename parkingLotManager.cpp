@@ -153,7 +153,7 @@ void ParkingLotManager::requestIn(Car* car)
         car->setFloor(l);
         car->setNum(n);
         car->followPath();
-        Log::i(QString("分配第") + l + "层" + n + "号车位，剩余" + QString::number(m_pool.size()) + "个空车位");
+        Log::i(QString("分配第%1层%2号车位，剩余%3个空车位").arg(l).arg(n).arg(m_pool.size()));
     } else {
         Log::i("请求失败，车位已满");
     }
