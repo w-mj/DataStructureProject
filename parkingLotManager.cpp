@@ -138,7 +138,7 @@ void ParkingLotManager::drawPath(int n1, int n2)
 
 void ParkingLotManager::requestOut(Car *car, int exit)
 {
-    if (exit != -1)
+    if (exit == -1)
         exit = rand() % m_num_of_entry + 1;
     Path *p;
     if (car->getCurrentFloor() == 1)
@@ -178,6 +178,7 @@ void ParkingLotManager::requestIn(Car* car)
     if (!m_pool.empty()) {
         uint l = m_pool.first().first;
         int n = m_pool.first().second + 1;
+        l = 0;
         m_pool.removeAt(0);
         Log::i(QString("分配第%1层%2号车位，剩余%3个空车位").arg(l).arg(n).arg(m_pool.size()));
         Path* p;
