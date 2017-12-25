@@ -262,7 +262,7 @@ void Car::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
                         posAni->stop();
                         break;
                     }
-                    else if(qAbs(car->getDir()-180)<20&&qAbs(this->getDir()-180)<20&&car->getmPos().y()>this->getmPos().y())
+                    else if(qAbs(car->getDir()-90)<20&&qAbs(this->getDir()-90)<20&&car->getmPos().x()>this->getmPos().x())
                     {
                         posAni->stop();
                         break;
