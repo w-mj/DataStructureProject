@@ -83,6 +83,7 @@ private:
     int currentFloor;
     int num;
     QTime startTime;
+    ParkingLotManager* m_manager;
 signals:
     void entry(Car* car);
     void stair(Car* car);

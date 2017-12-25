@@ -31,6 +31,8 @@ public:
     void showUpStairFloor(void);
     void drawPath(int n1, int n2);
 
+    QString getParkingLotName(int pos);
+
 public slots:
     void requestIn(Car* car);
     void requestOut(Car* car, int exit = -1);

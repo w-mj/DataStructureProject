@@ -10,6 +10,7 @@ Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color
     m_target(PathPoint(this->pos(),this->rotation())),
     m_current(PathPoint(this->pos(),this->rotation()))
 {
+    m_manager = manager;
     m_pos = this->pos();
     this->setRotation(dir);
     if(color==RANDOM)
@@ -185,7 +186,7 @@ QString Car::getPosition() const
     } else if (m_status == waiting) {
         return "正在等候";
     } else  {
-        return QString("%1层%2号").arg(targetFloor).arg(num);
+        return QString("%1%2号").arg(m_manager->getParkingLotName(currentFloor)).arg(num);
     }
 }
 

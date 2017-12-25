@@ -136,6 +136,11 @@ void ParkingLotManager::drawPath(int n1, int n2)
     }
 }
 
+QString ParkingLotManager::getParkingLotName(int pos)
+{
+    return m_widgets.at(pos)->getName();
+}
+
 void ParkingLotManager::requestOut(Car *car, int exit)
 {
     if (exit == -1)
