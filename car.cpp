@@ -33,11 +33,13 @@ Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color
     m_pic = m_pic.scaled(M_WID, M_LEN);
     this->setPixmap(m_pic);
     setTransformOriginPoint(M_WID/2, M_LEN/2);  //设置旋转中心
-    connect(posAni,QPropertyAnimation::finished,this,followPath);
+    connect(posAni,QPropertyAnimation::finished, this, followPath);
     connect(this, &Car::queueHead, manager, &ParkingLotManager::requestIn);
     connect(this, &Car::exit, manager, &ParkingLotManager::leave);
     connect(this, &Car::stair, manager, &ParkingLotManager::requestStair);
     connect(this, &Car::out, manager, &ParkingLotManager::requestOut);
+    connect(this, &Car::back, manager, &ParkingLotManager::requestBack);
+    // connect(this, &Car::entry, manager, &ParkingLotManager::leave);
     m_number = "1234";
 }
 
@@ -93,9 +95,10 @@ void Car::setPath(Path *path)
 {
     m_path = path;
     m_target = path->getNext();
+    m_target.point = m_target.point - QPoint(20, 30);
     m_current = m_target;
     m_target.action = Road::none;
-    this->setPos(m_target.point - QPoint(20, 30));
+    this->setPos(m_target.point);
     this->setRotation(m_target.dir+90);
 }
 
@@ -115,8 +118,12 @@ void Car::moveTo(QPointF target)
     qreal dy = m_current.point.y()-m_target.point.y();
     qreal dis = qSqrt(qPow(dx,2)+qPow(dy,2));
     qreal dur = dis/0.3;
-    target.setX(target.x() - 20);
-    target.setY(target.y() - 30);
+    this->setPos(m_current.point);
+//    target.setX(target.x() - 20);
+//    target.setY(target.y() - 30);
+    Log::i(QString("从%1,%2到%3,%4").arg(m_current.point.x()).arg(m_current.point.y()).arg(target.x()).arg(target.y()));
+    // posAni->setStartValue(m_current.point);
+    setRotation(m_current.dir + 90);
     posAni->setDuration(dur);
     posAni->setEndValue(target);
     posAni->start();
@@ -141,15 +148,17 @@ void Car::followPath()
         break;
     case Road::queueHead:
         Log::i("发送请求车位信号");
-        emit queueHead(this);
+        // emit queueHead(this);
+        emit back(this);
         break;
     case Road::none:
         break;
     }
-    if(!m_path->isEmpty())
+    if(m_path && !m_path->isEmpty())
     {
         m_current = m_target;
         m_target = m_path->getNext();
+        m_target.point = m_target.point - QPoint(20, 30);
         moveTo(m_target.point);
     } else {
         delete m_path;

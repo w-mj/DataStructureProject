@@ -181,9 +181,11 @@ uint ParkingLotGraph::getNodeId(ParkingLotGraph::Node::Type t, int n) {
     return -1;
 }
 
-qreal angle(const QPoint& p) {
+qreal angle(const QPointF& p) {
     return qRadiansToDegrees(qAtan2(p.y(), p.x()));
 }
+
+
 
 // Dijkstra 求最短路径
 Path *ParkingLotGraph::findPath(ParkingLotGraph::Node::Type t1, int n1, ParkingLotGraph::Node::Type t2, int n2)
@@ -227,13 +229,13 @@ Path *ParkingLotGraph::findPath(ParkingLotGraph::Node::Type t1, int n1, ParkingL
         }
     }
     Path* path = new Path();
-    uint n = id2;
-    QPoint lastP;
+    uint n = id2, lastN;;
+    QPointF lastP;
     while (n != id1) {
         // 相邻两个点的xy都不相等，添加一个辅助顶点构成矩形
         if (m_all[n]->data.x() != m_all[prev[n]]->data.x() &&
                 m_all[n]->data.y() != m_all[prev[n]]->data.y()) {
-            QPoint tp;
+            QPointF tp;
             if (m_all[n]->type == Node::Type::space) {
                 ParkingSpaceWidget* space = pk->getSpaceList().at(m_all[n]->number - 1);
                 switch (space->getDir()) {
@@ -273,10 +275,28 @@ Path *ParkingLotGraph::findPath(ParkingLotGraph::Node::Type t1, int n1, ParkingL
         } else {
             qreal ang = angle(m_all[n]->data - m_all[prev[n]]->data);
             path->addPoint(0, PathPoint(QPointF(m_all[n]->data), ang, m_all[n]->action, m_all[n]->getId()));
+            lastP = QPointF(m_all[n]->data);
         }
+        lastN = n;
         n = prev[n];
     }
-    path->addPoint(0, PathPoint(QPointF(m_all[n]->data), angle(lastP - m_all[n]->data), m_all[n]->action, m_all[n]->getId())); // 把第一个点也加进去
+    if (!lastP.isNull())
+        path->addPoint(0, PathPoint(QPointF(m_all[n]->data),
+                       angle(lastP - m_all[n]->data), m_all[n]->action, m_all[n]->getId())); // 把第一个点也加进去
+    else
+        path->addPoint(0, PathPoint(QPointF(m_all[n]->data),
+                       angle(m_all[n]->data - m_all[lastN]->data), m_all[n]->action, m_all[n]->getId()));
+    path->regularize();
+    return path;
+}
+
+Path *ParkingLotGraph::findPath(Car *car, int entry)
+{
+    Path* path = new Path();
+    int entry_id = getNodeId(Node::Type::entry, entry);
+    qreal ang = angle(QPointF(m_all[entry_id]->data) - car->getmPos());
+    path->addPoint(PathPoint(car->getmPos() + QPoint(20, 30), ang));
+    path->addPoint(PathPoint(m_all[entry_id]->data, ang, Road::Action::exit));
     return path;
 }
 

@@ -92,6 +92,7 @@ signals:
     void exit(Car* car);
     void queueHead(Car* car);
     void out(Car *car ,int);
+    void back(Car*);
 };
 
 #endif // CAR_H
