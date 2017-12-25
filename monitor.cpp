@@ -7,15 +7,16 @@
 #include "carlist.h"
 #include "logwindow.h"
 #include "utils.h"
+#include <QMessageBox>
 
 Monitor::Monitor(MainWindow *parent) :
     QWidget(parent),
     ui(new Ui::Monitor)
 {
-
-
-
     ui->setupUi(this);
+    ui->selectColor->addItem("粉车");
+    ui->selectColor->addItem("红车");
+    ui->selectColor->addItem("黄车");
     QGraphicsScene *scene = new QGraphicsScene(this);  // 创建场景
     ParkingLotManager *pk = new ParkingLotManager(this, scene);
     QObject::connect(pk, &ParkingLotManager::enableUpButton, ui->upStairButton, &QPushButton::setEnabled);
@@ -33,10 +34,17 @@ Monitor::Monitor(MainWindow *parent) :
         pk->drawPath(ui->placeNum1->text().toInt(), ui->placeNum2->text().toInt());
     });
 
-    QObject::connect(ui->addCar, &QPushButton::clicked, [this]() {
-        Log::i(checkPlate(this->ui->plateNumBox->text())==true?"true":"false");
+    QObject::connect(ui->addCar, &QPushButton::clicked, [this, pk]() {
+        QString p = this->ui->plateNumBox->text();
+        if(checkPlate(p) == false) {
+            QMessageBox::warning(this, "警告","车牌不合规则");
+        } else if (pk->checkSame(p)) {
+            QMessageBox::warning(this, "警告", "车牌重复");
+        } else {
+            pk->addCar(p, ui->selectColor->currentIndex(), -1);
+        }
     });
-    QObject::connect(ui->random, &QPushButton::clicked, pk, &ParkingLotManager::addCar);
+    QObject::connect(ui->random, &QPushButton::clicked, pk, &ParkingLotManager::addCarR);
 
     pk->showParkingLot();
     ui->view->setScene(scene);

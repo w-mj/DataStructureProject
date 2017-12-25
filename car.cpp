@@ -1,7 +1,20 @@
 ﻿#include "car.h"
 #include "logwindow.h"
 #include <QTimer>
-//#include <QDebug>
+#include <QDebug>
+#include <QString>
+
+QString reaomPlate() {
+    QString province = "京津冀晋蒙辽吉黑沪苏浙皖闽赣鲁豫鄂湘粤桂琼川贵云渝藏陕甘青宁新港澳台";
+    QString result;
+    result.append(province.at(rand() % province.size()));
+    result.append('A' + (rand() % 26));
+    result.append('0' + (rand() % 10));
+    result.append('0' + (rand() % 10));
+    result.append('0' + (rand() % 10));
+    result.append('0' + (rand() % 10));
+    return result;
+}
 
 
 Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color color) :
@@ -41,7 +54,7 @@ Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color
     connect(this, &Car::out, manager, &ParkingLotManager::requestOut);
     connect(this, &Car::back, manager, &ParkingLotManager::requestBack);
     // connect(this, &Car::entry, manager, &ParkingLotManager::leave);
-    m_number = "1234";
+    m_number = reaomPlate();
 
 }
 
@@ -277,6 +290,9 @@ void Car::leaveProbability(int p)
         emit out(this, -1);
 }
 
+void Car::setPlateNumber(const QString &number) {
+    this->m_number = number;
+}
 int Car::getTargetFloor() const
 {
     return targetFloor;

@@ -73,6 +73,7 @@ public:
     int type() const;
 
     void leaveProbability(int p);
+    void setPlateNumber(const QString &number);
 
 private:
     Status m_status;

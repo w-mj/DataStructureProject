@@ -33,6 +33,8 @@ public:
     void drawPath(int n1, int n2);
     void drawPath(Path* p);
 
+    bool checkSame(const QString& plate);
+
     QString getParkingLotName(int pos);
 
 public slots:
@@ -41,7 +43,8 @@ public slots:
     void requestStair(Car* car);
     void requestBack(Car* car);
     void leave(Car* car);
-    void addCar(int entry = -1);
+    void addCarR();
+    void addCar(QString plate, int color, int entry);
 
     void showMargin(bool enable);
     void showGraph(bool enable);
@@ -54,8 +57,8 @@ private:
     QVector<int> m_num_of_cars;  // 每一层当前停的车数量
     QVector<QVector<Car*> > m_cars;  // 停在每一层的车
     QVector<QList<Car*> >m_waitting; // 在每个入口等待的车
-    QList<Car*> m_all_cars;
-    QVector<ParkingLotGraph*> m_graph;
+    QList<Car*> m_all_cars;  // 所有的车
+    QVector<ParkingLotGraph*> m_graph;  // 图
     QVector<QGraphicsPixmapItem*> m_graph_pixmap;
     QStringList m_xml_path;  // 每一层xml文件地址
     QStringList m_name;  // 每一层的名字

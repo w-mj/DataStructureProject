@@ -60,7 +60,7 @@ ParkingLotManager::ParkingLotManager(QObject* objectParent, QGraphicsScene* scen
 
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &ParkingLotManager::periodWork);
-    timer->start(1000);  // 轮询
+    // timer->start(1000);  // 轮询
 }
 
 void ParkingLotManager::showParkingLot(uint pos)
@@ -159,6 +159,14 @@ void ParkingLotManager::drawPath(Path* p)
     }
 }
 
+bool ParkingLotManager::checkSame(const QString &plate)
+{
+    for (auto c: m_all_cars)
+        if (c->getPlateNumber() == plate)
+            return true;
+    return false;
+}
+
 QString ParkingLotManager::getParkingLotName(int pos)
 {
     return m_widgets.at(pos)->getName();
@@ -255,16 +263,37 @@ void ParkingLotManager::leave(Car* car)
     emit setLoad(QString::number(m_capacity.at(m_current_floor) - m_num_of_cars[m_current_floor]));
 }
 
-void ParkingLotManager::addCar(int entry)
+void ParkingLotManager::addCarR()
 {
     Log::i("生成车");
-    if (entry == -1)
-        entry = (rand() % m_num_of_entry);
+
+    int entry = (rand() % m_num_of_entry);
 
     Car *car = new Car(this);
     car->setEntryNum(entry + 1);
     m_waitting[entry].append(car);
     Path *p = m_graph[1]->findPath(NODE_TYPE::entry, entry + 1, NODE_TYPE::queueHead, entry + 1);
+    car->setPath(p);
+    car->setCurrentFloor(1);  // 刚添加的车一定是在一层
+    car->setTargetFloor(1);
+    car->followPath();
+    car->setStatus(Car::waiting);
+    m_all_cars.append(car);
+    m_scene->addItem(car);
+    if (m_current_floor != 1)
+        car->hide();
+}
+
+void ParkingLotManager::addCar(QString plate, int color, int entry)
+{
+    Log::i("生成车");
+    if (entry == -1)
+        entry = (rand() % m_num_of_entry) + 1;
+    Car *car = new Car(this, nullptr, 0, static_cast<Car::Color>(color));
+    car->setPlateNumber(plate);
+    car->setEntryNum(entry);
+    m_waitting[entry-1].append(car);
+    Path *p = m_graph[1]->findPath(NODE_TYPE::entry, entry, NODE_TYPE::queueHead, entry);
     car->setPath(p);
     car->setCurrentFloor(1);  // 刚添加的车一定是在一层
     car->setTargetFloor(1);
@@ -302,6 +331,13 @@ void ParkingLotManager::banSpace(bool banned, int l , int n)
 
 void ParkingLotManager::generatePool(bool sequence)
 {
+    m_pool.append(qMakePair(1, 0));
+    m_pool.append(qMakePair(1, 1));
+    m_pool.append(qMakePair(1, 2));
+    m_pool.append(qMakePair(1, 3));
+    m_pool.append(qMakePair(1, 4));
+    return;
+
     for (int l = m_num_of_layer - 1; l >= 0; l--) {
         for (int n = 0; n < m_capacity[l]; n++) {
             if (GET_SITUATION(l, n) == FREE) {
@@ -318,7 +354,7 @@ void ParkingLotManager::periodWork()
 {
     int generateProbability = 80;
     if (rand() % 100 + 1 < generateProbability)
-        addCar();
+        addCarR();
     for (auto c: m_all_cars) {
         if (c->getStatus() == Car::parking)
             c->leaveProbability(2);
