@@ -298,7 +298,7 @@ void Car::setPlateNumber(const QString &number) {
 
 void Car::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(event->button()==Qt::LeftButton)
+    if(m_status==parking&&event->button()==Qt::LeftButton)
         emit out(this,-1);
     event->accept();
 }
