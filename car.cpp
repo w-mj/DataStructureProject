@@ -100,8 +100,7 @@ void Car::setPath(Path *path)
     m_target.point = m_target.point - QPoint(20, 30);
     m_current = m_target;
     m_target.action = Road::none;
-
-    this->setPos(m_target.point - 0.5*QPoint(M_WID, M_LEN));
+    this->setPos(m_target.point);
     this->setRotation(m_target.dir+90);
 }
 
@@ -149,8 +148,13 @@ void Car::followPath()
         break;
     case Road::queueHead:
         Log::i("发送请求车位信号");
+<<<<<<< HEAD
         emit queueHead(this);
         crash=false;
+=======
+        // emit queueHead(this);
+        emit back(this);
+>>>>>>> parent of ff06e82... Merge branch 'master' of github.com:w-mj/DataStructureProject
         break;
     case Road::none:
         break;
