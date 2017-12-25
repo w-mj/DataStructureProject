@@ -303,6 +303,11 @@ void Car::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     event->accept();
 }
 
+void Car::requestSpace()
+{
+    emit queueHead(this);
+}
+
 int Car::getTargetFloor() const
 {
     return targetFloor;

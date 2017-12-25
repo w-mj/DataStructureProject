@@ -182,6 +182,7 @@ void ParkingLotManager::requestOut(Car *car, int exit)
     else
         p = m_graph[car->getCurrentFloor()]->
                 findPath(NODE_TYPE::space, car->getNum(), NODE_TYPE::stair, exit);
+    m_pool.append(qMakePair(car->getCurrentFloor(), car->getNum() - 1));
     car->setNum(-exit);  // 负数代表出口
     car->setPath(p);
     car->setTargetFloor(1);
@@ -234,7 +235,7 @@ void ParkingLotManager::requestIn(Car* car)
             p = m_graph[1]->findPath(NODE_TYPE::queueHead, entry, NODE_TYPE::stair, entry);
         }
         // drawPath(p);
-        m_waitting[entry - 1].removeOne(car);  // 移除等候
+        m_waitting[entry - 1].pop_front();  // 移除等候
         m_cars[l][n - 1] = car;
         car->setPath(p);
         car->setTargetFloor(l);
@@ -253,9 +254,18 @@ void ParkingLotManager::leave(Car* car)
 {
     int l = car->getCurrentFloor();
     int n = car->getNum();
-    m_pool.append(qMakePair(l, n));
+    m_widgets[l - 1]->getSpaceList()[n - 1]->setSituation(ParkingSpaceWidget::occupied);
     Log::i(QString("有车离开，当前共有%1个空车位").arg(m_pool.size()));
-    emit carLeave();
+
+    for (uint i = 0 ; i < m_num_of_entry; i++) {
+        if (m_waitting[lastInEntry].size() == 0)
+            lastInEntry = (lastInEntry + 1) % m_num_of_entry ;
+        else {
+            Car *c = m_waitting[lastInEntry][0];
+            c->requestSpace();
+        }
+    }
+
     car->hide();
     m_all_cars.removeOne(car);
     delete car;

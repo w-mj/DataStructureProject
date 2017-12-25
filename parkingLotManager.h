@@ -69,8 +69,10 @@ private:
     bool m_showGraph = false;  // 是否显示图
 
     void generatePool(bool sequence);
-
     void periodWork(void);
+
+    int lastInEntry = 0;
+
 
 signals:
     void enableUpButton(bool);

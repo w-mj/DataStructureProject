@@ -75,8 +75,9 @@ public:
 
     void leaveProbability(int p);
     void setPlateNumber(const QString &number);
-
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
+
+    void requestSpace(void);
 
 private:
     Status m_status;
