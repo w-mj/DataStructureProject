@@ -32,7 +32,7 @@ Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color
     }
     m_pic = m_pic.scaled(M_WID, M_LEN);
     this->setPixmap(m_pic);
-    setTransformOriginPoint(0, M_LEN/2);  //设置旋转中心
+    setTransformOriginPoint(M_WID, M_LEN/2);  //设置旋转中心
     connect(posAni,QPropertyAnimation::finished,this,followPath);
     connect(this, &Car::queueHead, manager, &ParkingLotManager::requestIn);
     connect(this, &Car::exit, manager, &ParkingLotManager::leave);
