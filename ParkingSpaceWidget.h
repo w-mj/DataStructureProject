@@ -3,6 +3,7 @@
 #include <QWidget>
 #include <QLayout>
 #include <QLabel>
+#include <QMouseEvent>
 #include "ParkingLotWidget.h"
 class ParkingLotWidget;
 

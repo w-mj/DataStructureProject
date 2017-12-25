@@ -282,7 +282,7 @@ void Car::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     if(event->button()==Qt::LeftButton)
         emit out(this,-1);
-    event->ignore();
+    event->accept();
 }
 
 int Car::getTargetFloor() const
