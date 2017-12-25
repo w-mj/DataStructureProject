@@ -2,7 +2,6 @@
 #include "ui_carlist.h"
 #include "QDebug"
 
-int FakeCar::n = 0;
 CarList* CarList::m_instance = nullptr;
 
 CarList::CarList(QWidget *parent) :
@@ -46,19 +45,11 @@ void CarList::closeEvent(QCloseEvent *e)
 }
 
 
-FakeCar::FakeCar()
-{
-    plateNum = QString("吉H%1").arg(++n, 4, 10, QLatin1Char('0'));
-    startTime = QTime::currentTime();
-    pos = QString("一层%1号").arg(n);
-    type = rand() % 3;
-}
-
-Adapter::Adapter(QObject *parent, QList<FakeCar> *list): QAbstractTableModel(parent), m_list(list) {
+Adapter::Adapter(QObject *parent, QList<Car*> *list): QAbstractTableModel(parent), m_list(list) {
     header << "车牌" << "车型" << "停放位置" << "驶入时间" << "已产生费用";
     timer = new QTimer(this);
     QObject::connect(timer, &QTimer::timeout, this, &Adapter::update);
-    timer->start(1000);
+    timer->start(1000);  // 每秒更新
 }
 
 int Adapter::columnCount(const QModelIndex &parent) const
@@ -77,11 +68,15 @@ QVariant Adapter::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::DisplayRole) {
         switch(index.column()) {
-        case 0: return m_list->at(index.row()).plateNum;
-        case 1: return m_list->at(index.row()).type;
-        case 2: return m_list->at(index.row()).pos;
-        case 3: return m_list->at(index.row()).startTime.toString("hh:mm");
-        case 4: return QTime::currentTime().second() - m_list->at(index.row()).startTime.second();
+        case 0: return m_list->at(index.row())->getPlateNumber();
+        case 1: return m_list->at(index.row())->getColor();
+        case 2: return m_list->at(index.row())->getPosition();
+        case 3:
+            if (m_list->at(index.row())->getStatus() == Car::waiting)
+                return "正在等待";
+            else
+                return m_list->at(index.row())->getStartTime().toString("hh:mm");
+        case 4: return m_list->at(index.row())->getFee();
         default: return QVariant();
         }
     }

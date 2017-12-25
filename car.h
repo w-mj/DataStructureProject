@@ -8,6 +8,7 @@
 #include <QtMath>
 #include <QPropertyAnimation>
 #include <QObject>
+#include <QTime>
 #include "path.h"
 #include "parkingLotManager.h"
 class ParkingLotManager;
@@ -22,6 +23,7 @@ class Car : public QObject, public QGraphicsPixmapItem
     Q_PROPERTY(QPointF m_pos READ getmPos WRITE setmPos)
     Q_PROPERTY(int m_dir READ getDir WRITE setRotation)
 public:
+    enum Status {waiting, moving, parking};
     enum Color { Pink, Red, Yellow, RANDOM };
     explicit Car(ParkingLotManager * manager, QGraphicsItem *parent = Q_NULLPTR,
                  int dir = 0, Car::Color color = RANDOM);
@@ -57,9 +59,17 @@ public:
 
     QPropertyAnimation *posAni;
 
+    QString getPosition() const;
+    QString getPlateNumber() const;
+    QString getFee() const;
+    Status getStatus() const;
+    void setStatus(const Status &value);
 
+    QTime getStartTime() const;
+    void setStartTime(const QTime &value);
 
 private:
+    Status m_status;
     Color   m_color;      //车身颜色 N为0， 顺时针递增
     QPixmap m_pic;
     QString m_number;
@@ -72,6 +82,7 @@ private:
     int targetFloor;
     int currentFloor;
     int num;
+    QTime startTime;
 signals:
     void entry(Car* car);
     void stair(Car* car);

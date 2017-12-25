@@ -13,9 +13,7 @@ Monitor::Monitor(MainWindow *parent) :
     ui(new Ui::Monitor)
 {
 
-    l->append(FakeCar());
 
-    adapter = new Adapter(this, l);
 
     ui->setupUi(this);
     QGraphicsScene *scene = new QGraphicsScene(this);  // 创建场景
@@ -42,7 +40,6 @@ Monitor::Monitor(MainWindow *parent) :
 
     pk->showParkingLot();
     ui->view->setScene(scene);
-    CarList::getInstance()->setAdapter(adapter);
 }
 
 void Monitor::showEvent(QShowEvent *event)
@@ -77,8 +74,5 @@ Monitor::~Monitor()
 
 void Monitor::addCar()
 {
-//    QModelIndex topLeft = adapter->index(0, 0);
-//    QModelIndex bottomRight = adapter->index(adapter->rowCount(), 6);
-//    emit adapter->dataChanged(topLeft, bottomRight);
-    l->append(FakeCar());
+
 }

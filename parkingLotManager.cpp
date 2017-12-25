@@ -10,6 +10,7 @@
 #include <QApplication>
 #include "logwindow.h"
 #include "car.h"
+#include "carlist.h"
 
 #define GET_SITUATION(l, n) (m_widgets[l]->getSpaceList().at(n)->getSituation())
 #define BANNED (ParkingSpaceWidget::Situation::banned)
@@ -54,6 +55,8 @@ ParkingLotManager::ParkingLotManager(QObject* objectParent, QGraphicsScene* scen
         QObject::connect(widget, &ParkingLotWidget::banParkingSpace, [i, this](bool b, int n){banSpace(b, i, n);});
     }
     generatePool(true);
+    Adapter *adapter = new Adapter(objectParent, &m_all_cars);  // 注册model
+    CarList::getInstance()->setAdapter(adapter);
 }
 
 void ParkingLotManager::showParkingLot(uint pos)
@@ -146,6 +149,7 @@ void ParkingLotManager::requestOut(Car *car, int exit)
     car->setNum(-exit);  // 负数代表出口
     car->setPath(p);
     car->setTargetFloor(1);
+    car->setStatus(Car::moving);
     car->followPath();
 }
 
@@ -188,6 +192,8 @@ void ParkingLotManager::requestIn(Car* car)
         car->setTargetFloor(l);
         car->setNum(n);
         car->followPath();
+        car->setStartTime(QTime::currentTime());
+        car->setStatus(Car::parking);
     } else {
         Log::i("请求失败，车位已满");
     }
@@ -202,6 +208,7 @@ void ParkingLotManager::leave(Car* car)
     emit carLeave();
     emit setLoad(QString::number(m_capacity.at(l) - m_num_of_cars[l]));  // 更新剩余车位
     car->hide();
+    m_all_cars.removeOne(car);
     delete car;
 }
 
@@ -218,6 +225,7 @@ void ParkingLotManager::addCar(int entry)
     car->setCurrentFloor(1);  // 刚添加的车一定是在一层
     car->setTargetFloor(1);
     car->followPath();
+    car->setStatus(Car::waiting);
     m_all_cars.append(car);
     m_scene->addItem(car);
     if (m_current_floor != 1)

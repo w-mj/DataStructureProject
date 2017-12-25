@@ -37,6 +37,8 @@ Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color
     connect(this, &Car::exit, manager, &ParkingLotManager::leave);
     connect(this, &Car::stair, manager, &ParkingLotManager::requestStair);
 
+    m_number = "1234";
+
     // 测试:创建10s后离开
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, [this, manager](){emit manager->requestOut(this);});
@@ -174,6 +176,50 @@ Car::Color Car::getColor()
 qreal Car::getDir()
 {
     return this->rotation();
+}
+
+QString Car::getPosition() const
+{
+    if (m_status == moving) {
+        return "正在移动";
+    } else if (m_status == waiting) {
+        return "正在等候";
+    } else  {
+        return QString("%1层%2号").arg(targetFloor).arg(num);
+    }
+}
+
+QString Car::getPlateNumber() const
+{
+    return m_number;
+}
+
+QString Car::getFee() const
+{
+    if (m_status == waiting)
+        return "0";
+    int elapsed = startTime.msecsTo(QTime::currentTime());
+    return QString::number(elapsed / 1000);
+}
+
+Car::Status Car::getStatus() const
+{
+    return m_status;
+}
+
+void Car::setStatus(const Status &value)
+{
+    m_status = value;
+}
+
+QTime Car::getStartTime() const
+{
+    return startTime;
+}
+
+void Car::setStartTime(const QTime &value)
+{
+    startTime = value;
 }
 
 int Car::getTargetFloor() const

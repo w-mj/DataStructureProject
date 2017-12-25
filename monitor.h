@@ -26,7 +26,6 @@ public:
     ~Monitor();
 
 private:
-    QList<FakeCar> *l = new QList<FakeCar>;
     Ui::Monitor *ui;
     void addCar();
     Adapter *adapter;

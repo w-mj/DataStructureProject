@@ -7,23 +7,15 @@
 #include <QList>
 #include <QRunnable>
 #include <QAbstractTableModel>
+#include "car.h"
 
 namespace Ui {
 class CarList;
 }
 
-struct FakeCar {
-    QString plateNum;
-    QTime startTime;
-    QString pos;
-    int type;
-    static int n;
-    FakeCar();
-};
-
 class Adapter: public QAbstractTableModel {
 public:
-    explicit Adapter(QObject* parent, QList<FakeCar>* list);
+    explicit Adapter(QObject* parent, QList<Car*>* list);
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
@@ -31,7 +23,7 @@ public:
     void update();
 private:
     QStringList header;
-    QList<FakeCar>* m_list;
+    QList<Car*>* m_list;
     QTimer *timer;
 
 
@@ -53,7 +45,7 @@ signals:
 private:
     static CarList* m_instance;
     explicit CarList(QWidget *parent = 0);
-    QList<FakeCar>* m_adapter;
+    QList<Car*>* m_adapter;
     Ui::CarList *ui;
 };
 
