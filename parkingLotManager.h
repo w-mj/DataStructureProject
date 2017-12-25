@@ -64,6 +64,8 @@ private:
 
     void generatePool(bool sequence);
 
+    void periodWork(void);
+
 signals:
     void enableUpButton(bool);
     void enableDownButton(bool);

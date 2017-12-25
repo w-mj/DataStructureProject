@@ -37,14 +37,8 @@ Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color
     connect(this, &Car::queueHead, manager, &ParkingLotManager::requestIn);
     connect(this, &Car::exit, manager, &ParkingLotManager::leave);
     connect(this, &Car::stair, manager, &ParkingLotManager::requestStair);
-
+    connect(this, &Car::out, manager, &ParkingLotManager::requestOut);
     m_number = "1234";
-
-    // 测试:创建10s后离开
-    QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, [this, manager](){emit manager->requestOut(this);});
-    timer->setSingleShot(true);
-    timer->start(10000);
 }
 
 void Car::Forward(qreal vel)
@@ -226,6 +220,12 @@ QTime Car::getStartTime() const
 void Car::setStartTime(const QTime &value)
 {
     startTime = value;
+}
+
+void Car::leaveProbability(int p)
+{
+    if (rand() % 100 + 1 < p)
+        emit out(this, -1);
 }
 
 int Car::getTargetFloor() const

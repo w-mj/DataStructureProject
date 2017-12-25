@@ -57,6 +57,10 @@ ParkingLotManager::ParkingLotManager(QObject* objectParent, QGraphicsScene* scen
     generatePool(true);
     Adapter *adapter = new Adapter(objectParent, &m_all_cars);  // 注册model
     CarList::getInstance()->setAdapter(adapter);
+
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &ParkingLotManager::periodWork);
+    timer->start(1000);  // 轮询
 }
 
 void ParkingLotManager::showParkingLot(uint pos)
@@ -227,8 +231,6 @@ void ParkingLotManager::addCar(int entry)
     if (entry == -1)
         entry = (rand() % m_num_of_entry);
 
-    entry = 0;
-
     Car *car = new Car(this);
     car->setEntryNum(entry + 1);
     m_waitting[entry].append(car);
@@ -280,4 +282,15 @@ void ParkingLotManager::generatePool(bool sequence)
     if (!sequence)
         std::random_shuffle(m_pool.begin(), m_pool.end());
     Log::i(QString("生成车位池成功，当前共有") + QString::number(m_pool.size()) + "个空车位");
+}
+
+void ParkingLotManager::periodWork()
+{
+    int generateProbability = 80;
+    if (rand() % 100 + 1 < generateProbability)
+        addCar();
+    for (auto c: m_all_cars) {
+        if (c->getStatus() == Car::parking)
+            c->leaveProbability(2);
+    }
 }
