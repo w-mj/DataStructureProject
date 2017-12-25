@@ -9,6 +9,7 @@
 #include <QPropertyAnimation>
 #include <QObject>
 #include <QTime>
+#include <QGraphicsSceneMouseEvent>
 #include "path.h"
 #include "parkingLotManager.h"
 class ParkingLotManager;
@@ -73,6 +74,8 @@ public:
     int type() const;
 
     void leaveProbability(int p);
+
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 
 private:
     Status m_status;
