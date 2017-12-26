@@ -205,6 +205,9 @@
        <layout class="QHBoxLayout" name="horizontalLayout_10">
         <item>
          <widget class="QLineEdit" name="searchBox">
+          <property name="maxLength">
+           <number>7</number>
+          </property>
           <property name="placeholderText">
            <string>搜索车牌</string>
           </property>
@@ -275,7 +278,7 @@
            <string/>
           </property>
           <property name="maxLength">
-           <number>6</number>
+           <number>7</number>
           </property>
           <property name="placeholderText">
            <string>车牌号</string>

@@ -13,6 +13,7 @@ QString reaomPlate() {
     result.append('0' + (rand() % 10));
     result.append('0' + (rand() % 10));
     result.append('0' + (rand() % 10));
+    result.append('0' + (rand() % 10));
     return result;
 }
 
@@ -56,6 +57,7 @@ Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color
     connect(this, &Car::back, manager, &ParkingLotManager::requestBack);
     // connect(this, &Car::entry, manager, &ParkingLotManager::leave);
     m_number = reaomPlate();
+    this->setToolTip(m_number);
 
 }
 
@@ -316,6 +318,8 @@ void Car::leaveProbability(int p)
 
 void Car::setPlateNumber(const QString &number) {
     this->m_number = number;
+    this->setToolTip(m_number);
+
 }
 
 void Car::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
