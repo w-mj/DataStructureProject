@@ -26,9 +26,12 @@ signals:
 private:
     static LogWindow* m_instance;
     explicit LogWindow(QWidget *parent = 0);
+    void clear(void);
+    void save(void);
 
     Ui::LogWindow *ui;
     QTextEdit * text;
+    QString buffer;
 };
 
 #endif // LOGWINDOW_H

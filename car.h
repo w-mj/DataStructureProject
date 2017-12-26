@@ -80,6 +80,8 @@ public:
     void requestSpace(void);
     void go(void);
 
+    bool requested = false;
+
 private:
     Status m_status;
     Color   m_color;      //车身颜色 N为0， 顺时针递增

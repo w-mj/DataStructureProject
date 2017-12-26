@@ -37,12 +37,14 @@ Monitor::Monitor(MainWindow *parent) :
     ui->sequence->hide();
     QObject::connect(ui->addCar, &QPushButton::clicked, [this, pk]() {
         QString p = this->ui->plateNumBox->text();
-        if(checkPlate(p) == false) {
-            QMessageBox::warning(this, "警告", "车牌不合规则");
-        } else if (pk->checkSame(p)) {
-            QMessageBox::warning(this, "警告", "车牌重复");
-        } else {
-            pk->addCar(p, ui->selectColor->currentIndex(), -1);
+        if (p.size() != 0) {
+            if(checkPlate(p) == false) {
+                QMessageBox::warning(this, "警告", "车牌不合规则");
+            } else if (pk->checkSame(p)) {
+                QMessageBox::warning(this, "警告", "车牌重复");
+            } else {
+                pk->addCar(p, ui->selectColor->currentIndex(), -1);
+            }
         }
     });
     QObject::connect(ui->random, &QPushButton::clicked, pk, &ParkingLotManager::addCarR);

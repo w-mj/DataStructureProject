@@ -65,6 +65,7 @@ void LoginDialog::ok()
                 f.write(psd.toStdString().c_str());
                 first = false;
             }
+            f.close();
         } else {
             ui->hint->setText("两次密码不匹配");
         }

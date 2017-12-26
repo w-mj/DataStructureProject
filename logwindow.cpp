@@ -3,6 +3,7 @@
 
 #include <QTime>
 #include <QCloseEvent>
+#include <QFile>
 
 
 LogWindow* LogWindow::m_instance = nullptr;
@@ -18,6 +19,24 @@ LogWindow::LogWindow(QWidget *parent) :
     setGeometry(parent->x() + parent->width(), y(), 400, 450);
     this->hide();
     setFocusPolicy(Qt::NoFocus);
+    connect(ui->save, &QPushButton::clicked, this, &LogWindow::save);
+    connect(ui->clear, &QPushButton::clicked, this, &LogWindow::clear);
+}
+
+void LogWindow::clear()
+{
+    ui->text->clear();
+}
+
+void LogWindow::save()
+{
+    QFile f(QString("Log_%1.log").arg(QTime::currentTime().toString("hh_mm_ss")));
+    if (f.open(QFile::WriteOnly| QIODevice::Text)) {
+        i("保存文件");
+        f.write(buffer.toStdString().c_str());
+        buffer.clear();
+    }
+    f.close();
 }
 
 LogWindow::~LogWindow()
@@ -35,6 +54,8 @@ LogWindow *LogWindow::newInstance(QWidget *parent)
 void LogWindow::i(QString text)
 {
     getInstance()->text->append(QTime::currentTime().toString("hh:mm:ss")+":"+text);
+    getInstance()->buffer.append(QTime::currentTime().toString("hh:mm:ss")+":"+text);
+    getInstance()->buffer.append("\n");
 }
 
 void LogWindow::closeEvent(QCloseEvent *e)
