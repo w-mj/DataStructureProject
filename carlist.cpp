@@ -13,6 +13,7 @@ CarList::CarList(QWidget *parent) :
     setWindowTitle("车辆列表");
     setGeometry(parent->x() + parent->width(), y() + parent->height() / 2, 400, 450);
     connect(ui->tableView, &QTableView::clicked, this, &CarList::mouseEvent);
+
     hide();
 }
 
@@ -23,8 +24,14 @@ CarList::~CarList()
 void CarList::setAdapter(Adapter *adapter)
 {
     ui->tableView->setModel(adapter);
-    ui->tableView->resizeColumnsToContents();
-    ui->tableView->resizeRowsToContents();
+    ui->tableView->setColumnWidth(0, 80);
+    ui->tableView->setColumnWidth(1, 40);
+    ui->tableView->setColumnWidth(2, 80);
+    ui->tableView->setColumnWidth(3, 80);
+    ui->tableView->setColumnWidth(4, 70);
+    ui->tableView->setColumnWidth(5, 40);
+    // ui->tableView->resizeColumnsToContents();
+    // ui->tableView->resizeRowsToContents();
     m_carList = adapter->getCarList();
 }
 
@@ -55,7 +62,7 @@ void CarList::mouseEvent(const QModelIndex &index)
 
 
 Adapter::Adapter(QObject *parent, QList<Car*> *list): QAbstractTableModel(parent), m_list(list) {
-    header << "车牌" << "车型" << "停放位置" << "驶入时间" << "已产生费用" << "操作";
+    header << "车牌" << "车型" << "停放位置" << "驶入时间" << "费用" << "操作";
     timer = new QTimer(this);
     QObject::connect(timer, &QTimer::timeout, this, &Adapter::update);
     timer->start(1000);  // 每秒更新
@@ -78,7 +85,12 @@ QVariant Adapter::data(const QModelIndex &index, int role) const
     if (role == Qt::DisplayRole) {
         switch(index.column()) {
         case 0: return m_list->at(index.row())->getPlateNumber();
-        case 1: return m_list->at(index.row())->getColor();
+        case 1: switch (m_list->at(index.row())->getColor()) {
+            case Car::Color::Red: return "红";
+            case Car::Color::Yellow: return "黄";
+            case Car::Color::Pink: return "粉";
+            default: return "其他";
+            }
         case 2: return m_list->at(index.row())->getPosition();
         case 3:
             if (m_list->at(index.row())->getStatus() == Car::waiting)

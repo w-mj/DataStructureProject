@@ -25,8 +25,12 @@ public:
     void closeListWindow();
     ~Monitor();
 
+    Ui::Monitor *getUi() const;
+    void setMoney(double n);
+
 private:
     Ui::Monitor *ui;
+    double money = 0;
     void addCar();
     Adapter *adapter;
     bool initialized = false;

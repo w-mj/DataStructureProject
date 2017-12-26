@@ -14,6 +14,8 @@ namespace Ui {
 class CarList;
 }
 
+class Car;
+
 class Adapter: public QAbstractTableModel {
 public:
     explicit Adapter(QObject* parent, QList<Car*>* list);

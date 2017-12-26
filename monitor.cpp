@@ -8,12 +8,15 @@
 #include "logwindow.h"
 #include "utils.h"
 #include <QMessageBox>
+#include <cstdio>
+#include <ctime>
 
 Monitor::Monitor(MainWindow *parent) :
     QWidget(parent),
     ui(new Ui::Monitor)
 {
     ui->setupUi(this);
+    srand(time(0));
     ui->selectColor->addItem("粉车");
     ui->selectColor->addItem("红车");
     ui->selectColor->addItem("黄车");
@@ -69,6 +72,12 @@ Monitor::Monitor(MainWindow *parent) :
                                      QString("%1在%2%3号").arg(this->ui->searchBox->text())
                                      .arg(p.first).arg(p.second));
     });
+    QObject::connect(pk, &ParkingLotManager::requestPrice, [this, pk]() {
+        pk->setYellow_price(this->ui->yellow_price->value());
+        pk->setRed_price(this->ui->red_price->value());
+        pk->setPink_price(this->ui->pink_prive->value());
+    });
+    QObject::connect(pk, &ParkingLotManager::money, this, &Monitor::setMoney);
 }
 
 void Monitor::showEvent(QShowEvent *event)
@@ -99,6 +108,17 @@ void Monitor::closeListWindow()
 Monitor::~Monitor()
 {
     delete ui;
+}
+
+Ui::Monitor *Monitor::getUi() const
+{
+    return ui;
+}
+
+void Monitor::setMoney(double n)
+{
+    money += n;
+    ui->money->setText(QString("今日收入%1元").arg(QString::number(money, 'f', 2)));
 }
 
 void Monitor::addCar()

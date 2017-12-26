@@ -60,6 +60,9 @@ ParkingLotManager::ParkingLotManager(QObject* objectParent, QGraphicsScene* scen
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &ParkingLotManager::periodWork);
+    QTimer* priceTimer = new QTimer(this);
+    connect(priceTimer, &QTimer::timeout, this, &ParkingLotManager::requestPrice);
+    priceTimer->start(1000);
 }
 
 void ParkingLotManager::showParkingLot(uint pos)
@@ -318,6 +321,7 @@ void ParkingLotManager::leave(Car* car)
 {
     int l = car->getCurrentFloor();
     Log::i(QString("有车离开，已产生费用%1元，当前共有%2个空车位").arg(car->getFee()).arg(m_pool.size()));
+    emit money(car->getFee().toDouble());
     callIn();
     car->hide();
     m_all_cars.removeOne(car);
@@ -334,7 +338,7 @@ void ParkingLotManager::addCarR()
         return;
 
     Car *car = new Car(this);
-    Log::i(QString("生成车:").arg(car->getPlateNumber()));
+    Log::i(QString("生成车:%1").arg(car->getPlateNumber()));
     car->setEntryNum(entry + 1);
     m_waitting[entry].append(car);
     Path *p = m_graph[1]->findPath(NODE_TYPE::entry, entry + 1, NODE_TYPE::queueHead, entry + 1);
@@ -351,7 +355,6 @@ void ParkingLotManager::addCarR()
 
 void ParkingLotManager::addCar(QString plate, int color, int entry)
 {
-    Log::i("生成车");
     if (entry == -1)
         entry = (rand() % m_num_of_entry) + 1;
     if (m_waitting[entry - 1].size() > 10)
@@ -368,7 +371,7 @@ void ParkingLotManager::addCar(QString plate, int color, int entry)
     car->setStatus(Car::waiting);
     m_all_cars.append(car);
     m_scene->addItem(car);
-    Log::i(QString("生成车:").arg(car->getPlateNumber()));
+    Log::i(QString("生成车:%1").arg(car->getPlateNumber()));
     if (m_current_floor != 1)
         car->hide();
 }
@@ -440,6 +443,36 @@ void ParkingLotManager::callIn()
         }
         lastInEntry = (lastInEntry + 1) % m_num_of_entry ;
     }
+}
+
+double ParkingLotManager::getYellow_price() const
+{
+    return yellow_price;
+}
+
+void ParkingLotManager::setYellow_price(double value)
+{
+    yellow_price = value;
+}
+
+double ParkingLotManager::getRed_price() const
+{
+    return red_price;
+}
+
+void ParkingLotManager::setRed_price(double value)
+{
+    red_price = value;
+}
+
+double ParkingLotManager::getPink_price() const
+{
+    return pink_price;
+}
+
+void ParkingLotManager::setPink_price(double value)
+{
+    pink_price = value;
 }
 
 void ParkingLotManager::setMax(int max)

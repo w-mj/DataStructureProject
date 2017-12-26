@@ -39,6 +39,15 @@ public:
     QPair<QString, int> biSearch(const QString& plate);
     void showMode(bool enable);
 
+    double getPink_price() const;
+    void setPink_price(double value);
+
+    double getRed_price() const;
+    void setRed_price(double value);
+
+    double getYellow_price() const;
+    void setYellow_price(double value);
+
 public slots:
     void requestIn(Car* car);
     void requestOut(Car* car, int exit = -1);
@@ -81,6 +90,9 @@ private:
     bool m_sequence = true;
     QTimer *timer;
 
+    double pink_price = 1;
+    double red_price = 2;
+    double yellow_price = 3;
 
 signals:
     void enableUpButton(bool);
@@ -89,8 +101,9 @@ signals:
     void setLoad(const QString&);
     void setLayerName(const QString&);
     void showMarginSignal(bool);
-
     void carLeave(void);
+    void requestPrice(void);
+    void money(double n);
 };
 
 #endif // PARKINGLOTITEM_H
