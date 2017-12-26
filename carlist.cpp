@@ -110,3 +110,12 @@ void Adapter::update()
     beginResetModel();
     endResetModel();
 }
+
+void sort(QList<Car*>::iterator s, QList<Car*>::iterator e,
+          std::function<bool (const Car *, const Car *)> comp)
+{
+    Q_UNUSED(s);
+    Q_UNUSED(e);
+    Q_UNUSED(comp);
+    return ;
+}

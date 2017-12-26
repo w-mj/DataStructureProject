@@ -36,6 +36,7 @@ public:
     bool checkSame(const QString& plate);
     QString getParkingLotName(int pos);
     QPair<QString, int> search(const QString& plate);
+    QPair<QString, int> biSearch(const QString& plate);
     void showMode(bool enable);
 
 public slots:

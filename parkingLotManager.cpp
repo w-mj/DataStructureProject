@@ -188,6 +188,38 @@ QPair<QString, int> ParkingLotManager::search(const QString& plate)
     return qMakePair(QString("-1"), -1);
 }
 
+bool comp2(const Car* c1, const Car* c2) {
+    return c1->getPlateNumber() < c2->getPlateNumber();
+}
+
+int comp(const QString& p1, const Car* c2) {
+    return strcmp(p1.toStdString().c_str(),  c2->getPlateNumber().toStdString().c_str());
+}
+
+QPair<QString, int> ParkingLotManager::biSearch(const QString &plate)
+{
+    sort(m_all_cars.begin(), m_all_cars.end(), &comp2);
+    int left = 0, right = m_all_cars.size(), mid = m_all_cars.size() / 2;
+    while (left != right) {
+        int flag = comp(plate, m_all_cars.at(mid));
+        if (flag == -1) {
+            right = mid;
+        } else if (flag == 1) {
+            left = mid;
+        } else if (flag == 0) {
+            Car* c = m_all_cars.at(mid);
+            if (c->getStatus() == Car::Status::parking ||
+                    c->getStatus() == Car::Status::moving)
+                return qMakePair(m_widgets.at(c->getTargetFloor())->getName(),
+                                 c->getNum());
+            else if (c->getStatus() == Car::Status::waiting)
+                return qMakePair(QString("0"), 0);
+        }
+        mid = (right + left) / 2;
+    }
+    return qMakePair(QString("-1"), -1);
+}
+
 void ParkingLotManager::showMode(bool enable)
 {
     if (enable)
@@ -284,7 +316,7 @@ void ParkingLotManager::requestIn(Car* car)
 void ParkingLotManager::leave(Car* car)
 {
     int l = car->getCurrentFloor();
-    Log::i(QString("有车离开，当前共有%1个空车位").arg(m_pool.size()));
+    Log::i(QString("有车离开，已产生费用%1元，当前共有%2个空车位").arg(car->getFee()).arg(m_pool.size()));
     callIn();
     car->hide();
     m_all_cars.removeOne(car);

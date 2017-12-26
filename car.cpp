@@ -221,6 +221,19 @@ QString Car::getFee() const
     if (m_status == waiting)
         return "0";
     int elapsed = startTime.msecsTo(QTime::currentTime());
+    switch (m_color) {
+    case Color::Pink:
+        elapsed *= 1;
+        break;
+    case Color::Red:
+        elapsed *= 2;
+        break;
+    case Color::Yellow:
+        elapsed *= 3;
+        break;
+    default:
+        break;
+    }
     return QString::number(elapsed / 1000);
 }
 
@@ -308,7 +321,9 @@ void Car::setPlateNumber(const QString &number) {
 void Car::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     if(m_status==parking&&event->button()==Qt::LeftButton)
-        emit out(this,-1);
+        emit out(this, -1);
+    else if (m_status == waiting && event->button() == Qt::LeftButton)
+        emit back(this);
     event->accept();
 }
 

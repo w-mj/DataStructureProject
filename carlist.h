@@ -8,6 +8,7 @@
 #include <QRunnable>
 #include <QAbstractTableModel>
 #include "car.h"
+#include <functional>
 
 namespace Ui {
 class CarList;
@@ -48,5 +49,8 @@ private:
     QList<Car*>* m_carList;
     Ui::CarList *ui;
 };
+
+void sort(QList<Car*>::iterator s, QList<Car*>::iterator e,
+          std::function<bool (const Car*, const Car*)> comp);
 
 #endif // CARLIST_H
