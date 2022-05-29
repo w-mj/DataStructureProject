@@ -8,12 +8,12 @@ QString reaomPlate() {
     QString province = "京津冀晋蒙辽吉黑沪苏浙皖闽赣鲁豫鄂湘粤桂琼川贵云渝藏陕甘青宁新港澳台";
     QString result;
     result.append(province.at(rand() % province.size()));
-    result.append('A' + (rand() % 26));
-    result.append('0' + (rand() % 10));
-    result.append('0' + (rand() % 10));
-    result.append('0' + (rand() % 10));
-    result.append('0' + (rand() % 10));
-    result.append('0' + (rand() % 10));
+    result.append(QChar('A' + (rand() % 26)));
+    result.append(QChar('0' + (rand() % 10)));
+    result.append(QChar('0' + (rand() % 10)));
+    result.append(QChar('0' + (rand() % 10)));
+    result.append(QChar('0' + (rand() % 10)));
+    result.append(QChar('0' + (rand() % 10)));
     return result;
 }
 
@@ -49,7 +49,7 @@ Car::Car(ParkingLotManager * manager, QGraphicsItem *parent, int dir, Car::Color
     m_pic = m_pic.scaled(M_WID, M_LEN);
     this->setPixmap(m_pic);
     setTransformOriginPoint(M_WID/2, M_LEN/2);  //设置旋转中心
-    connect(posAni,QPropertyAnimation::finished, this, followPath);
+    connect(posAni,&QPropertyAnimation::finished, this, followPath);
     connect(this, &Car::queueHead, manager, &ParkingLotManager::requestIn);
     connect(this, &Car::exit, manager, &ParkingLotManager::leave);
     connect(this, &Car::stair, manager, &ParkingLotManager::requestStair);

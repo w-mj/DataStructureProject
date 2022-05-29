@@ -30,6 +30,9 @@ struct PathPoint
         action = another.action;
     }
     void operator=(const PathPoint& another);
+    bool operator==(const PathPoint& another) const {
+        return (point == another.point && dir == another.dir);
+    }
     bool operator==(const PathPoint& another) {
         return (point == another.point && dir == another.dir);
     }

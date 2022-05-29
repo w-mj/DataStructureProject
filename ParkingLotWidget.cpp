@@ -137,7 +137,7 @@ QBoxLayout * ParkingLotWidget::parseLayout(const QDomElement & element)
 		child = child.nextSiblingElement();
 	}
 	layout->addStretch(); // 添加伸缩，实现居上或居左对齐
-	layout->setMargin(0);
+    // layout->setMargin(0);
 	layout->setSpacing(0);
 	return layout;
 }

@@ -62,7 +62,7 @@ QBoxLayout *ParkingSpaceWidget::makeParkingSapceGroup(ParkingLotWidget* parent, 
         layout->addWidget(pk);
     }
     layout->addStretch();  // 居上或居左对齐
-    layout->setMargin(0);
+    // layout->setMargin(0);
     layout->setSpacing(0);
     return layout;
 }
